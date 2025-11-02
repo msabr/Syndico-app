@@ -1,44 +1,43 @@
 # 🏢 Syndico App
 
-Syndico is a modern Web Application for Syndic Management, designed to simplify communication, payment tracking, and administrative management between residents, clients, and administrators.
+- Syndico is a modern Web Application for Syndic Management, designed to simplify communication, payment tracking, and administrative management between residents, clients, and administrators.
 
-🚀 Built by a team of 3 full-stack developers using Spring Boot + Thymeleaf + MySQL + Bootstrap 5, this app combines high performance, modular architecture, and smart innovation (including an integrated chatbot assistant and multilingual support).
+- 🚀 Built by a team of 3 full-stack developers using Spring Boot + Thymeleaf + MySQL + Bootstrap 5, this app combines high performance, modular architecture, and smart innovation (including an integrated chatbot assistant and multilingual support).
 
-⚙️ Tech Stack
+## ⚙️ Tech Stack
 
-Frontend:
+### Frontend:
 
-HTML5, CSS3, JavaScript (ES6)
+- HTML5, CSS3, JavaScript (ES6)
 
-Thymeleaf (for dynamic server-side rendering)
+- Thymeleaf (for dynamic server-side rendering)
 
-Bootstrap 5 (responsive design)
+- Bootstrap 5 (responsive design)
 
-Backend:
+### Backend:
 
-Spring Boot 3.5.7 (stable LTS version)
+- Spring Boot 3.5.7 (stable LTS version)
 
-Spring MVC (REST Controllers)
+- Spring MVC (REST Controllers)
 
-Spring Security (Authentication & Roles)
+- Spring Security (Authentication & Roles)
 
-Spring Data JPA (ORM with MySQL)
+- Spring Data JPA (ORM with MySQL)
 
-Lombok (optional – simplifies boilerplate code)
+- Lombok (optional – simplifies boilerplate code)
 
-Database:
+### Database:
 
-MySQL 8+
+- MySQL 8+
 
-Build Tool:
+### Build Tool:
 
-Maven
+- Maven
 
-IDE:
+- IDE: IntelliJ IDEA
 
-IntelliJ IDEA
+## 🧱 Project Architecture
 
-🧱 Project Architecture
 syndico-app/
 │
 ├── src/main/java/
@@ -59,45 +58,50 @@ syndico-app/
 │
 └── pom.xml                     # Dependencies and build setup
 
-🚀 How to Run the App
-1️⃣ Clone the Repository
-git clone https://github.com/msabr/Syndico-app.git
-cd Syndico-app
-git checkout soufiane
+## 🚀 How to Run the App
+- 1️⃣ Clone the Repository
+  ```Bash
+  git clone https://github.com/msabr/Syndico-app.git
+  cd Syndico-app
+  git checkout soufiane(for me)
+  ```
 
-2️⃣ Configure the Database
+- 2️⃣ Configure the Database
+  Create a database named syndico_db in MySQL.(Normaly it will created automatically)
+  Then open src/main/resources/application.properties and set your credentials:
 
-Create a database named syndico_db in MySQL.
+```properties
+  spring.datasource.url=jdbc:mysql://localhost:3306/syndico_db
+  spring.datasource.username=root
+  spring.datasource.password=your_password
+  spring.jpa.hibernate.ddl-auto=update
+  spring.jpa.show-sql=true
+  spring.thymeleaf.cache=false
+```
 
-Then open src/main/resources/application.properties and set your credentials:
+- 3️⃣ Build & Run
 
-spring.datasource.url=jdbc:mysql://localhost:3306/syndico_db
-spring.datasource.username=root
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.thymeleaf.cache=false
+  In IntelliJ Terminal (or CMD):
 
-3️⃣ Build & Run
-
-In IntelliJ Terminal (or CMD):
-
-mvn clean install
-mvn spring-boot:run
+```powershell
+  mvn clean install
+  mvn spring-boot:run
+```
 
 
 Then open:
 👉 http://localhost:8080
 
-👥 Team Collaboration — How to Add a New Page
+## 👥 Team Collaboration — How to Add a New Page
 
 Each developer can add a feature (page) that interacts with the database.
 Follow these steps carefully ⬇️
 
 🔹 Step 1 — Create the Model
 
+```java
 Add your entity in models/.
-
+code 
 @Entity
 public class Payment {
 @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,27 +109,33 @@ private Long id;
 private double amount;
 private LocalDate date;
 }
+```
 
 🔹 Step 2 — Create the Repository
 
 Add a JPA repository in repositories/.
 
+```java
 public interface PaymentRepository extends JpaRepository<Payment, Long> {}
+```
 
 🔹 Step 3 — Create the Service
 
 Business logic in services/.
 
+```java
 @Service
 public class PaymentService {
 @Autowired private PaymentRepository repo;
 public List<Payment> getAll() { return repo.findAll(); }
 }
+```
 
 🔹 Step 4 — Create the Controller
 
 Handle web routes in controllers/.
 
+```java
 @Controller
 @RequestMapping("/payments")
 public class PaymentController {
@@ -137,11 +147,13 @@ public class PaymentController {
         return "payments"; // Refers to templates/payments.html
     }
 }
+```
 
 🔹 Step 5 — Create the Frontend Page
 
 Add a new payments.html in templates/.
 
+```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -164,44 +176,42 @@ Add a new payments.html in templates/.
   </div>
 </body>
 </html>
-
-
+```
 ✅ You’ve just added a complete page (backend + frontend + DB).
 
-💬 Chatbot Assistant (IA Integration)
+
+## 💬 Chatbot Assistant (IA Integration)
 
 Syndico includes a smart assistant that can:
 
-Guide clients on using the platform
+- Guide clients on using the platform
 
-Answer frequently asked questions
+- Answer frequently asked questions
 
-Help administrators manage residents and payments
+- Help administrators manage residents and payments
 
 💡 The chatbot will later use a fine-tuned OpenAI API / LangChain microservice (modular extension).
 
-🌍 Multi-Language Support
+## 🌍 Multi-Language Support
 
 We use Spring’s i18n (internationalization) feature with message bundles (messages_fr.properties, messages_en.properties, etc.) to dynamically switch the language.
 A language selector will be included in the navbar.
 
-🚧 Future Improvements
+## 🚧 Future Improvements
 
-🧠 Integration of AI modules for data insights
+- 🧠 Integration of AI modules for data insights
 
-📱 Progressive Web App (PWA) version
+- 📱 Progressive Web App (PWA) version
 
-📈 Admin dashboard with analytics (Chart.js)
+## 🧩 Extension-based modularity (close for modification, open for extension)
 
-🧩 Extension-based modularity (close for modification, open for extension)
+- ⚡ Performance optimization with caching and lazy loading
 
-⚡ Performance optimization with caching and lazy loading
-
-🧑‍💻 Team Members
+## 🧑‍💻 Team Members
 Name	Role	Git Branch
-Soufiane	Full Stack Dev / Architect	soufiane
-Teammate 1	Full Stack Dev	branch1
-Teammate 2	Full Stack Dev	branch2
+Soufiane  ZEKAOUI	Full Stack Dev / Architect	soufiane
+AbdelKrim ZIDOUH	Full Stack Dev	sabir
+Mohmed    SABIR	Full Stack Dev	branch2
 📜 License
 
 This project is under the MIT License — open for educational and professional innovation.
