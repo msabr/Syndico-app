@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syndico App</title>
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="icon" th:href="@{/images/syndico_logo.png}">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">Syndico</a>
+    </div>
+</nav>
+
+<main class="container py-5">
+    <div class="text-center">
+        <h1 class="display-5 text-primary fw-bold">Welcome to Syndico App</h1>
+        <p class="lead text-secondary">Manage your buildings, owners, and payments easily.</p>
+        <button id="newQuoteBtn" class="btn btn-outline-primary mt-3">Try JavaScript Example</button>
+    </div>
+</main>
+
+<footer class="text-center py-4 border-top text-muted">
+    &copy; 2025 Syndico App. All rights reserved.
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
