@@ -38,6 +38,7 @@
 
 ## 🧱 Project Architecture
 
+```markdov
 syndico-app/
 │
 ├── src/main/java/
@@ -57,6 +58,7 @@ syndico-app/
 │   └── application.properties  # Spring Boot configuration
 │
 └── pom.xml                     # Dependencies and build setup
+```
 
 ## 🚀 How to Run the App
 - 1️⃣ Clone the Repository
