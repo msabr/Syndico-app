@@ -210,10 +210,12 @@ A language selector will be included in the navbar.
 - ⚡ Performance optimization with caching and lazy loading
 
 ## 🧑‍💻 Team Members
-Name	Role	Git Branch
-Soufiane  ZEKAOUI	Full Stack Dev / Architect	soufiane
-AbdelKrim ZIDOUH	Full Stack Dev	sabir
-Mohmed    SABIR	Full Stack Dev	branch2
+
+  Name	            Role	                  Git Branch
+- Soufiane  ZEKAOUI	Full Stack Dev / Architect	soufiane
+- AbdelKrim ZIDOUH	Full Stack Dev	            sabir
+- Mohmed    SABIR	  Full Stack Dev	            branch2
+  
 📜 License
 
 This project is under the MIT License — open for educational and professional innovation.
