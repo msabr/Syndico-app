@@ -211,10 +211,12 @@ A language selector will be included in the navbar.
 
 ## 🧑‍💻 Team Members
 
+```authors
   Name	            Role	                  Git Branch
 - Soufiane  ZEKAOUI	Full Stack Dev / Architect	soufiane
-- AbdelKrim ZIDOUH	Full Stack Dev	            sabir
-- Mohmed    SABIR	  Full Stack Dev	            branch2
+- AbdelKrim ZIDOUH	Full Stack Dev	            branch 1
+- Mohmed    SABIR	  Full Stack Dev	            sabir
+```
   
 📜 License
 
