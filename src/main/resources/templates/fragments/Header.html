@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!--
+    Composant Header Réutilisable - Syndico
+    Utilisation : <div th:replace="~{fragments/header :: header}"></div>
+    Palette : #FFA69E, #F5EBE0, #B08968, #DDB892, #3C3734
+-->
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - Syndico' : 'Syndico - Gestion de Syndic'}">Syndico</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<!-- ========================================== -->
+<!-- HEADER PRINCIPAL -->
+<!-- ========================================== -->
+<header th:fragment="header(activePage)">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+
+            <!-- Logo cliquable -->
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                <img th:src="@{/images/syndico_logo.png}"
+                     alt="Syndico Logo"
+                     width="50"
+                     height="50">
+                <span class="brand-text ms-2">SYNDICO</span>
+            </a>
+
+            <!-- Toggle Button (Mobile) -->
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+
+                <!-- Navigation Links -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/}"
+                           th:classappend="${activePage == 'home'} ? 'active' : ''">
+                            <i class="fas fa-home me-1"></i>
+                            Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/about}"
+                           th:classappend="${activePage == 'about'} ? 'active' : ''">
+                            <i class="fas fa-info-circle me-1"></i>
+                            À propos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/services}"
+                           th:classappend="${activePage == 'services'} ? 'active' : ''">
+                            <i class="fas fa-concierge-bell me-1"></i>
+                            Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/faq}"
+                           th:classappend="${activePage == 'faq'} ? 'active' : ''">
+                            <i class="fas fa-question-circle me-1"></i>
+                            FAQ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/contact}"
+                           th:classappend="${activePage == 'contact'} ? 'active' : ''">
+                            <i class="fas fa-envelope me-1"></i>
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Actions (droite) -->
+                <div class="d-flex align-items-center gap-3">
+
+                    <!-- Sélecteur de langue -->
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i>
+                            FR
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" th:href="@{''(lang=fr)}">
+                                    🇫🇷 Français
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{''(lang=en)}">
+                                    🇬🇧 English
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{''(lang=ar)}">
+                                    🇲🇦 العربية
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Bouton Login -->
+                    <a th:href="@{/login}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Connexion
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- ========================================== -->
+<!-- FOOTER PRINCIPAL -->
+<!-- ========================================== -->
+<footer th:fragment="footer" class="footer-main bg-dark text-white mt-5">
+    <div class="container py-5">
+        <div class="row">
+
+            <!-- Colonne 1 : À propos -->
+            <div class="col-md-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico" width="40" height="40">
+                    <h5 class="ms-2 mb-0">SYNDICO</h5>
+                </div>
+                <p class="text-muted" th:text="#{footer.description}">
+                    Votre solution complète pour la gestion moderne et efficace de votre syndic de copropriété.
+                </p>
+                <div class="social-links mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                </div>
+            </div>
+
+            <!-- Colonne 2 : Liens rapides -->
+            <div class="col-md-2 mb-4">
+                <h6 class="text-uppercase mb-3" th:text="#{footer.quickLinks}">Liens Rapides</h6>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/home}" class="text-muted" th:text="#{nav.home}">Accueil</a></li>
+                    <li><a th:href="@{/about}" class="text-muted" th:text="#{nav.about}">À propos</a></li>
+                    <li><a th:href="@{/services}" class="text-muted" th:text="#{nav.services}">Services</a></li>
+                    <li><a th:href="@{/faq}" class="text-muted" th:text="#{nav.faq}">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Colonne 3 : Services -->
+            <div class="col-md-3 mb-4">
+                <h6 class="text-uppercase mb-3" th:text="#{footer.services}">Nos Services</h6>
+                <ul class="list-unstyled text-muted">
+                    <li><i class="fas fa-check me-2 text-primary"></i>Gestion des charges</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Paiement en ligne</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Réclamations</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Réservations</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Assemblées générales</li>
+                </ul>
+            </div>
+
+            <!-- Colonne 4 : Contact -->
+            <div class="col-md-3 mb-4">
+                <h6 class="text-uppercase mb-3" th:text="#{footer.contact}">Contact</h6>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Casablanca, Maroc
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        +212 5XX-XXXXXX
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        contact@syndico.ma
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-4">
+
+        <!-- Copyright -->
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-muted">
+                    &copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+                    <strong>Syndico</strong> - Tous droits réservés
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-muted me-3">Politique de confidentialité</a>
+                <a href="#" class="text-muted">Conditions d'utilisation</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ========================================== -->
+<!-- STYLES CSS PERSONNALISÉS -->
+<!-- ========================================== -->
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        padding-top: 76px; /* Hauteur du header fixe */
+    }
+
+    .header-main {
+        z-index: 1000;
+    }
+
+    .navbar {
+        transition: all 0.3s ease;
+    }
+
+    .logo-img {
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+        transform: scale(1.05);
+    }
+
+    .brand-text {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--dark);
+        letter-spacing: 1px;
+    }
+
+    .nav-link {
+        color: var(--dark) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .nav-link:hover {
+        background-color: var(--secondary);
+        color: var(--primary) !important;
+    }
+
+    .nav-link.active {
+        background-color: var(--primary);
+        color: white !important;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border: none;
+        border-radius: 25px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--tertiary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .btn-login {
+        box-shadow: 0 2px 8px rgba(255, 166, 158, 0.3);
+    }
+
+    .language-selector {
+        border-radius: 20px;
+        border: 1px solid var(--tertiary);
+    }
+
+    .dropdown-menu {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border: none;
+    }
+
+    .dropdown-item {
+        padding: 0.7rem 1.2rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--secondary);
+        color: var(--primary);
+    }
+
+    .footer-main {
+        background: linear-gradient(135deg, var(--dark) 0%, #2a2726 100%);
+    }
+
+    .footer-main a {
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-main a:hover {
+        color: var(--primary) !important;
+    }
+
+    .social-links a {
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+
+    .social-links a:hover {
+        transform: translateY(-3px);
+        color: var(--primary) !important;
+    }
+</style>
+
+</html>
