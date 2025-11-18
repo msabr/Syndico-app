@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/Header :: head(pageTitle='À propos')}"></head>
+<head th:replace="~{fragments/Header :: head(pageTitle='About')}"></head>
 
 <body>
 
-<!-- Header -->
 <header th:replace="~{fragments/Header :: header(activePage='about')}"></header>
 
-<!-- Hero Section -->
 <section class="hero-about">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-lg-start">
                 <h1 class="display-3 fw-bold mb-4 animate-slide-in">
-                    À propos de <span class="text-primary">Syndico</span>
+                    About <span class="text-primary">Syndico</span>
                 </h1>
                 <p class="lead mb-4">
-                    Nous révolutionnons la gestion de copropriété avec une solution moderne,
-                    intuitive et complète pour faciliter la vie des résidents et des administrateurs.
+                    We are transforming condominium management with a modern,
+                    intuitive, and comprehensive solution designed to make life easier
+                    for both residents and administrators.
                 </p>
                 <a href="#mission" class="btn btn-primary btn-lg">
-                    <i class="fas fa-arrow-down me-2"></i>Découvrir notre mission
+                    <i class="fas fa-arrow-down me-2"></i>Explore Our Mission
                 </a>
             </div>
             <div class="col-lg-6 text-center mt-5 mt-lg-0">
@@ -30,12 +29,11 @@
     </div>
 </section>
 
-<!-- Mission Section -->
 <section id="mission" class="section-mission py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Notre Mission</h2>
-            <p class="section-subtitle">Simplifier la gestion de copropriété au Maroc</p>
+            <h2 class="section-title">Our Mission</h2>
+            <p class="section-subtitle">Simplifying condominium management in Morocco</p>
         </div>
 
         <div class="row g-4">
@@ -46,8 +44,8 @@
                     </div>
                     <h4>Innovation</h4>
                     <p>
-                        Nous utilisons les dernières technologies pour offrir une expérience
-                        utilisateur moderne et intuitive.
+                        We use the latest technologies to deliver a modern,
+                        intuitive, and seamless user experience.
                     </p>
                 </div>
             </div>
@@ -57,10 +55,10 @@
                     <div class="icon-wrapper">
                         <i class="fas fa-users fa-3x"></i>
                     </div>
-                    <h4>Proximité</h4>
+                    <h4>Proximity</h4>
                     <p>
-                        Nous créons un lien direct entre les résidents et l'administration
-                        pour une communication transparente.
+                        We build a direct connection between residents and the administration
+                        to ensure transparent communication.
                     </p>
                 </div>
             </div>
@@ -70,10 +68,10 @@
                     <div class="icon-wrapper">
                         <i class="fas fa-shield-alt fa-3x"></i>
                     </div>
-                    <h4>Sécurité</h4>
+                    <h4>Security</h4>
                     <p>
-                        Vos données sont protégées avec les meilleurs standards de sécurité
-                        (cryptage, authentification sécurisée).
+                        Your data is protected with industry-leading security standards
+                        including encryption and secure authentication.
                     </p>
                 </div>
             </div>
@@ -81,12 +79,11 @@
     </div>
 </section>
 
-<!-- Values Section -->
 <section class="section-values py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Nos Valeurs</h2>
-            <p class="section-subtitle">Ce qui nous guide au quotidien</p>
+            <h2 class="section-title">Our Values</h2>
+            <p class="section-subtitle">What guides us every day</p>
         </div>
 
         <div class="row g-4">
@@ -95,8 +92,8 @@
                     <div class="value-icon">
                         <i class="fas fa-lightbulb"></i>
                     </div>
-                    <h5>Transparence</h5>
-                    <p>Toutes les informations accessibles en temps réel</p>
+                    <h5>Transparency</h5>
+                    <p>All information accessible in real time</p>
                 </div>
             </div>
 
@@ -105,8 +102,8 @@
                     <div class="value-icon">
                         <i class="fas fa-handshake"></i>
                     </div>
-                    <h5>Confiance</h5>
-                    <p>Relations basées sur l'honnêteté et le respect</p>
+                    <h5>Trust</h5>
+                    <p>Relationships built on honesty and respect</p>
                 </div>
             </div>
 
@@ -115,8 +112,8 @@
                     <div class="value-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h5>Efficacité</h5>
-                    <p>Automatisation des tâches répétitives</p>
+                    <h5>Efficiency</h5>
+                    <p>Automation of repetitive tasks</p>
                 </div>
             </div>
 
@@ -126,35 +123,34 @@
                         <i class="fas fa-smile"></i>
                     </div>
                     <h5>Satisfaction</h5>
-                    <p>Expérience utilisateur au centre de nos préoccupations</p>
+                    <p>User experience at the heart of our approach</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
 <section class="section-features py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Pourquoi choisir Syndico ?</h2>
-            <p class="section-subtitle">Des fonctionnalités pensées pour vous</p>
+            <h2 class="section-title">Why Choose Syndico?</h2>
+            <p class="section-subtitle">Features designed for your needs</p>
         </div>
 
         <div class="row align-items-center mb-5">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600"
-                     alt="Gestion moderne"
+                     alt="Modern management"
                      class="img-fluid rounded shadow-lg">
             </div>
             <div class="col-lg-6">
-                <h3 class="mb-4">Gestion simplifiée</h3>
+                <h3 class="mb-4">Simplified Management</h3>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Dashboard intuitif avec statistiques en temps réel</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Paiement en ligne sécurisé (Stripe/PayPal)</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Notifications automatiques par email et SMS</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Gestion des réclamations avec suivi</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Réservation d'espaces communs</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Intuitive dashboard with real-time statistics</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Secure online payments (Stripe/PayPal)</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Automatic notifications via email and SMS</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Complaint management with tracking</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Common space reservations</li>
                 </ul>
             </div>
         </div>
@@ -166,20 +162,19 @@
                      class="img-fluid rounded shadow-lg">
             </div>
             <div class="col-lg-6 order-lg-1">
-                <h3 class="mb-4">Communication facilitée</h3>
+                <h3 class="mb-4">Enhanced Communication</h3>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Messagerie interne résidents-syndic</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Vote électronique pour assemblées générales</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Chatbot intelligent pour réponses instantanées</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Documents accessibles via QR Code</li>
-                    <li><i class="fas fa-check-circle text-success me-2"></i>Interface multilingue (FR/EN/AR)</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Internal messaging between residents and managers</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Electronic voting for general assemblies</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Smart chatbot for instant answers</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Documents accessible via QR Code</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Multilingual interface (EN/FR/AR)</li>
                 </ul>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Statistics Section -->
 <section class="section-stats py-5 bg-primary text-white">
     <div class="container">
         <div class="row text-center g-4">
@@ -187,40 +182,39 @@
                 <div class="stat-item">
                     <i class="fas fa-building fa-3x mb-3"></i>
                     <h2 class="display-4 fw-bold counter" data-target="150">0</h2>
-                    <p class="mb-0">Résidences gérées</p>
+                    <p class="mb-0">Managed Residences</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
                     <i class="fas fa-users fa-3x mb-3"></i>
                     <h2 class="display-4 fw-bold counter" data-target="3500">0</h2>
-                    <p class="mb-0">Utilisateurs actifs</p>
+                    <p class="mb-0">Active Users</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
                     <i class="fas fa-file-invoice-dollar fa-3x mb-3"></i>
                     <h2 class="display-4 fw-bold counter" data-target="98">0</h2>
-                    <p class="mb-0">% Satisfaction</p>
+                    <p class="mb-0">Satisfaction Rate</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
                     <i class="fas fa-clock fa-3x mb-3"></i>
                     <h2 class="display-4 fw-bold counter" data-target="24">0</h2>
-                    <p class="mb-0">Support 24/7</p>
+                    <p class="mb-0">24/7 Support</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Team Section -->
 <section class="section-team py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Notre Équipe</h2>
-            <p class="section-subtitle">Développé par Team SAS</p>
+            <h2 class="section-title">Our Team</h2>
+            <p class="section-subtitle">Developed by Team SAS</p>
         </div>
 
         <div class="row justify-content-center g-4">
@@ -229,9 +223,9 @@
                     <div class="team-avatar">
                         <i class="fas fa-user-circle fa-5x text-primary"></i>
                     </div>
-                    <h5 class="mt-3">Membre 1</h5>
+                    <h5 class="mt-3">Member 1</h5>
                     <p class="text-muted">Backend Lead</p>
-                    <p class="small">Architecture Spring Boot, API REST, Spring Security</p>
+                    <p class="small">Spring Boot Architecture, REST API, Spring Security</p>
                     <div class="social-links mt-3">
                         <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
                         <a href="#" class="text-dark me-2"><i class="fab fa-github"></i></a>
@@ -244,9 +238,9 @@
                     <div class="team-avatar">
                         <i class="fas fa-user-circle fa-5x text-primary"></i>
                     </div>
-                    <h5 class="mt-3">Membre 2</h5>
+                    <h5 class="mt-3">Member 2</h5>
                     <p class="text-muted">Frontend & UX</p>
-                    <p class="small">Design Figma, Thymeleaf, Bootstrap, JavaScript</p>
+                    <p class="small">Figma Design, Thymeleaf, Bootstrap, JavaScript</p>
                     <div class="social-links mt-3">
                         <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
                         <a href="#" class="text-dark me-2"><i class="fab fa-github"></i></a>
@@ -259,9 +253,9 @@
                     <div class="team-avatar">
                         <i class="fas fa-user-circle fa-5x text-primary"></i>
                     </div>
-                    <h5 class="mt-3">Membre 3</h5>
+                    <h5 class="mt-3">Member 3</h5>
                     <p class="text-muted">Business Logic</p>
-                    <p class="small">Services métiers, JPA Entities, Tests, Documentation</p>
+                    <p class="small">Service Layer, JPA Entities, Testing, Documentation</p>
                     <div class="social-links mt-3">
                         <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
                         <a href="#" class="text-dark me-2"><i class="fab fa-github"></i></a>
@@ -272,31 +266,26 @@
     </div>
 </section>
 
-<!-- CTA Section -->
 <section class="section-cta py-5 bg-gradient">
     <div class="container text-center text-white">
-        <h2 class="display-5 fw-bold mb-4">Prêt à transformer votre gestion de copropriété ?</h2>
-        <p class="lead mb-4">Rejoignez les centaines de résidences qui nous font confiance</p>
+        <h2 class="display-5 fw-bold mb-4">Ready to transform your condominium management?</h2>
+        <p class="lead mb-4">Join the hundreds of residences that trust us</p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a th:href="@{/register}" class="btn btn-light btn-lg">
-                <i class="fas fa-user-plus me-2"></i>Créer un compte
+                <i class="fas fa-user-plus me-2"></i>Create Account
             </a>
             <a th:href="@{/contact}" class="btn btn-outline-light btn-lg">
-                <i class="fas fa-phone me-2"></i>Nous contacter
+                <i class="fas fa-phone me-2"></i>Contact Us
             </a>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
 <footer th:replace="~{fragments/Header :: footer}"></footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Custom JS -->
 <script>
-    // Counter Animation
     const counters = document.querySelectorAll('.counter');
     counters.forEach(counter => {
         const target = +counter.getAttribute('data-target');
@@ -312,7 +301,6 @@
             }
         };
 
-        // Observer pour démarrer l'animation quand visible
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
                 updateCounter();
@@ -325,7 +313,6 @@
 </script>
 
 <style>
-    /* Hero Section */
     .hero-about {
         background: linear-gradient(135deg, #F5EBE0 0%, #DDB892 100%);
         padding: 100px 0 80px;
@@ -363,7 +350,6 @@
         }
     }
 
-    /* Section Titles */
     .section-title {
         font-size: 2.5rem;
         font-weight: 700;
@@ -390,7 +376,6 @@
         margin-top: 20px;
     }
 
-    /* Mission Cards */
     .mission-card {
         background: white;
         padding: 2.5rem;
@@ -417,7 +402,6 @@
         color: white;
     }
 
-    /* Value Items */
     .value-item {
         padding: 2rem;
         transition: all 0.3s ease;
@@ -442,7 +426,6 @@
         background: var(--tertiary);
     }
 
-    /* Feature List */
     .feature-list {
         list-style: none;
         padding: 0;
@@ -458,7 +441,6 @@
         border-bottom: none;
     }
 
-    /* Stats Section */
     .section-stats {
         background: linear-gradient(135deg, var(--primary), var(--tertiary));
     }
@@ -467,7 +449,6 @@
         padding: 1rem;
     }
 
-    /* Team Cards */
     .team-card {
         background: white;
         padding: 2.5rem;
@@ -482,7 +463,6 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    /* CTA Section */
     .bg-gradient {
         background: linear-gradient(135deg, var(--tertiary), var(--dark));
     }
