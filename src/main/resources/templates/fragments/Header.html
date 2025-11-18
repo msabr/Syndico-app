@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - Syndico' : 'Syndico - Property Management'}">Syndico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<header th:fragment="header(activePage)">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                <img th:src="@{/images/syndico_logo.png}" alt="Syndico Logo" width="50" height="50">
+                <span class="brand-text ms-2">SYNDICO</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/}"
+                           th:classappend="${activePage == 'home'} ? 'active' : ''">
+                            <i class="fas fa-home me-1"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/about}"
+                           th:classappend="${activePage == 'about'} ? 'active' : ''">
+                            <i class="fas fa-info-circle me-1"></i>
+                            About Us
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/services}"
+                           th:classappend="${activePage == 'services'} ? 'active' : ''">
+                            <i class="fas fa-concierge-bell me-1"></i>
+                            Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/faq}"
+                           th:classappend="${activePage == 'faq'} ? 'active' : ''">
+                            <i class="fas fa-question-circle me-1"></i>
+                            FAQ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{/contact}"
+                           th:classappend="${activePage == 'contact'} ? 'active' : ''">
+                            <i class="fas fa-envelope me-1"></i>
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i>
+                            EN
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{''(lang=en)}">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang=fr)}">🇫🇷 French</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang=ar)}">🇲🇦 Arabic</a></li>
+                        </ul>
+                    </div>
+
+                    <a th:href="@{/login}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Login
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<footer th:fragment="footer" class="footer-main bg-dark text-light mt-5">
+    <div class="container py-5">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico" width="40" height="40">
+                    <h5 class="ms-2 mb-0">SYNDICO</h5>
+                </div>
+                <p class="text-light opacity-75" th:text="#{footer.description}">
+                    Your complete solution for modern and efficient condominium management.
+                </p>
+                <div class="social-links mt-3">
+                    <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-light me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-4">
+                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.quickLinks}">Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/home}" class="text-light opacity-75" th:text="#{nav.home}">Home</a></li>
+                    <li><a th:href="@{/about}" class="text-light opacity-75" th:text="#{nav.about}">About Us</a></li>
+                    <li><a th:href="@{/services}" class="text-light opacity-75" th:text="#{nav.services}">Services</a></li>
+                    <li><a th:href="@{/faq}" class="text-light opacity-75" th:text="#{nav.faq}">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.services}">Our Services</h6>
+                <ul class="list-unstyled text-light opacity-75">
+                    <li><i class="fas fa-check me-2 text-primary"></i>Expense Management</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Online Payments</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Complaints</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>Reservations</li>
+                    <li><i class="fas fa-check me-2 text-primary"></i>General Assemblies</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.contact}">Contact</h6>
+                <ul class="list-unstyled text-light opacity-75">
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Casablanca, Morocco</li>
+                    <li class="mb-2"><i class="fas fa-phone me-2"></i>+212 5XX-XXXXXX</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2"></i>contact@syndico.ma</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-4">
+
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-light opacity-75">
+                    &copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+                    <strong>Syndico</strong> - All rights reserved
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-light opacity-75 me-3">Privacy Policy</a>
+                <a href="#" class="text-light opacity-75">Terms of Use</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        padding-top: 76px;
+    }
+
+    .nav-link {
+        color: var(--dark) !important;
+    }
+
+    .nav-link.active {
+        background-color: var(--primary);
+        color: #fff !important;
+    }
+
+    .footer-main {
+        background: linear-gradient(135deg, var(--dark) 0%, #2a2726 100%);
+        color: #ffffff;
+    }
+
+    .footer-main a {
+        color: #ffffff !important;
+    }
+
+    .footer-main a:hover {
+        color: var(--primary) !important;
+    }
+
+    .text-light.opacity-75 {
+        color: rgba(255,255,255,0.8) !important;
+    }
+</style>
+
+</html>
