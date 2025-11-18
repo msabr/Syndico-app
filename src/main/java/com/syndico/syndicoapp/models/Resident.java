@@ -25,7 +25,7 @@ public class Resident {
     @Column(name = "apartment_number", length = 50)
     private String apartmentNumber;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id")
     private Building building;
 
