@@ -1,5 +1,6 @@
 package com.syndico.syndicoapp.models;
 
+import com.syndico.syndicoapp.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -39,17 +40,17 @@ public class Resident {
     private String emergencyContact;
 
     // Relations
-    //@OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@Builder.Default
-    //private List<Charge> charges = new ArrayList<>();
+    @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Charge> charges = new ArrayList<>();
 
-    //@OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@Builder.Default
-    //private List<Reclamation> reclamations = new ArrayList<>();
+    @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Reclamation> reclamations = new ArrayList<>();
 
-    //@OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@Builder.Default
-    //private List<Reservation> reservations = new ArrayList<>();
+    @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Reservation> reservations = new ArrayList<>();
 
     // Méthodes utilitaires
     public String getFullAddress() {
