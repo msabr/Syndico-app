@@ -42,11 +42,11 @@ public class Building {
     private LocalDateTime createdAt;
 
     // Relations
-    //@OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@Builder.Default
-    //private List<Resident> residents = new ArrayList<>();
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Resident> residents = new ArrayList<>();
 
-    //@OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@Builder.Default
-    //private List<Apartment> apartments = new ArrayList<>();
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Apartment> apartments = new ArrayList<>();
 }
