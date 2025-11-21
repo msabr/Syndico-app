@@ -2,9 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="~{fragments/Header :: head}">
-    <link rel="stylesheet" th:href="@{/css/home.css}">
-</head>
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/home.css}">
 
 <body>
 
@@ -227,7 +226,7 @@
 
         <div class="row align-items-center">
             <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right">
-                <img th:src="@{/images/how-it-works.png}" alt="How it works" class="img-fluid rounded">
+                <img th:src="@{/images/how-it-works.jpg}" alt="How it works" class="img-fluid rounded">
             </div>
             <div class="col-md-6" data-aos="fade-left">
                 <div class="step-item">
@@ -273,7 +272,7 @@
                         "Syndico has completely transformed how we manage our building. Everything is so much easier now!"
                     </p>
                     <div class="d-flex align-items-center mt-3">
-                        <img th:src="@{/images/avatar1.jpg}" alt="User" class="testimonial-avatar">
+                        <img th:src="@{/images/avatar1.png}" alt="User" class="testimonial-avatar">
                         <div class="ms-3">
                             <h6 class="mb-0">Sarah M.</h6>
                             <small class="text-muted" th:text="#{home.testimonial1.role}">Resident</small>
@@ -317,7 +316,7 @@
                         "As a property manager, this tool saves me hours every week. Highly recommended!"
                     </p>
                     <div class="d-flex align-items-center mt-3">
-                        <img th:src="@{/images/avatar3.jpg}" alt="User" class="testimonial-avatar">
+                        <img th:src="@{/images/avatar3.png}" alt="User" class="testimonial-avatar">
                         <div class="ms-3">
                             <h6 class="mb-0">Fatima Z.</h6>
                             <small class="text-muted" th:text="#{home.testimonial3.role}">Syndic</small>
