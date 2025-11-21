@@ -9,13 +9,367 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #FFA69E;
+            --secondary: #F5EBE0;
+            --tertiary: #B08968;
+            --accent: #DDB892;
+            --dark: #3C3734;
+            --white: #FFFFFF;
+            --black: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding-top: 85px;
+            background-color: var(--secondary);
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--white) 0%, var(--secondary) 100%) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(60, 55, 52, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-custom.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 6px 25px rgba(60, 55, 52, 0.15);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark) !important;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: rotate(5deg);
+        }
+
+        .brand-text {
+            background: linear-gradient(135deg, var(--primary), var(--tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: var(--dark) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            width: 70%;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 166, 158, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white) !important;
+            box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+        }
+
+        .nav-link.active::before {
+            display: none;
+        }
+
+        .nav-link i {
+            margin-right: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        /* Language Dropdown */
+        .lang-dropdown .btn {
+            border: 2px solid var(--tertiary);
+            color: var(--dark);
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 0.4rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .lang-dropdown .btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+        }
+
+        .lang-dropdown .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+        }
+
+        .lang-dropdown .dropdown-item {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-dropdown .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        /* Login Button */
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            color: var(--white);
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 166, 158, 0.4);
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+
+        /* User Dropdown */
+        .user-dropdown .btn {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown .btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+        }
+
+        .user-dropdown .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            min-width: 220px;
+        }
+
+        .user-dropdown .dropdown-item {
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .user-dropdown .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .user-dropdown .dropdown-item.text-danger:hover {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: var(--white);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer-main {
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2726 100%);
+            color: var(--white);
+            padding: 3rem 0 1rem;
+            margin-top: 5rem;
+            position: relative;
+        }
+
+        .footer-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--tertiary));
+        }
+
+        .footer-logo {
+            transition: transform 0.3s ease;
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .footer-title {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+        }
+
+        .footer-main a {
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-main a:hover {
+            color: var(--primary) !important;
+            transform: translateX(5px);
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            transform: translateY(-5px) rotate(360deg);
+            box-shadow: 0 5px 15px rgba(255, 166, 158, 0.4);
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-contact-item:hover {
+            transform: translateX(5px);
+        }
+
+        .footer-contact-item i {
+            color: var(--primary);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 2rem;
+        }
+
+        .service-item {
+            transition: all 0.3s ease;
+            margin-bottom: 0.7rem;
+        }
+
+        .service-item:hover {
+            transform: translateX(5px);
+        }
+
+        .service-item i {
+            color: var(--primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 991px) {
+            body {
+                padding-top: 70px;
+            }
+
+            .navbar-custom {
+                padding: 0.5rem 0;
+            }
+
+            .nav-link {
+                margin: 0.2rem 0;
+            }
+
+            .footer-main {
+                text-align: center;
+            }
+
+            .footer-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
 </head>
 
 <header th:fragment="header(activePage)">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
-                <img th:src="@{/images/syndico_logo.png}" alt="Syndico Logo" width="50" height="50">
+                <img th:src="@{/images/syndico_logo.png}" alt="Syndico Logo" width="50" height="50" class="footer-logo">
                 <span class="brand-text ms-2">SYNDICO</span>
             </a>
 
@@ -26,179 +380,181 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/}"
-                           th:classappend="${activePage == 'home'} ? 'active' : ''">
-                            <i class="fas fa-home me-1"></i>
-                            Home
+                        <a class="nav-link" th:href="@{/}" th:classappend="${activePage == 'home'} ? 'active' : ''" th:text="#{nav.home}">
+                            <i class="fas fa-home"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/about}"
-                           th:classappend="${activePage == 'about'} ? 'active' : ''">
-                            <i class="fas fa-info-circle me-1"></i>
-                            About Us
+                        <a class="nav-link" th:href="@{/about}" th:classappend="${activePage == 'about'} ? 'active' : ''" th:text="#{nav.about}">
+                            <i class="fas fa-info-circle"></i> About Us
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/services}"
-                           th:classappend="${activePage == 'services'} ? 'active' : ''">
-                            <i class="fas fa-concierge-bell me-1"></i>
-                            Services
+                        <a class="nav-link" th:href="@{/services}" th:classappend="${activePage == 'services'} ? 'active' : ''" th:text="#{nav.services}">
+                            <i class="fas fa-concierge-bell"></i> Services
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/faq}"
-                           th:classappend="${activePage == 'faq'} ? 'active' : ''">
-                            <i class="fas fa-question-circle me-1"></i>
-                            FAQ
+                        <a class="nav-link" th:href="@{/faq}" th:classappend="${activePage == 'faq'} ? 'active' : ''" th:text="#{nav.faq}">
+                            <i class="fas fa-question-circle"></i> FAQ
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/contact}"
-                           th:classappend="${activePage == 'contact'} ? 'active' : ''">
-                            <i class="fas fa-envelope me-1"></i>
-                            Contact
+                        <a class="nav-link" th:href="@{/contact}" th:classappend="${activePage == 'contact'} ? 'active' : ''" th:text="#{nav.contact}">
+                            <i class="fas fa-envelope"></i> Contact
                         </a>
                     </li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-
-                    <div class="dropdown">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-globe me-1"></i>
-                            EN
+                    <!-- Language Selector -->
+                    <div class="dropdown lang-dropdown">
+                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i> EN
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" th:href="@{''(lang=en)}">🇬🇧 English</a></li>
-                            <li><a class="dropdown-item" th:href="@{''(lang=fr)}">🇫🇷 French</a></li>
-                            <li><a class="dropdown-item" th:href="@{''(lang=ar)}">🇲🇦 Arabic</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang=fr)}">🇫🇷 Français</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang=ar)}">🇲🇦 العربية</a></li>
                         </ul>
                     </div>
 
-                    <a th:href="@{/login}" class="btn btn-primary">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        Login
+                    <!-- Authentication Section -->
+                    <!-- Si NON connecté -->
+                    <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt me-1"></i>
+                        <span th:text="#{nav.login}">Login</span>
                     </a>
 
+                    <!-- Si connecté -->
+                    <div sec:authorize="isAuthenticated()" class="dropdown user-dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span sec:authentication="principal.fullName">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" th:href="@{/admin/dashboard}">
+                                    <i class="fas fa-tachometer-alt me-2"></i>
+                                    <span th:text="#{nav.dashboard.admin}">Admin Dashboard</span>
+                                </a>
+                            </li>
+                            <li sec:authorize="hasRole('RESIDENT')">
+                                <a class="dropdown-item" th:href="@{/client/dashboard}">
+                                    <i class="fas fa-tachometer-alt me-2"></i>
+                                    <span th:text="#{nav.dashboard.client}">My Space</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>
+                                        <span th:text="#{nav.logout}">Logout</span>
+                                    </button>
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 </header>
 
-<footer th:fragment="footer" class="footer-main bg-dark text-light mt-5">
-    <div class="container py-5">
+<footer th:fragment="footer" class="footer-main">
+    <div class="container">
         <div class="row">
-
-            <div class="col-md-4 mb-4">
+            <!-- About Section -->
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="d-flex align-items-center mb-3">
-                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico" width="40" height="40">
-                    <h5 class="ms-2 mb-0">SYNDICO</h5>
+                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico" width="50" height="50" class="footer-logo">
+                    <h5 class="ms-2 mb-0 brand-text" style="-webkit-text-fill-color: white;">SYNDICO</h5>
                 </div>
                 <p class="text-light opacity-75" th:text="#{footer.description}">
                     Your complete solution for modern and efficient condominium management.
                 </p>
-                <div class="social-links mt-3">
-                    <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
-                    <a href="#" class="text-light me-3"><i class="fab fa-linkedin fa-lg"></i></a>
-                    <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
-                    <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                <div class="social-links mt-4">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
-            <div class="col-md-2 mb-4">
-                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.quickLinks}">Quick Links</h6>
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h6 class="footer-title" th:text="#{footer.quickLinks}">Quick Links</h6>
                 <ul class="list-unstyled">
-                    <li><a th:href="@{/home}" class="text-light opacity-75" th:text="#{nav.home}">Home</a></li>
-                    <li><a th:href="@{/about}" class="text-light opacity-75" th:text="#{nav.about}">About Us</a></li>
-                    <li><a th:href="@{/services}" class="text-light opacity-75" th:text="#{nav.services}">Services</a></li>
-                    <li><a th:href="@{/faq}" class="text-light opacity-75" th:text="#{nav.faq}">FAQ</a></li>
+                    <li><a th:href="@{/}" th:text="#{nav.home}">Home</a></li>
+                    <li><a th:href="@{/about}" th:text="#{nav.about}">About Us</a></li>
+                    <li><a th:href="@{/services}" th:text="#{nav.services}">Services</a></li>
+                    <li><a th:href="@{/faq}" th:text="#{nav.faq}">FAQ</a></li>
+                    <li><a th:href="@{/contact}" th:text="#{nav.contact}">Contact</a></li>
                 </ul>
             </div>
 
-            <div class="col-md-3 mb-4">
-                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.services}">Our Services</h6>
-                <ul class="list-unstyled text-light opacity-75">
-                    <li><i class="fas fa-check me-2 text-primary"></i>Expense Management</li>
-                    <li><i class="fas fa-check me-2 text-primary"></i>Online Payments</li>
-                    <li><i class="fas fa-check me-2 text-primary"></i>Complaints</li>
-                    <li><i class="fas fa-check me-2 text-primary"></i>Reservations</li>
-                    <li><i class="fas fa-check me-2 text-primary"></i>General Assemblies</li>
+            <!-- Services -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6 class="footer-title" th:text="#{footer.services}">Our Services</h6>
+                <ul class="list-unstyled">
+                    <li class="service-item"><i class="fas fa-check me-2"></i><span th:text="#{footer.service.expenses}">Expense Management</span></li>
+                    <li class="service-item"><i class="fas fa-check me-2"></i><span th:text="#{footer.service.payments}">Online Payments</span></li>
+                    <li class="service-item"><i class="fas fa-check me-2"></i><span th:text="#{footer.service.complaints}">Complaints</span></li>
+                    <li class="service-item"><i class="fas fa-check me-2"></i><span th:text="#{footer.service.reservations}">Reservations</span></li>
+                    <li class="service-item"><i class="fas fa-check me-2"></i><span th:text="#{footer.service.assemblies}">General Assemblies</span></li>
                 </ul>
             </div>
 
-            <div class="col-md-3 mb-4">
-                <h6 class="text-uppercase mb-3 text-light" th:text="#{footer.contact}">Contact</h6>
-                <ul class="list-unstyled text-light opacity-75">
-                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Casablanca, Morocco</li>
-                    <li class="mb-2"><i class="fas fa-phone me-2"></i>+212 5XX-XXXXXX</li>
-                    <li class="mb-2"><i class="fas fa-envelope me-2"></i>contact@syndico.ma</li>
-                </ul>
+            <!-- Contact -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h6 class="footer-title" th:text="#{footer.contact}">Contact</h6>
+                <div class="footer-contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Casablanca, Morocco</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+212 5XX-XXXXXX</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>contact@syndico.ma</span>
+                </div>
             </div>
         </div>
 
-        <hr class="border-secondary my-4">
-
-        <div class="row">
-            <div class="col-md-6 text-center text-md-start">
-                <p class="mb-0 text-light opacity-75">
-                    &copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span>
-                    <strong>Syndico</strong> - All rights reserved
-                </p>
-            </div>
-            <div class="col-md-6 text-center text-md-end">
-                <a href="#" class="text-light opacity-75 me-3">Privacy Policy</a>
-                <a href="#" class="text-light opacity-75">Terms of Use</a>
+        <div class="footer-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0 text-light opacity-75">
+                        &copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+                        <strong style="color: var(--primary);">Syndico</strong> -
+                        <span th:text="#{footer.rights}">All rights reserved</span>
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" th:text="#{footer.privacy}">Privacy Policy</a>
+                    <span class="mx-2">|</span>
+                    <a href="#" th:text="#{footer.terms}">Terms of Use</a>
+                </div>
             </div>
         </div>
     </div>
 </footer>
 
-<style>
-    :root {
-        --primary: #FFA69E;
-        --secondary: #F5EBE0;
-        --tertiary: #B08968;
-        --accent: #DDB892;
-        --dark: #3C3734;
-    }
-
-    body {
-        font-family: 'Poppins', sans-serif;
-        padding-top: 76px;
-    }
-
-    .nav-link {
-        color: var(--dark) !important;
-    }
-
-    .nav-link.active {
-        background-color: var(--primary);
-        color: #fff !important;
-    }
-
-    .footer-main {
-        background: linear-gradient(135deg, var(--dark) 0%, #2a2726 100%);
-        color: #ffffff;
-    }
-
-    .footer-main a {
-        color: #ffffff !important;
-    }
-
-    .footer-main a:hover {
-        color: var(--primary) !important;
-    }
-
-    .text-light.opacity-75 {
-        color: rgba(255,255,255,0.8) !important;
-    }
-</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar-custom');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
 
 </html>
