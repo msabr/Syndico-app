@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/Header :: head}">
+    <link rel="stylesheet" th:href="@{/css/legal.css}">
+</head>
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='privacy')}"></header>
+
+<!-- Hero Section -->
+<section class="legal-hero">
+    <div class="container text-center">
+        <div data-aos="fade-down">
+            <span class="hero-badge">Legal</span>
+            <h1 class="display-4 fw-bold mb-3">Privacy Policy</h1>
+            <p class="lead mb-2">Last updated: January 17, 2025</p>
+            <p class="text-muted">We are committed to protecting your privacy and personal data</p>
+        </div>
+    </div>
+</section>
+
+<!-- Table of Contents -->
+<section class="toc-section py-4 bg-light sticky-top">
+    <div class="container">
+        <div class="toc-wrapper">
+            <button class="toc-toggle d-md-none" onclick="toggleTOC()">
+                <i class="fas fa-list"></i> Table of Contents
+            </button>
+            <div class="toc-links" id="toc-links">
+                <a href="#introduction" class="toc-link active">1. Introduction</a>
+                <a href="#data-collected" class="toc-link">2. Data We Collect</a>
+                <a href="#purpose" class="toc-link">3. Purpose of Collection</a>
+                <a href="#data-sharing" class="toc-link">4. Data Sharing</a>
+                <a href="#security" class="toc-link">5. Security</a>
+                <a href="#user-rights" class="toc-link">6. Your Rights</a>
+                <a href="#retention" class="toc-link">7. Data Retention</a>
+                <a href="#updates" class="toc-link">8. Policy Updates</a>
+                <a href="#contact" class="toc-link">9. Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Content -->
+<section class="legal-content py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+
+                <!-- Introduction -->
+                <div class="content-section" id="introduction" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">1</span>
+                        Introduction
+                    </h2>
+                    <p>
+                        Welcome to Syndico's Privacy Policy. This policy explains how Syndico
+                        ("we", "us", or "our") collects, uses, protects, and shares personal
+                        information of users of our property management platform and services.
+                    </p>
+                    <p>
+                        By using our services, you accept the practices described in this policy.
+                        We are committed to transparency and protecting your privacy in accordance
+                        with applicable data protection laws.
+                    </p>
+                    <div class="info-box">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h6>Your Privacy Matters</h6>
+                            <p>We use industry-standard security measures to protect your personal information.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Collected -->
+                <div class="content-section" id="data-collected" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">2</span>
+                        Data We Collect
+                    </h2>
+                    <h5>Personal Information Provided by You:</h5>
+                    <ul class="styled-list">
+                        <li>Name, surname, email address, phone number</li>
+                        <li>Payment information (credit card details, billing address)</li>
+                        <li>Apartment details (building, unit number, ownership status)</li>
+                        <li>Profile picture and preferences</li>
+                    </ul>
+
+                    <h5 class="mt-4">Data Collected Automatically:</h5>
+                    <ul class="styled-list">
+                        <li>IP address, browser type, device information</li>
+                        <li>Pages visited, time spent, navigation patterns</li>
+                        <li>Cookies and similar tracking technologies</li>
+                        <li>Location data (with your consent)</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <i class="fas fa-info-circle"></i>
+                        <p>We never sell your personal data to third parties.</p>
+                    </div>
+                </div>
+
+                <!-- Purpose -->
+                <div class="content-section" id="purpose" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">3</span>
+                        Purpose of Data Collection
+                    </h2>
+                    <p>We collect and use your personal information for the following purposes:</p>
+
+                    <div class="purpose-grid">
+                        <div class="purpose-card">
+                            <i class="fas fa-user-check"></i>
+                            <h6>Account Management</h6>
+                            <p>Create and manage user accounts and services</p>
+                        </div>
+                        <div class="purpose-card">
+                            <i class="fas fa-credit-card"></i>
+                            <h6>Payment Processing</h6>
+                            <p>Process transactions and manage billing</p>
+                        </div>
+                        <div class="purpose-card">
+                            <i class="fas fa-headset"></i>
+                            <h6>Customer Support</h6>
+                            <p>Provide efficient and personalized support</p>
+                        </div>
+                        <div class="purpose-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h6>Service Improvement</h6>
+                            <p>Analyze usage and enhance user experience</p>
+                        </div>
+                        <div class="purpose-card">
+                            <i class="fas fa-bell"></i>
+                            <h6>Communications</h6>
+                            <p>Send notifications, updates, and announcements</p>
+                        </div>
+                        <div class="purpose-card">
+                            <i class="fas fa-gavel"></i>
+                            <h6>Legal Compliance</h6>
+                            <p>Meet regulatory and legal obligations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Sharing -->
+                <div class="content-section" id="data-sharing" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">4</span>
+                        How We Share Your Data
+                    </h2>
+                    <p>We may share your information with:</p>
+
+                    <div class="sharing-item">
+                        <div class="sharing-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <h6>Service Providers</h6>
+                            <p>Payment processors (Stripe, PayPal), hosting services, and technical maintenance partners who help us operate our platform.</p>
+                        </div>
+                    </div>
+
+                    <div class="sharing-item">
+                        <div class="sharing-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h6>Property Management Companies</h6>
+                            <p>Your building's management company to facilitate service delivery and communication.</p>
+                        </div>
+                    </div>
+
+                    <div class="sharing-item">
+                        <div class="sharing-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div>
+                            <h6>Legal Authorities</h6>
+                            <p>When required by law or to protect rights, safety, and property in accordance with applicable regulations.</p>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>We never sell your data to advertisers or marketing companies.</p>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="content-section" id="security" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">5</span>
+                        Data Security
+                    </h2>
+                    <p>
+                        We implement industry-leading security measures to protect your personal information:
+                    </p>
+
+                    <div class="security-grid">
+                        <div class="security-item">
+                            <i class="fas fa-lock"></i>
+                            <h6>Encryption</h6>
+                            <p>SSL/TLS encryption for data transmission</p>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-server"></i>
+                            <h6>Secure Servers</h6>
+                            <p>ISO 27001 certified data centers</p>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-user-shield"></i>
+                            <h6>Access Control</h6>
+                            <p>Role-based access restrictions</p>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-eye"></i>
+                            <h6>Monitoring</h6>
+                            <p>24/7 security monitoring and alerts</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box mt-4">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <h6>Your Responsibility</h6>
+                            <p>Please keep your password secure and log out after using shared devices.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Rights -->
+                <div class="content-section" id="user-rights" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">6</span>
+                        Your Rights
+                    </h2>
+                    <p>Under data protection laws, you have the following rights:</p>
+
+                    <div class="rights-list">
+                        <div class="right-item">
+                            <i class="fas fa-eye"></i>
+                            <div>
+                                <h6>Access & Portability</h6>
+                                <p>Request a copy of your personal data in a portable format</p>
+                            </div>
+                        </div>
+                        <div class="right-item">
+                            <i class="fas fa-edit"></i>
+                            <div>
+                                <h6>Rectification</h6>
+                                <p>Correct or update inaccurate personal information</p>
+                            </div>
+                        </div>
+                        <div class="right-item">
+                            <i class="fas fa-ban"></i>
+                            <div>
+                                <h6>Restriction</h6>
+                                <p>Refuse certain uses of your data by our systems</p>
+                            </div>
+                        </div>
+                        <div class="right-item">
+                            <i class="fas fa-times-circle"></i>
+                            <div>
+                                <h6>Deletion</h6>
+                                <p>Request deletion of your personal data (right to be forgotten)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-box">
+                        <h6>Exercise Your Rights</h6>
+                        <p>To exercise any of these rights, contact us at:</p>
+                        <a href="mailto:privacy@syndico.ma" class="btn btn-primary">
+                            <i class="fas fa-envelope me-2"></i>privacy@syndico.ma
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Retention -->
+                <div class="content-section" id="retention" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">7</span>
+                        Data Retention
+                    </h2>
+                    <p>
+                        We retain your personal data only as long as necessary to fulfill the purposes
+                        outlined in this policy and to comply with legal obligations.
+                    </p>
+                    <ul class="styled-list">
+                        <li><strong>Active accounts:</strong> Data retained while your account is active</li>
+                        <li><strong>Inactive accounts:</strong> Automatically deleted after 2 years of inactivity</li>
+                        <li><strong>Financial records:</strong> Kept for 7 years as required by law</li>
+                        <li><strong>Upon request:</strong> Deleted within 30 days of verified deletion request</li>
+                    </ul>
+                </div>
+
+                <!-- Updates -->
+                <div class="content-section" id="updates" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">8</span>
+                        Policy Updates
+                    </h2>
+                    <p>
+                        We may update this Privacy Policy from time to time to reflect changes in our
+                        practices or legal requirements. Any changes will be published on this page
+                        with an updated "Last Modified" date.
+                    </p>
+                    <p>
+                        We will notify you of significant changes via email or prominent notice on our website.
+                    </p>
+                </div>
+
+                <!-- Contact -->
+                <div class="content-section" id="contact" data-aos="fade-up">
+                    <h2>
+                        <span class="section-number">9</span>
+                        Contact Us
+                    </h2>
+                    <p>
+                        If you have questions about this Privacy Policy or our data practices,
+                        please contact us:
+                    </p>
+
+                    <div class="contact-grid">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <h6>Email</h6>
+                            <a href="mailto:privacy@syndico.ma">privacy@syndico.ma</a>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <h6>Phone</h6>
+                            <p>+212 5XX-XXXXXX</p>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h6>Address</h6>
+                            <p>123 Bd Mohamed V<br>Casablanca, Morocco</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="legal-cta py-5 bg-light">
+    <div class="container text-center" data-aos="zoom-in">
+        <h3 class="mb-4">Have Questions About Your Privacy?</h3>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a th:href="@{/contact}" class="btn btn-primary btn-lg">
+                <i class="fas fa-envelope me-2"></i>Contact Us
+            </a>
+            <a th:href="@{/terms}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-file-contract me-2"></i>Terms of Use
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/Header :: footer}"></footer>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    AOS.init({ duration: 800, once: true });
+
+    // Smooth scroll for TOC
+    document.querySelectorAll('.toc-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Highlight active section on scroll
+    window.addEventListener('scroll', () => {
+        let current = '';
+        document.querySelectorAll('.content-section').forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollY >= sectionTop - 100) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    function toggleTOC() {
+        document.getElementById('toc-links').classList.toggle('show');
+    }
+</script>
+
+</body>
+</html>

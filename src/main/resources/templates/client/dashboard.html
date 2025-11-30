@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{/fragments/Header :: head}"></head>
+
+<body>
+
+<!-- Header (public navbar) -->
+<header th:replace="~{/fragments/Header :: header(activePage='none')}"></header>
+
+<!-- Resident Sidebar (if resident) -->
+<aside sec:authorize="hasRole('RESIDENT')" th:replace="~{/fragments/ResidentSidebar :: resident-sidebar}"></aside>
+
+<!-- Main Content -->
+<main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <h1 class="page-title">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Dashboard
+        </h1>
+        <p class="page-subtitle">Welcome back! Here's what's happening today.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Card 1 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>156</h3>
+                    <p>Total Residents</p>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-arrow-up"></i> 12%
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-success">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>$45,890</h3>
+                    <p>Revenue This Month</p>
+                </div>
+                <div class="stat-badge success">
+                    <i class="fas fa-arrow-up"></i> 8%
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>23</h3>
+                    <p>Pending Complaints</p>
+                </div>
+                <div class="stat-badge warning">
+                    <i class="fas fa-arrow-down"></i> 5%
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-info">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>12</h3>
+                    <p>Reservations Today</p>
+                </div>
+                <div class="stat-badge info">
+                    <i class="fas fa-arrow-up"></i> 3%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Revenue Overview</h5>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>Last 3 months</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Payment Methods</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Recent Complaints</h5>
+                    <a th:href="@{/admin/reclamations}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Resident</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>#1234</td>
+                                <td>John Doe</td>
+                                <td>Plumbing</td>
+                                <td><span class="badge bg-danger">High</span></td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>Nov 27, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#1233</td>
+                                <td>Jane Smith</td>
+                                <td>Electricity</td>
+                                <td><span class="badge bg-warning">Medium</span></td>
+                                <td><span class="badge bg-info">In Progress</span></td>
+                                <td>Nov 26, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#1232</td>
+                                <td>Mike Johnson</td>
+                                <td>Cleaning</td>
+                                <td><span class="badge bg-success">Low</span></td>
+                                <td><span class="badge bg-success">Resolved</span></td>
+                                <td>Nov 25, 2025</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="#" class="quick-action-btn">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Resident</span>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Create Charge</span>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <i class="fas fa-envelope"></i>
+                            <span>Send Notification</span>
+                        </a>
+                        <a href="#" class="quick-action-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Generate Report</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Mini Footer -->
+<footer sec:authorize="hasRole('RESIDENT')" th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Revenue',
+                data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                borderColor: '#FFA69E',
+                backgroundColor: 'rgba(255, 166, 158, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Payment Methods Chart
+    const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+    new Chart(paymentCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Credit Card', 'Bank Transfer', 'Cash', 'Mobile Payment'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: ['#FFA69E', '#B08968', '#DDB892', '#F5EBE0']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+</script>
+
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+
+    /* Page Header */
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: #666;
+        margin: 0;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-content h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--dark);
+    }
+
+    .stat-content p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .stat-badge {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .stat-badge.warning {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .dashboard-card .card-header {
+        padding: 1.5rem;
+        background: var(--secondary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid var(--primary);
+    }
+
+    .dashboard-card .card-header h5 {
+        margin: 0;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .dashboard-card .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .quick-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--secondary);
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--dark);
+        transition: all 0.3s ease;
+    }
+
+    .quick-action-btn:hover {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .quick-action-btn i {
+        font-size: 1.5rem;
+    }
+
+    /* Table */
+    .table thead {
+        background: var(--secondary);
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 166, 158, 0.05);
+    }
+</style>
+
+</body>
+</html>

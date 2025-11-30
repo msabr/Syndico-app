@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Chatbot CSS -->
+    <!-- Chatbot, Admin/resident Sidebar CSS -->
     <link rel="stylesheet" th:href="@{/css/chatbot.css}">
+    <link rel="stylesheet" th:href="@{/css/residentSidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/adminSidebar.css}" />
 
     <style>
         :root {
@@ -538,9 +540,9 @@
                     </p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="#" th:text="#{footer.privacy}">Privacy Policy</a>
+                    <a th:href="@{/PrivacyPolicy}" th:text="#{footer.privacy}">Privacy Policy</a>
                     <span class="mx-2">|</span>
-                    <a href="#" th:text="#{footer.terms}">Terms of Use</a>
+                    <a th:href="@{/TermsUse}" th:text="#{footer.terms}">Terms of Use</a>
                 </div>
             </div>
         </div>
