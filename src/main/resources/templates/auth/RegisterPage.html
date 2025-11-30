@@ -78,93 +78,119 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
 
-                <form th:action="@{/perform_register}" method="post" class="login-form">
+                <form th:action="@{/perform_register}"
+                      th:object="${user}"
+                      method="post"
+                      class="login-form">
+
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <label for="firstName" class="form-label">
-                                <i class="fas fa-user me-2"></i>
-                                First Name
+                                <i class="fas fa-user me-2"></i>First Name
                             </label>
                             <input type="text"
                                    class="form-control form-control-lg"
-                                   id="firstName"
-                                   name="firstName"
-                                   placeholder="Enter your first name"
-                                   required>
+                                   th:field="*{firstName}"
+                                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                                   placeholder="Enter your first name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                                 th:errors="*{firstName}"></div>
                         </div>
+
                         <div class="col-md-6 mb-4">
                             <label for="lastName" class="form-label">
-                                <i class="fas fa-user me-2"></i>
-                                Last Name
+                                <i class="fas fa-user me-2"></i>Last Name
                             </label>
                             <input type="text"
                                    class="form-control form-control-lg"
-                                   id="lastName"
-                                   name="lastName"
-                                   placeholder="Enter your last name"
-                                   required>
+                                   th:field="*{lastName}"
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                                   placeholder="Enter your last name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                                 th:errors="*{lastName}"></div>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="email" class="form-label">
-                            <i class="fas fa-envelope me-2"></i>
-                            Email Address
+                            <i class="fas fa-envelope me-2"></i>Email Address
                         </label>
                         <input type="email"
                                class="form-control form-control-lg"
-                               id="email"
-                               name="email"
-                               placeholder="example@email.com"
-                               required>
+                               th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="example@email.com">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="phoneNumber" class="form-label">
+                            <i class="fas fa-phone me-2"></i>Phone Number
+                        </label>
+                        <input type="tel"
+                               class="form-control form-control-lg"
+                               th:field="*{phoneNumber}"
+                               th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                               placeholder="+212 6XX-XXXXXX">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}"
+                             th:errors="*{phoneNumber}"></div>
                     </div>
 
                     <div class="mb-4">
                         <label for="password" class="form-label">
-                            <i class="fas fa-lock me-2"></i>
-                            Password
+                            <i class="fas fa-lock me-2"></i>Password
                         </label>
                         <div class="input-group">
                             <input type="password"
                                    class="form-control form-control-lg"
-                                   id="password"
-                                   name="password"
-                                   placeholder="••••••••"
-                                   required>
+                                   th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                   placeholder="••••••••">
                             <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>
+                        <small class="text-muted">
+                            Min 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special char
+                        </small>
                     </div>
 
                     <div class="mb-4">
                         <label for="confirmPassword" class="form-label">
-                            <i class="fas fa-lock me-2"></i>
-                            Confirm Password
+                            <i class="fas fa-lock me-2"></i>Confirm Password
                         </label>
                         <div class="input-group">
                             <input type="password"
                                    class="form-control form-control-lg"
-                                   id="confirmPassword"
-                                   name="confirmPassword"
-                                   placeholder="••••••••"
-                                   required>
+                                   th:field="*{confirmPassword}"
+                                   th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                                   placeholder="••••••••">
                             <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}"
+                             th:errors="*{confirmPassword}"></div>
                     </div>
 
                     <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
-                        <label class="form-check-label" for="terms">
-                            I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a>
+                        <input class="form-check-input"
+                               type="checkbox"
+                               th:field="*{acceptTerms}"
+                               required>
+                        <label class="form-check-label" for="acceptTerms">
+                            I agree to the
+                            <a th:href="@{/TermsUse}" class="text-decoration-none">Terms and Conditions</a>
+                            and
+                            <a th:href="@{/PrivacyPolicy}" class="text-decoration-none">Privacy Policy</a>
                         </label>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                        <i class="fas fa-user-plus me-2"></i>
-                        Sign Up
+                        <i class="fas fa-user-plus me-2"></i>Sign Up
                     </button>
 
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>

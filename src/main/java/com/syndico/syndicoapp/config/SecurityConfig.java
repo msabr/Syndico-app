@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -26,21 +28,51 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Pages publiques
-                        .requestMatchers("/", "/home", "/about", "/services", "/contact", "/faq").permitAll()
-                        .requestMatchers("/login", "/register", "/forgot-password", "/verify-email").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
+                        // ============ Pages publiques ============
+                        .requestMatchers(
+                                "/",
+                                "/home",
+                                "/about",
+                                "/services",
+                                "/contact",
+                                "/faq",
+                                "/privacy",
+                                "/terms"
+                        ).permitAll()
 
-                        // API Authentification
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // ============ Authentification ============
+                        .requestMatchers(
+                                "/login",
+                                "/register",
+                                "/forgot-password",
+                                "/verify-email",
+                                "/perform_login",
+                                "/perform_register"
+                        ).permitAll()
 
-                        // Espace Admin
+                        // ============ Ressources statiques ============
+                        .requestMatchers(
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/assets/**",
+                                "/favicon.ico"
+                        ).permitAll()
+
+                        // ============ API publiques ============
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/chatbot/**",
+                                "/api/contact/**"
+                        ).permitAll()
+
+                        // ============ Espace Admin ============
                         .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
 
-                        // Espace Client/Résident
+                        // ============ Espace Résident ============
                         .requestMatchers("/client/**", "/api/client/**").hasRole("RESIDENT")
 
-                        // Toutes les autres requêtes nécessitent une authentification
+                        // ============ Tout le reste = authentification requise ============
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -61,7 +93,7 @@ public class SecurityConfig {
                         .accessDeniedPage("/access-denied")
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/**") // Désactiver CSRF pour API (si JWT)
+                        .ignoringRequestMatchers("/api/**")
                 );
 
         return http.build();
@@ -70,6 +102,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
     }
 
     @Bean
