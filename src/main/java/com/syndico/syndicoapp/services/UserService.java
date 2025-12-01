@@ -1,6 +1,6 @@
 package com.syndico.syndicoapp.services;
 
-import com.syndico.syndicoapp.DTO.UserRegistrationDto;
+import com.syndico.syndicoapp.dto.UserRegistrationDto;
 import com.syndico.syndicoapp.models.User;
 import com.syndico.syndicoapp.models.enums.UserRole;
 import com.syndico.syndicoapp.repositories.UserRepository;

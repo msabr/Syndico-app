@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/fragments/form.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar}"></aside>
+
+<main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div>
+            <h1 class="page-title">
+                <i th:class="${isEdit} ? 'fas fa-edit me-2' : 'fas fa-user-plus me-2'"></i>
+                <span th:text="${isEdit} ? 'Edit Resident' : 'Add New Resident'">Add New Resident</span>
+            </h1>
+            <p class="page-subtitle">
+                <span th:text="${isEdit} ? 'Update resident information' : 'Fill in the details to create a new resident'">
+                    Fill in the details to create a new resident
+                </span>
+            </p>
+        </div>
+        <a th:href="@{/admin/residents}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <form th:action="${isEdit} ? @{/admin/residents/{id}(id=${resident.id})} : @{/admin/residents}"
+              th:object="${resident}"
+              method="post">
+
+            <!-- Error Alert -->
+            <div th:if="${error}" class="alert alert-danger mb-4">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h5 class="section-title">
+                    <i class="fas fa-user me-2"></i>
+                    Personal Information
+                </h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">
+                            First Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="firstName"
+                               th:field="*{firstName}"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                               placeholder="Enter first name">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">
+                            Last Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="lastName"
+                               th:field="*{lastName}"
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                               placeholder="Enter last name">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">
+                            Email Address <span class="text-danger">*</span>
+                        </label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="resident@example.com">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="phoneNumber" class="form-label">
+                            Phone Number
+                        </label>
+                        <input type="tel"
+                               class="form-control"
+                               id="phoneNumber"
+                               th:field="*{phoneNumber}"
+                               th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                               placeholder="+212 6XX-XXXXXX">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}"
+                             th:errors="*{phoneNumber}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="password" class="form-label">
+                            Password <span th:if="!${isEdit}" class="text-danger">*</span>
+                            <small th:if="${isEdit}" class="text-muted">(Leave blank to keep current)</small>
+                        </label>
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               th:field="*{password}"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                               placeholder="••••••••">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="preferredLanguage" class="form-label">
+                            Preferred Language
+                        </label>
+                        <select class="form-select" id="preferredLanguage" th:field="*{preferredLanguage}">
+                            <option value="EN">English</option>
+                            <option value="FR">Français</option>
+                            <option value="AR">العربية</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Information Section -->
+            <div class="form-section">
+                <h5 class="section-title">
+                    <i class="fas fa-building me-2"></i>
+                    Property Information
+                </h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="buildingId" class="form-label">
+                            Building <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="buildingId"
+                                th:field="*{buildingId}"
+                                th:classappend="${#fields.hasErrors('buildingId')} ? 'is-invalid' : ''">
+                            <option value="">Select a building...</option>
+                            <option th:each="building : ${buildings}"
+                                    th:value="${building.id}"
+                                    th:text="${building.name}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('buildingId')}"
+                             th:errors="*{buildingId}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="apartmentNumber" class="form-label">
+                            Apartment Number <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="apartmentNumber"
+                               th:field="*{apartmentNumber}"
+                               th:classappend="${#fields.hasErrors('apartmentNumber')} ? 'is-invalid' : ''"
+                               placeholder="e.g., A-101">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('apartmentNumber')}"
+                             th:errors="*{apartmentNumber}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="moveInDate" class="form-label">
+                            Move In Date
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="moveInDate"
+                               th:field="*{moveInDate}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Resident Type <span class="text-danger">*</span>
+                        </label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="owner"
+                                       th:field="*{isOwner}"
+                                       value="true">
+                                <label class="form-check-label" for="owner">
+                                    <i class="fas fa-home me-1"></i> Owner
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="tenant"
+                                       th:field="*{isOwner}"
+                                       value="false">
+                                <label class="form-check-label" for="tenant">
+                                    <i class="fas fa-key me-1"></i> Tenant
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="emergencyContact" class="form-label">
+                            Emergency Contact
+                        </label>
+                        <textarea class="form-control"
+                                  id="emergencyContact"
+                                  th:field="*{emergencyContact}"
+                                  rows="2"
+                                  placeholder="Name and phone number of emergency contact"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i th:class="${isEdit} ? 'fas fa-save me-2' : 'fas fa-plus me-2'"></i>
+                    <span th:text="${isEdit} ? 'Update Resident' : 'Create Resident'">Create Resident</span>
+                </button>
+                <a th:href="@{/admin/residents}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
+
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </form>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.syndico.syndicoapp.controllers;
 
-import com.syndico.syndicoapp.DTO.UserRegistrationDto;
+import com.syndico.syndicoapp.dto.UserRegistrationDto;
 import com.syndico.syndicoapp.models.User;
 import com.syndico.syndicoapp.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
