@@ -1,10 +1,20 @@
-package com.syndico.syndicoapp.DTO;
+package com.syndico.syndicoapp.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
-public class UserRegistrationDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResidentDTO {
+
+    private Long id;
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
@@ -18,20 +28,24 @@ public class UserRegistrationDto {
     @Email(message = "Please provide a valid email address")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Please provide a valid phone number")
     private String phoneNumber;
 
-    @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
-    @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
-            message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character"
-    )
     private String password;
 
-    @NotBlank(message = "Please confirm your password")
-    private String confirmPassword;
+    @NotNull(message = "Building is required")
+    private Long buildingId;
 
-    private Boolean acceptTerms;
+    @NotBlank(message = "Apartment number is required")
+    private String apartmentNumber;
+
+    private LocalDate moveInDate;
+
+    @NotNull(message = "Please specify if owner or tenant")
+    private Boolean isOwner;
+
+    private String emergencyContact;
+
+    private String preferredLanguage;
 }
