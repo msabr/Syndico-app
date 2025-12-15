@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/admin-pages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='apartments')}"></aside>
+
+<div class="admin-container">
+
+    <main class="admin-main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-door-open me-2"></i>All Apartments</h1>
+            <a th:href="@{/admin/apartments/new}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New Apartment
+            </a>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Apartments Table -->
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Apartment #</th>
+                        <th>Building</th>
+                        <th>Floor</th>
+                        <th>Surface (m²)</th>
+                        <th>Rooms</th>
+                        <th>Resident</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="apartment : ${apartments}">
+                        <td th:text="${apartment.id}" data-label="ID">1</td>
+                        <td th:text="${apartment.apartmentNumber}" data-label="Apartment #">101</td>
+                        <td th:text="${apartment.building.name}" data-label="Building">Building A</td>
+                        <td th:text="${apartment.floor}" data-label="Floor">1</td>
+                        <td th:text="${apartment.surface}" data-label="Surface">75</td>
+                        <td th:text="${apartment.numberOfRooms}" data-label="Rooms">3</td>
+                        <td data-label="Resident">
+                                <span th:if="${apartment.resident != null}"
+                                      th:text="${apartment.resident.user.fullName}"
+                                      class="badge bg-success">John Doe</span>
+                            <span th:unless="${apartment.resident != null}"
+                                  class="badge bg-secondary">Vacant</span>
+                        </td>
+                        <td data-label="Actions">
+                            <a th:href="@{/admin/apartments/edit/{id}(id=${apartment.id})}"
+                               class="btn btn-sm btn-warning"
+                               title="Edit Apartment">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/admin/apartments/delete/{id}(id=${apartment.id})}"
+                               class="btn btn-sm btn-danger"
+                               title="Delete Apartment"
+                               onclick="return confirm('Are you sure you want to delete this apartment?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+</body>
+</html>

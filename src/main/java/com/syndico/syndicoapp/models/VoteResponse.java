@@ -1,6 +1,8 @@
 package com.syndico.syndicoapp.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
@@ -18,14 +20,17 @@ public class VoteResponse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Le vote est obligatoire")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_id", nullable = false)
     private Vote vote;
 
+    @NotNull(message = "Le résident est obligatoire")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resident_id", nullable = false)
     private Resident resident;
 
+    @NotBlank(message = "L'option sélectionnée est obligatoire")
     @Column(name = "selected_option", nullable = false)
     private String selectedOption;
 

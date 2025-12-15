@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='messages')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="bi bi-envelope-open"></i> Message Details</h1>
+            <a th:href="@{/admin/messages}" class="btn">
+                <i class="bi bi-arrow-left me-2"></i>Back to Messages
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${success}">Reply sent successfully!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}">An error occurred!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Message Content -->
+                <div class="message-detail-card">
+                    <div class="message-header">
+                        <h2 th:text="${message.subject}">Meeting Reminder</h2>
+                        <div class="message-meta">
+                            <div class="meta-item">
+                                <div class="sender-avatar"
+                                     th:text="${#strings.substring(sender.firstName, 0, 1)}">J</div>
+                                <div>
+                                    <div class="meta-label">From:</div>
+                                    <div class="meta-value">
+                                        <strong th:text="${sender.firstName + ' ' + sender.lastName}">John Doe</strong><br>
+                                        <small th:text="${sender.email}">john.doe@example.com</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3" style="font-size: 1.5rem; color: var(--tertiary);"></i>
+                                <div>
+                                    <div class="meta-label">Date:</div>
+                                    <div class="meta-value"
+                                         th:text="${#temporals.format(message.sentAt, 'dd MMMM yyyy - HH:mm')}">
+                                        15 December 2024 - 14:30
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-content" th:text="${message.content}">
+                        Dear residents,
+
+                        This is a reminder about our upcoming general assembly meeting scheduled for next week.
+                        Please make sure to attend as we will be discussing important matters regarding
+                        the building maintenance and budget for the next year.
+
+                        Looking forward to seeing you there.
+
+                        Best regards,
+                        The Management
+                    </div>
+
+                    <div class="message-actions">
+                        <button type="button"
+                                class="btn-reply-primary"
+                                onclick="document.getElementById('replyForm').scrollIntoView({behavior: 'smooth'});">
+                            <i class="bi bi-reply"></i> Reply
+                        </button>
+                        <a th:href="@{/admin/messages}" class="btn-back">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reply Section -->
+                <div class="compose-card" id="replyForm">
+                    <h4><i class="bi bi-reply"></i> Reply to this message</h4>
+                    <form th:action="@{/admin/messages/reply/{id}(id=${message.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Your Reply</label>
+                            <textarea class="form-control"
+                                      name="content"
+                                      rows="6"
+                                      placeholder="Type your reply here..."
+                                      required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-send">
+                                <i class="bi bi-send"></i> Send Reply
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Message Info Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Message Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <th width="40%">From:</th>
+                                <td th:text="${sender.firstName + ' ' + sender.lastName}">John Doe</td>
+                            </tr>
+                            <tr>
+                                <th>To:</th>
+                                <td th:text="${receiver.firstName + ' ' + receiver.lastName}">Jane Smith</td>
+                            </tr>
+                            <tr>
+                                <th>Sent:</th>
+                                <td th:text="${#temporals.format(message.sentAt, 'dd/MM/yyyy HH:mm')}">
+                                    15/12/2024 14:30
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    <span th:if="${message.isRead}" class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Read
+                                    </span>
+                                    <span th:unless="${message.isRead}" class="badge bg-warning">
+                                        <i class="bi bi-envelope-fill"></i> Unread
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>ID:</th>
+                                <td><code th:text="${message.id}">#12345</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);">
+                        <h6 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    onclick="window.print()">
+                                <i class="bi bi-printer me-2"></i>Print Message
+                            </button>
+
+                            <form th:if="${!message.isRead}"
+                                  th:action="@{/admin/messages/mark-read/{id}(id=${message.id})}"
+                                  method="post"
+                                  class="mb-0">
+                                <button type="submit" class="btn btn-outline-success btn-sm w-100">
+                                    <i class="bi bi-check-circle me-2"></i>Mark as Read
+                                </button>
+                            </form>
+
+                            <form th:if="${message.isRead}"
+                                  th:action="@{/admin/messages/mark-unread/{id}(id=${message.id})}"
+                                  method="post"
+                                  class="mb-0">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="bi bi-circle me-2"></i>Mark as Unread
+                                </button>
+                            </form>
+
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    onclick="confirmDelete()">
+                                <i class="bi bi-trash me-2"></i>Delete Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sender Contact Card -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                        <h6 class="mb-0"><i class="bi bi-person me-2"></i>Sender Contact</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="sender-avatar mx-auto"
+                                 style="width: 80px; height: 80px; font-size: 2rem;"
+                                 th:text="${#strings.substring(sender.firstName, 0, 1)}">
+                                J
+                            </div>
+                        </div>
+                        <table class="table table-sm table-borderless mb-3">
+                            <tr>
+                                <th width="35%">Name:</th>
+                                <td th:text="${sender.firstName + ' ' + sender.lastName}">John Doe</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>
+                                    <a th:href="'mailto:' + ${sender.email}"
+                                       th:text="${sender.email}">john.doe@example.com</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${sender.phoneNumber}">
+                                <th>Phone:</th>
+                                <td th:text="${sender.phoneNumber}">+212 600 123 456</td>
+                            </tr>
+                        </table>
+                        <a th:href="@{/admin/messages/compose(recipient=${sender.id})}"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-envelope me-2"></i>Send New Message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this message?</p>
+                <p class="text-danger mb-0">
+                    <i class="bi bi-exclamation-circle"></i> This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form th:action="@{/admin/messages/delete/{id}(id=${message.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete() {
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+</body>
+</html>

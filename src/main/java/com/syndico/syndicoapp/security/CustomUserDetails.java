@@ -60,4 +60,8 @@ public class CustomUserDetails implements UserDetails {
     public String getFullName() {
         return user.getFullName();
     }
+
+    public Long getId() {
+        return user.getId();
+    }
 }

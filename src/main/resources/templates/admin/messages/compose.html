@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='messages')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1><i class="bi bi-pencil-square"></i> Compose Message</h1>
+                <p class="mb-0" style="opacity: 0.9;">Send a new message to residents</p>
+            </div>
+            <a th:href="@{/admin/messages}" class="btn">
+                <i class="bi bi-arrow-left me-2"></i>Back to Messages
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}">An error occurred while sending the message!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Compose Form -->
+        <div class="compose-card">
+            <form th:action="@{/admin/messages/send}" method="post" onsubmit="return validateForm()">
+
+                <!-- Recipient Type -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-people me-2"></i>Send To <span class="text-danger">*</span>
+                    </label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio"
+                               class="btn-check"
+                               name="recipientType"
+                               id="allResidents"
+                               value="all"
+                               checked
+                               onchange="toggleRecipientSelection()">
+                        <label class="btn btn-outline-primary" for="allResidents">
+                            <i class="bi bi-people-fill me-2"></i>All Residents
+                        </label>
+
+                        <input type="radio"
+                               class="btn-check"
+                               name="recipientType"
+                               id="specificResidents"
+                               value="individual"
+                               onchange="toggleRecipientSelection()">
+                        <label class="btn btn-outline-primary" for="specificResidents">
+                            <i class="bi bi-person-check me-2"></i>Specific Residents
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Select Specific Residents (Hidden by default) -->
+                <div id="recipientSelectionSection" style="display: none;" class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-person-plus me-2"></i>Select Recipients
+                    </label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select id="residentSelect" class="form-select mb-2">
+                                <option value="">Choose a resident...</option>
+                                <option th:each="resident : ${residents}"
+                                        th:value="${resident.id}"
+                                        th:text="${resident.firstName + ' ' + resident.lastName + ' (' + resident.email + ')'}">
+                                    John Doe (john.doe@example.com)
+                                </option>
+                            </select>
+                            <div class="d-flex gap-2">
+                                <button type="button"
+                                        class="btn btn-sm btn-success"
+                                        onclick="addRecipient()">
+                                    <i class="bi bi-plus-circle me-1"></i>Add Recipient
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm btn-secondary"
+                                        onclick="selectAllResidents()">
+                                    <i class="bi bi-check-all me-1"></i>Select All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">
+                                <i class="bi bi-list-check me-1"></i>Selected Recipients:
+                            </label>
+                            <div id="recipientsList" style="max-height: 300px; overflow-y: auto;">
+                                <small class="text-muted">No recipients selected</small>
+                            </div>
+                            <input type="hidden" name="recipientIds" id="recipientIdsInput">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="mb-3">
+                    <label for="subject" class="form-label">
+                        <i class="bi bi-card-heading me-2"></i>Subject <span class="text-danger">*</span>
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           id="subject"
+                           name="subject"
+                           placeholder="Enter message subject"
+                           required>
+                </div>
+
+                <!-- Message Content -->
+                <div class="mb-3">
+                    <label for="content" class="form-label">
+                        <i class="bi bi-chat-dots me-2"></i>Message <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control"
+                              id="content"
+                              name="content"
+                              rows="10"
+                              placeholder="Type your message here..."
+                              required></textarea>
+                    <small class="form-text text-muted">
+                        <i class="bi bi-info-circle"></i> <span id="charCount">0</span> characters
+                    </small>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <h6><i class="bi bi-eye me-2"></i>Message Preview</h6>
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr>
+                            <th width="15%"><strong>To:</strong></th>
+                            <td><span id="recipientPreview">All Residents</span></td>
+                        </tr>
+                        <tr>
+                            <th><strong>Subject:</strong></th>
+                            <td><span id="subjectPreview" class="text-muted">-</span></td>
+                        </tr>
+                        <tr>
+                            <th style="vertical-align: top;"><strong>Message:</strong></th>
+                            <td><span id="contentPreview" class="text-muted">-</span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-send">
+                        <i class="bi bi-send me-2"></i>Send Message
+                    </button>
+                    <a th:href="@{/admin/messages}" class="btn-cancel">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tips Card -->
+        <div class="card mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                <h6 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Tips for Effective Communication</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Keep your subject line clear and descriptive</li>
+                    <li>Be concise and to the point in your message</li>
+                    <li>Use polite and professional language</li>
+                    <li>Double-check recipient selection before sending</li>
+                    <li>For urgent matters, consider following up with a phone call</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    const selectedRecipients = new Map();
+    const allResidents = /*[[${residents}]]*/ [];
+
+    function toggleRecipientSelection() {
+        const isIndividual = document.getElementById('specificResidents').checked;
+        const section = document.getElementById('recipientSelectionSection');
+        section.style.display = isIndividual ? 'block' : 'none';
+        updateRecipientPreview();
+    }
+
+    function addRecipient() {
+        const select = document.getElementById('residentSelect');
+        const id = select.value;
+        const name = select.options[select.selectedIndex].text;
+
+        if (id && !selectedRecipients.has(id)) {
+            selectedRecipients.set(id, name);
+            updateRecipientsList();
+            select.value = '';
+        } else if (id && selectedRecipients.has(id)) {
+            alert('This recipient is already selected!');
+        }
+    }
+
+    function removeRecipient(id) {
+        selectedRecipients.delete(id);
+        updateRecipientsList();
+    }
+
+    function selectAllResidents() {
+        allResidents.forEach(resident => {
+            const name = `${resident.firstName} ${resident.lastName} (${resident.email})`;
+            selectedRecipients.set(resident.id.toString(), name);
+        });
+        updateRecipientsList();
+    }
+
+    function updateRecipientsList() {
+        const container = document.getElementById('recipientsList');
+        const input = document.getElementById('recipientIdsInput');
+
+        if (selectedRecipients.size === 0) {
+            container.innerHTML = '<small class="text-muted">No recipients selected</small>';
+            input.value = '';
+        } else {
+            let html = '';
+            selectedRecipients.forEach((name, id) => {
+                html += `
+                    <div class="recipient-card">
+                        <span>${name}</span>
+                        <i class="bi bi-x-circle remove-btn" onclick="removeRecipient('${id}')" title="Remove"></i>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            input.value = Array.from(selectedRecipients.keys()).join(',');
+        }
+        updateRecipientPreview();
+    }
+
+    function updateRecipientPreview() {
+        const isAll = document.getElementById('allResidents').checked;
+        const preview = document.getElementById('recipientPreview');
+
+        if (isAll) {
+            preview.textContent = 'All Residents';
+            preview.className = 'text-primary-custom fw-bold';
+        } else {
+            if (selectedRecipients.size === 0) {
+                preview.textContent = 'No recipients selected';
+                preview.className = 'text-danger';
+            } else {
+                preview.textContent = selectedRecipients.size + ' selected resident(s)';
+                preview.className = 'text-success fw-bold';
+            }
+        }
+    }
+
+    // Real-time preview updates
+    document.getElementById('subject').addEventListener('input', function() {
+        const preview = document.getElementById('subjectPreview');
+        preview.textContent = this.value || '-';
+        preview.className = this.value ? '' : 'text-muted';
+    });
+
+    document.getElementById('content').addEventListener('input', function() {
+        const preview = document.getElementById('contentPreview');
+        preview.textContent = this.value || '-';
+        preview.className = this.value ? '' : 'text-muted';
+        document.getElementById('charCount').textContent = this.value.length;
+    });
+
+    function validateForm() {
+        const recipientType = document.querySelector('input[name="recipientType"]:checked').value;
+        const subject = document.getElementById('subject').value.trim();
+        const content = document.getElementById('content').value.trim();
+
+        if (!subject) {
+            alert('❌ Please enter a subject');
+            document.getElementById('subject').focus();
+            return false;
+        }
+
+        if (!content) {
+            alert('❌ Please enter a message');
+            document.getElementById('content').focus();
+            return false;
+        }
+
+        if (recipientType === 'individual' && selectedRecipients.size === 0) {
+            alert('❌ Please select at least one recipient');
+            return false;
+        }
+
+        // Confirmation dialog
+        const recipientText = recipientType === 'all'
+            ? 'all residents'
+            : `${selectedRecipients.size} selected resident(s)`;
+
+        return confirm(`Are you sure you want to send this message to ${recipientText}?`);
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+</body>
+</html>

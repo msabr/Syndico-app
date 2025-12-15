@@ -4,6 +4,9 @@ import com.syndico.syndicoapp.models.enums.Priority;
 import com.syndico.syndicoapp.models.enums.ReclamationCategory;
 import com.syndico.syndicoapp.models.enums.ReclamationStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,12 +27,17 @@ public class Reclamation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le titre de la réclamation est obligatoire")
+    @Size(min = 3, max = 200, message = "Le titre doit contenir entre 3 et 200 caractères")
     @Column(nullable = false)
     private String title;
 
+    @NotBlank(message = "La description est obligatoire")
+    @Size(min = 10, max = 5000, message = "La description doit contenir entre 10 et 5000 caractères")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    @NotNull(message = "La catégorie est obligatoire")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReclamationCategory category;

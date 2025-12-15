@@ -10,7 +10,7 @@
 <header th:replace="~{/fragments/Header :: header(activePage='none')}"></header>
 
 <!-- Admin Sidebar (if ADMIN) -->
-<aside sec:authorize="hasRole('ADMIN')" th:replace="~{/fragments/AdminSidebar :: admin-sidebar}"></aside>
+<aside sec:authorize="hasRole('ADMIN')" th:replace="~{/fragments/AdminSidebar :: admin-sidebar(activePage='dashboard')}"></aside>
 
 <!-- Main Content -->
 <main class="main-content">
@@ -33,11 +33,11 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>156</h3>
+                    <h3 th:text="${totalResidents}">0</h3>
                     <p>Total Residents</p>
                 </div>
                 <div class="stat-badge">
-                    <i class="fas fa-arrow-up"></i> 12%
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
         </div>
@@ -49,11 +49,11 @@
                     <i class="fas fa-dollar-sign"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>$45,890</h3>
+                    <h3 th:text="${'$' + #numbers.formatDecimal(monthlyRevenue, 1, 'COMMA', 0, 'POINT')}">$0</h3>
                     <p>Revenue This Month</p>
                 </div>
                 <div class="stat-badge success">
-                    <i class="fas fa-arrow-up"></i> 8%
+                    <i class="fas fa-chart-line"></i>
                 </div>
             </div>
         </div>
@@ -65,11 +65,11 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>23</h3>
+                    <h3 th:text="${pendingComplaints}">0</h3>
                     <p>Pending Complaints</p>
                 </div>
                 <div class="stat-badge warning">
-                    <i class="fas fa-arrow-down"></i> 5%
+                    <i class="fas fa-clock"></i>
                 </div>
             </div>
         </div>
@@ -81,11 +81,11 @@
                     <i class="fas fa-calendar-check"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>12</h3>
+                    <h3 th:text="${todayReservations}">0</h3>
                     <p>Reservations Today</p>
                 </div>
                 <div class="stat-badge info">
-                    <i class="fas fa-arrow-up"></i> 3%
+                    <i class="fas fa-calendar"></i>
                 </div>
             </div>
         </div>
@@ -143,29 +143,27 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>#1234</td>
-                                <td>John Doe</td>
-                                <td>Plumbing</td>
-                                <td><span class="badge bg-danger">High</span></td>
-                                <td><span class="badge bg-warning">Pending</span></td>
-                                <td>Nov 27, 2025</td>
+                            <tr th:if="${#lists.isEmpty(recentComplaints)}">
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                    <p>No recent complaints</p>
+                                </td>
                             </tr>
-                            <tr>
-                                <td>#1233</td>
-                                <td>Jane Smith</td>
-                                <td>Electricity</td>
-                                <td><span class="badge bg-warning">Medium</span></td>
-                                <td><span class="badge bg-info">In Progress</span></td>
-                                <td>Nov 26, 2025</td>
-                            </tr>
-                            <tr>
-                                <td>#1232</td>
-                                <td>Mike Johnson</td>
-                                <td>Cleaning</td>
-                                <td><span class="badge bg-success">Low</span></td>
-                                <td><span class="badge bg-success">Resolved</span></td>
-                                <td>Nov 25, 2025</td>
+                            <tr th:each="complaint : ${recentComplaints}">
+                                <td th:text="${'#' + complaint.id}">#0</td>
+                                <td th:text="${complaint.resident != null ? complaint.resident.firstName + ' ' + complaint.resident.lastName : 'N/A'}">Resident</td>
+                                <td th:text="${complaint.category}">Category</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${complaint.priority.name() == 'HAUTE' ? 'bg-danger' : (complaint.priority.name() == 'MOYENNE' ? 'bg-warning' : 'bg-success')}"
+                                          th:text="${complaint.priority}">Priority</span>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${complaint.status.name() == 'RESOLUE' ? 'bg-success' : (complaint.status.name() == 'EN_COURS' ? 'bg-info' : 'bg-warning')}"
+                                          th:text="${complaint.status}">Status</span>
+                                </td>
+                                <td th:text="${#temporals.format(complaint.createdAt, 'MMM dd, yyyy')}">Date</td>
                             </tr>
                             </tbody>
                         </table>
@@ -181,19 +179,19 @@
                 </div>
                 <div class="card-body">
                     <div class="quick-actions">
-                        <a href="#" class="quick-action-btn">
+                        <a th:href="@{/admin/residents/new}" class="quick-action-btn">
                             <i class="fas fa-user-plus"></i>
                             <span>Add Resident</span>
                         </a>
-                        <a href="#" class="quick-action-btn">
+                        <a th:href="@{/admin/charges/new}" class="quick-action-btn">
                             <i class="fas fa-file-invoice"></i>
                             <span>Create Charge</span>
                         </a>
-                        <a href="#" class="quick-action-btn">
+                        <a th:href="@{/admin/messages/compose}" class="quick-action-btn">
                             <i class="fas fa-envelope"></i>
-                            <span>Send Notification</span>
+                            <span>Send Message</span>
                         </a>
-                        <a href="#" class="quick-action-btn">
+                        <a th:href="@{/admin/financial-reports}" class="quick-action-btn">
                             <i class="fas fa-file-pdf"></i>
                             <span>Generate Report</span>
                         </a>
@@ -211,47 +209,102 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-    // Revenue Chart
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Revenue Chart - Dynamic data from backend
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueData = /*[[${revenueByDay}]]*/ {};
+    const revenueLabels = Object.keys(revenueData);
+    const revenueValues = Object.values(revenueData);
+
     new Chart(revenueCtx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: revenueLabels,
             datasets: [{
-                label: 'Revenue',
-                data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                label: 'Revenue ($)',
+                data: revenueValues,
                 borderColor: '#FFA69E',
                 backgroundColor: 'rgba(255, 166, 158, 0.1)',
                 tension: 0.4,
-                fill: true
+                fill: true,
+                borderWidth: 3,
+                pointBackgroundColor: '#FFA69E',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: { display: false }
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Revenue: $' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
             }
         }
     });
 
-    // Payment Methods Chart
+    // Payment Methods Chart - Dynamic data from backend
     const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+    const paymentMethods = /*[[${paymentMethods}]]*/ {};
+    const paymentLabels = Object.keys(paymentMethods).map(key => {
+        // Format payment method names
+        return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    });
+    const paymentValues = Object.values(paymentMethods);
+
     new Chart(paymentCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Credit Card', 'Bank Transfer', 'Cash', 'Mobile Payment'],
+            labels: paymentLabels.length > 0 ? paymentLabels : ['No Data'],
             datasets: [{
-                data: [45, 30, 15, 10],
-                backgroundColor: ['#FFA69E', '#B08968', '#DDB892', '#F5EBE0']
+                data: paymentValues.length > 0 ? paymentValues : [1],
+                backgroundColor: ['#FFA69E', '#B08968', '#DDB892', '#F5EBE0', '#3C3734']
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
         }
     });
+    /*]]>*/
 </script>
 
 <style>

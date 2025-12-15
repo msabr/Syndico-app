@@ -65,9 +65,9 @@
                 <i class="fas fa-credit-card"></i>
                 <span>Payments</span>
             </a>
-            <a th:href="@{/admin/reports}"
+            <a th:href="@{/admin/financial-reports}"
                class="sidebar-item"
-               th:classappend="${activePage == 'reports'} ? 'active' : ''">
+               th:classappend="${activePage == 'financial-reports'} ? 'active' : ''">
                 <i class="fas fa-chart-line"></i>
                 <span>Financial Reports</span>
             </a>
@@ -76,9 +76,9 @@
         <!-- Complaints Management -->
         <div class="sidebar-section">
             <div class="section-title">Operations</div>
-            <a th:href="@{/admin/reclamations}"
+            <a th:href="@{/admin/complaints}"
                class="sidebar-item"
-               th:classappend="${activePage == 'reclamations'} ? 'active' : ''">
+               th:classappend="${activePage == 'complaints'} ? 'active' : ''">
                 <i class="fas fa-exclamation-circle"></i>
                 <span>Complaints</span>
                 <span class="badge badge-danger">12</span>
@@ -100,9 +100,9 @@
         <!-- Service Providers -->
         <div class="sidebar-section">
             <div class="section-title">Services</div>
-            <a th:href="@{/admin/prestataires}"
+            <a th:href="@{/admin/service-providers}"
                class="sidebar-item"
-               th:classappend="${activePage == 'prestataires'} ? 'active' : ''">
+               th:classappend="${activePage == 'service-providers'} ? 'active' : ''">
                 <i class="fas fa-tools"></i>
                 <span>Service Providers</span>
             </a>
@@ -111,9 +111,9 @@
         <!-- Assemblies & Votes -->
         <div class="sidebar-section">
             <div class="section-title">Governance</div>
-            <a th:href="@{/admin/assemblies}"
+            <a th:href="@{/admin/general-assemblies}"
                class="sidebar-item"
-               th:classappend="${activePage == 'assemblies'} ? 'active' : ''">
+               th:classappend="${activePage == 'general-assemblies'} ? 'active' : ''">
                 <i class="fas fa-gavel"></i>
                 <span>General Assemblies</span>
             </a>

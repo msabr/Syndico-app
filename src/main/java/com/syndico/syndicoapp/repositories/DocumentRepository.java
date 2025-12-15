@@ -10,4 +10,9 @@ import java.util.List;
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByCategory(DocumentCategory category);
     List<Document> findByIsPublicTrue();
+    List<Document> findByUploadedBy_Id(Long uploadedById);
+    List<Document> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+            String title, String description
+    );
+    List<Document> findByCategoryAndIsPublic(DocumentCategory category, boolean isPublic);
 }
