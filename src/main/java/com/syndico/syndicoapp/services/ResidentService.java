@@ -34,7 +34,7 @@ public class ResidentService {
 
     // Find all with filters
     public Page<Resident> findAll(String search, Long buildingId, String status, String type, Pageable pageable) {
-        Specification<Resident> spec = Specification.where(null);
+        Specification<Resident> spec = (root, query, cb) -> cb.conjunction();
 
         if (search != null && !search.isEmpty()) {
             spec = spec.and((root, query, cb) -> cb.or(
@@ -174,6 +174,16 @@ public class ResidentService {
         userRepository.delete(user);
     }
 
+    @Transactional
+    public Resident save(Resident resident) {
+        return residentRepository.save(resident);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        residentRepository.deleteById(id);
+    }
+
     // Convert to DTO
     public ResidentDTO toDTO(Resident resident) {
         return ResidentDTO.builder()
@@ -238,5 +248,10 @@ public class ResidentService {
 
         workbook.write(response.getOutputStream());
         workbook.close();
+    }
+
+    // Get All Resident
+    public List<Resident> getAllResidents() {
+        return residentRepository.findAll();
     }
 }

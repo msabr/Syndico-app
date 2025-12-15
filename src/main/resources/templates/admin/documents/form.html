@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
+<link rel="stylesheet" th:href="@{/css/admin/finance/documents.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='documents')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 th:text="${document.id != null ? 'Edit Document' : 'Upload New Document'}">
+                    <i class="bi bi-file-earmark-plus"></i> Upload Document
+                </h1>
+                <p class="mb-0" style="opacity: 0.9;">
+                    <span th:if="${document.id == null}">Add a new document to the system</span>
+                    <span th:if="${document.id != null}">Update document information</span>
+                </p>
+            </div>
+            <a th:href="@{/admin/documents}" class="btn">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}">An error occurred while uploading the document!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <!-- Main Form -->
+            <div class="col-lg-8">
+                <!-- Document Form -->
+                <div class="form-card">
+                    <form th:action="${document.id != null ? '/admin/documents/update/' + document.id : '/admin/documents/create'}"
+                          method="post"
+                          enctype="multipart/form-data"
+                          onsubmit="return validateForm()">
+
+                        <div class="row">
+                            <!-- Title -->
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">
+                                    <i class="bi bi-card-heading"></i> Document Title
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="title"
+                                       name="title"
+                                       th:value="${document.title}"
+                                       placeholder="e.g., Annual Report 2024"
+                                       required>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">
+                                    <i class="bi bi-tag"></i> Category
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option th:each="cat : ${categories}"
+                                            th:value="${cat}"
+                                            th:text="${cat}"
+                                            th:selected="${document.category == cat}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12 mb-3">
+                                <label for="description" class="form-label">
+                                    <i class="bi bi-text-paragraph"></i> Description
+                                </label>
+                                <textarea class="form-control"
+                                          id="description"
+                                          name="description"
+                                          rows="4"
+                                          placeholder="Provide a brief description of the document"
+                                          th:text="${document.description}"></textarea>
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-info-circle"></i> Optional but recommended for better organization
+                                </small>
+                            </div>
+
+                            <!-- File Upload -->
+                            <div class="col-md-8 mb-3">
+                                <label for="file" class="form-label">
+                                    <i class="bi bi-cloud-upload"></i> File Upload
+                                    <span th:if="${document.id == null}" class="text-danger">*</span>
+                                    <span th:if="${document.id != null}" class="text-muted">(Leave empty to keep current file)</span>
+                                </label>
+                                <input type="file"
+                                       class="form-control"
+                                       id="file"
+                                       name="file"
+                                       accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+                                       th:required="${document.id == null}"
+                                       onchange="displayFileName()">
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-file-earmark-check"></i>
+                                    Accepted formats: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (Max 10MB)
+                                </small>
+
+                                <!-- Current File Info (Edit Mode) -->
+                                <div th:if="${document.fileUrl != null}" class="mt-2 p-2" style="background: var(--secondary); border-radius: 6px;">
+                                    <small class="text-success">
+                                        <i class="bi bi-file-earmark-check"></i>
+                                        Current file: <strong th:text="${document.title + '.' + document.fileType}">document.pdf</strong>
+                                    </small>
+                                </div>
+
+                                <!-- Selected File Display -->
+                                <div id="fileNameDisplay" class="mt-2 p-2" style="display: none; background: #e7f5f9; border-radius: 6px; border-left: 3px solid var(--info);">
+                                    <small class="text-info">
+                                        <i class="bi bi-file-earmark-arrow-up"></i>
+                                        Selected: <strong id="selectedFileName"></strong>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Visibility -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="bi bi-eye"></i> Visibility
+                                </label>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="isPublic"
+                                           name="isPublic"
+                                           th:checked="${document.isPublic}">
+                                    <label class="form-check-label" for="isPublic">
+                                        <strong>Make Public</strong>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-info-circle"></i> Public documents are visible to all residents
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Current File Info Alert (Edit Mode) -->
+                        <div th:if="${document.id != null && document.fileUrl != null}" class="alert alert-info">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-info-circle"></i> Current Document Information
+                            </h6>
+                            <ul class="mb-0">
+                                <li><strong>File Type:</strong> <span th:text="${document.fileType}">PDF</span></li>
+                                <li><strong>Uploaded:</strong> <span th:text="${#temporals.format(document.uploadedAt, 'dd/MM/yyyy HH:mm')}">15/12/2024 14:30</span></li>
+                                <li th:if="${document.qrCodeUrl != null}"><strong>QR Code:</strong> Available</li>
+                            </ul>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-end gap-2 pt-3" style="border-top: 2px solid var(--secondary);">
+                            <a th:href="@{/admin/documents}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn-submit">
+                                <i th:class="${document.id != null ? 'bi bi-save' : 'bi bi-upload'}"></i>
+                                <span th:text="${document.id != null ? ' Update Document' : ' Upload Document'}"> Upload Document</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Upload Guidelines -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightbulb me-2"></i>Upload Guidelines
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0" style="line-height: 1.8;">
+                            <li>Use clear and descriptive titles</li>
+                            <li>Select the appropriate category</li>
+                            <li>Add descriptions for better searchability</li>
+                            <li>Ensure file size is under 10MB</li>
+                            <li>Use standard file formats (PDF, DOC, XLS)</li>
+                            <li>Set correct visibility for sensitive documents</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Supported Formats -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <h6 class="mb-0">
+                            <i class="bi bi-file-earmark me-2"></i>Supported Formats
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-danger">PDF</span>
+                            <span class="badge bg-primary">DOC</span>
+                            <span class="badge bg-primary">DOCX</span>
+                            <span class="badge bg-success">XLS</span>
+                            <span class="badge bg-success">XLSX</span>
+                            <span class="badge bg-warning">PNG</span>
+                            <span class="badge bg-warning">JPG</span>
+                            <span class="badge bg-warning">JPEG</span>
+                        </div>
+                        <hr>
+                        <p class="mb-0 small text-muted">
+                            <i class="bi bi-shield-check"></i> Maximum file size: <strong>10 MB</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Categories Info -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                        <h6 class="mb-0">
+                            <i class="bi bi-tags me-2"></i>Available Categories
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span th:each="cat : ${categories}"
+                                  class="badge bg-info"
+                                  th:text="${cat}">Category</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function displayFileName() {
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const selectedFileName = document.getElementById('selectedFileName');
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            selectedFileName.textContent = file.name;
+            fileNameDisplay.style.display = 'block';
+
+            // Check file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('⚠️ File size exceeds 10MB. Please choose a smaller file.');
+                fileInput.value = '';
+                fileNameDisplay.style.display = 'none';
+                return false;
+            }
+
+            // Display file size
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+            selectedFileName.textContent += ` (${fileSize} MB)`;
+        } else {
+            fileNameDisplay.style.display = 'none';
+        }
+    }
+
+    function validateForm() {
+        const title = document.getElementById('title').value.trim();
+        const category = document.getElementById('category').value;
+        const fileInput = document.getElementById('file');
+        const isEditMode = !fileInput.required;
+
+        if (!title) {
+            alert('❌ Please enter a document title');
+            document.getElementById('title').focus();
+            return false;
+        }
+
+        if (!category) {
+            alert('❌ Please select a category');
+            document.getElementById('category').focus();
+            return false;
+        }
+
+        // In create mode, file is required
+        if (!isEditMode && fileInput.files.length === 0) {
+            alert('❌ Please select a file to upload');
+            fileInput.focus();
+            return false;
+        }
+
+        // Validate file size if a file is selected
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            if (file.size > 10 * 1024 * 1024) {
+                alert('❌ File size exceeds 10MB limit');
+                return false;
+            }
+        }
+
+        // Confirmation
+        const action = isEditMode ? 'update' : 'upload';
+        return confirm(`Are you sure you want to ${action} this document?`);
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert-danger').forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+</body>
+</html>

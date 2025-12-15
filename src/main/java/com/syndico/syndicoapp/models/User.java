@@ -2,9 +2,12 @@ package com.syndico.syndicoapp.models;
 
 import com.syndico.syndicoapp.models.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,6 +41,7 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @Builder.Default
     @Column(name = "is_email_verified")
     private Boolean isEmailVerified = false;
 
@@ -47,6 +51,7 @@ public class User {
     @Column(name = "password_reset_token")
     private String passwordResetToken;
 
+    @Builder.Default
     @Column(name = "preferred_language", length = 5)
     private String preferredLanguage = "FR";
 
@@ -78,4 +83,5 @@ public class User {
     public boolean isResident() {
         return this.role == UserRole.RESIDENT;
     }
+
 }

@@ -2,6 +2,10 @@ package com.syndico.syndicoapp.models;
 
 import com.syndico.syndicoapp.models.enums.WorkStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,9 +23,12 @@ public class WorkProject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le titre du projet est obligatoire")
+    @Size(min = 3, max = 200, message = "Le titre doit contenir entre 3 et 200 caractères")
     @Column(nullable = false)
     private String title;
 
+    @Size(max = 5000, message = "La description ne peut pas dépasser 5000 caractères")
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -35,6 +42,8 @@ public class WorkProject {
     @Builder.Default
     private WorkStatus status = WorkStatus.PLANIFIE;
 
+    @DecimalMin(value = "0.0", message = "Le budget ne peut pas être négatif")
+    @DecimalMax(value = "100000000.0", message = "Le budget ne peut pas dépasser 100 000 000")
     private Double budget;
 
     @ManyToOne(fetch = FetchType.LAZY)

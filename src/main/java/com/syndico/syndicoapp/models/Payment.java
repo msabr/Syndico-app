@@ -2,6 +2,9 @@ package com.syndico.syndicoapp.models;
 
 import com.syndico.syndicoapp.models.enums.PaymentStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,10 +23,14 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La charge est obligatoire")
     @OneToOne
     @JoinColumn(name = "charge_id", nullable = false)
     private Charge charge;
 
+    @NotNull(message = "Le montant est obligatoire")
+    @DecimalMin(value = "0.01", message = "Le montant doit être supérieur à 0")
+    @DecimalMax(value = "1000000.00", message = "Le montant ne peut pas dépasser 1 000 000")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 

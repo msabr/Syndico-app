@@ -1,0 +1,65 @@
+:root {
+    --primary: #FFA69E;
+    --secondary: #F5EBE0;
+    --tertiary: #B08968;
+    --accent: #DDB892;
+    --dark: #3C3734;
+}
+
+.stat-card {
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.stat-card:hover { transform: translateY(-5px); }
+
+.stat-card-primary { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; }
+.stat-card-warning { background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); color: white; }
+.stat-card-info { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; }
+.stat-card-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+.stat-card-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.badge-nouvelle { background-color: #17a2b8; color: white; }
+.badge-en_cours { background-color: #ffc107; color: #000; }
+.badge-assignee { background-color: #6f42c1; color: white; }
+.badge-resolue { background-color: #28a745; color: white; }
+.badge-fermee { background-color: #6c757d; color: white; }
+
+.badge-basse { background-color: #6c757d; }
+.badge-moyenne { background-color: #ffc107; color: #000; }
+.badge-haute { background-color: #fd7e14; }
+.badge-urgente { background-color: #dc3545; }
+
+.page-header {
+    background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.complaint-row:hover {
+    background-color: var(--secondary);
+    cursor: pointer;
+}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/operations/compDet.css}">
+
+<body>
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='complaints')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Complaint #<span th:text="${reclamation.id}">001</span>
+                    </h2>
+                    <p class="mb-0" th:text="${reclamation.title}">Complaint Title</p>
+                </div>
+                <a th:href="@{/admin/complaints}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Details -->
+            <div class="col-lg-8">
+                <!-- Complaint Information -->
+                <div class="detail-card">
+                    <h5 class="mb-4"><i class="fas fa-info-circle me-2"></i>Complaint Information</h5>
+
+                    <div class="info-row">
+                        <span class="info-label">Title:</span>
+                        <strong th:text="${reclamation.title}">Complaint Title</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Description:</span>
+                        <p class="mb-0" th:text="${reclamation.description}">Detailed description...</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Category:</span>
+                        <span class="badge bg-secondary badge-large" th:text="${reclamation.category}">PLOMBERIE</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Priority:</span>
+                        <span th:class="'badge badge-large badge-' + ${#strings.toLowerCase(reclamation.priority)}"
+                              th:text="${reclamation.priority}">MOYENNE</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Status:</span>
+                        <span th:class="'badge badge-large badge-' + ${#strings.toLowerCase(reclamation.status)}"
+                              th:text="${reclamation.status}">NOUVELLE</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Created:</span>
+                        <span th:text="${#temporals.format(reclamation.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2025 14:30</span>
+                    </div>
+
+                    <div class="info-row" th:if="${reclamation.updatedAt != null}">
+                        <span class="info-label">Last Updated:</span>
+                        <span th:text="${#temporals.format(reclamation.updatedAt, 'dd/MM/yyyy HH:mm')}">01/01/2025 15:00</span>
+                    </div>
+
+                    <div class="info-row" th:if="${reclamation.resolvedAt != null}">
+                        <span class="info-label">Resolved:</span>
+                        <span th:text="${#temporals.format(reclamation.resolvedAt, 'dd/MM/yyyy HH:mm')}">02/01/2025 10:00</span>
+                    </div>
+                </div>
+
+                <!-- Resident Information -->
+                <div class="detail-card" th:if="${reclamation.resident != null}">
+                    <h5 class="mb-4"><i class="fas fa-user me-2"></i>Resident Information</h5>
+
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span th:text="${reclamation.resident.user?.firstName + ' ' + reclamation.resident.user?.lastName}">Resident Name</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Apartment:</span>
+                        <span th:text="${reclamation.resident.apartmentNumber}">A101</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span th:text="${reclamation.resident.user?.email}">resident@email.com</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span th:text="${reclamation.resident.user?.phoneNumber}">+212 6XX XXX XXX</span>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="detail-card">
+                    <h5 class="mb-4"><i class="fas fa-comments me-2"></i>Comments & Updates</h5>
+
+                    <!-- Add Comment Form -->
+                    <form method="post" th:action="@{/admin/complaints/{id}/add-comment(id=${reclamation.id})}" class="mb-4">
+                        <div class="mb-3">
+                                <textarea name="content" class="form-control" rows="3"
+                                          placeholder="Add a comment or update..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Add Comment
+                        </button>
+                    </form>
+
+                    <!-- Comments List -->
+                    <div th:if="${comments.isEmpty()}" class="text-center text-muted py-4">
+                        <i class="fas fa-comment-slash fa-3x mb-3"></i>
+                        <p>No comments yet</p>
+                    </div>
+
+                    <div th:each="comment : ${comments}">
+                        <div th:class="${comment.isAdminComment ? 'comment-item comment-admin' : 'comment-item'}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong>
+                                        <i th:class="${comment.isAdminComment ? 'fas fa-user-shield me-2 text-danger' : 'fas fa-user me-2'}"></i>
+                                        <span th:text="${comment.user?.firstName + ' ' + comment.user?.lastName}">User Name</span>
+                                    </strong>
+                                    <span th:if="${comment.isAdminComment}" class="badge bg-danger ms-2">Admin</span>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted" th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2025</small>
+                                    <form method="post"
+                                          th:action="@{/admin/complaints/comments/delete/{commentId}(commentId=${comment.id})}"
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Delete this comment?');">
+                                        <input type="hidden" name="reclamationId" th:value="${reclamation.id}">
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0 ms-2">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <p class="mb-0" th:text="${comment.content}">Comment content here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Actions -->
+            <div class="col-lg-4">
+                <div class="action-buttons">
+                    <!-- Quick Actions -->
+                    <div class="detail-card">
+                        <h5 class="mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+
+                        <!-- Update Status -->
+                        <form method="post" th:action="@{/admin/complaints/{id}/update-status(id=${reclamation.id})}" class="mb-3">
+                            <label class="form-label">Change Status</label>
+                            <div class="input-group">
+                                <select name="status" class="form-select" required>
+                                    <option th:each="status : ${reclamationStatuses}"
+                                            th:value="${status}"
+                                            th:text="${status}"
+                                            th:selected="${status == reclamation.status}"></option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+
+                        <!-- Assign to Prestataire -->
+                        <form method="post" th:action="@{/admin/complaints/{id}/assign(id=${reclamation.id})}" class="mb-3">
+                            <label class="form-label">Assign to Service Provider</label>
+                            <div class="input-group">
+                                <select name="prestataireId" class="form-select" required>
+                                    <option value="">Select provider...</option>
+                                    <option th:each="prestataire : ${prestataires}"
+                                            th:value="${prestataire.id}"
+                                            th:text="${prestataire.companyName + ' (' + prestataire.specialty + ')'}"
+                                            th:selected="${reclamation.prestataire?.id == prestataire.id}"></option>
+                                </select>
+                                <button type="submit" class="btn btn-success">Assign</button>
+                            </div>
+                        </form>
+
+                        <!-- Quick Status Buttons -->
+                        <div class="d-grid gap-2 mt-4">
+                            <form method="post" th:action="@{/admin/complaints/{id}/resolve(id=${reclamation.id})}">
+                                <button type="submit" class="btn btn-success w-100"
+                                        th:disabled="${reclamation.status == T(com.syndico.syndicoapp.models.enums.ReclamationStatus).RESOLUE || reclamation.status == T(com.syndico.syndicoapp.models.enums.ReclamationStatus).FERMEE}">
+                                    <i class="fas fa-check me-2"></i>Mark as Resolved
+                                </button>
+                            </form>
+
+                            <form method="post" th:action="@{/admin/complaints/{id}/close(id=${reclamation.id})}">
+                                <button type="submit" class="btn btn-secondary w-100"
+                                        th:disabled="${reclamation.status == T(com.syndico.syndicoapp.models.enums.ReclamationStatus).FERMEE}">
+                                    <i class="fas fa-times me-2"></i>Close Complaint
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Assigned Provider Info -->
+                    <div class="detail-card" th:if="${reclamation.prestataire != null}">
+                        <h5 class="mb-3"><i class="fas fa-user-tie me-2"></i>Assigned Provider</h5>
+                        <p class="mb-1"><strong th:text="${reclamation.prestataire.companyName}">Company Name</strong></p>
+                        <p class="mb-1 text-muted"><i class="fas fa-wrench me-2"></i><span th:text="${reclamation.prestataire.specialty}">Specialty</span></p>
+                        <p class="mb-1 text-muted"><i class="fas fa-phone me-2"></i><span th:text="${reclamation.prestataire.phoneNumber}">Phone</span></p>
+                        <p class="mb-0 text-muted"><i class="fas fa-envelope me-2"></i><span th:text="${reclamation.prestataire.email}">Email</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+</body>
+</html>

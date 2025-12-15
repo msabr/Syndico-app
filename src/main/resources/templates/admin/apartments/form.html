@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/admin-pages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='apartments')}"></aside>
+
+<div class="admin-container">
+
+    <main class="admin-main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-door-open"></i>
+                    <span th:text="${apartment.id != null} ? 'Edit Apartment' : 'New Apartment'">New Apartment</span>
+                </h1>
+                <p class="page-subtitle" th:text="${apartment.id != null} ? 'Update apartment information' : 'Fill in the details to create a new apartment'">
+                    Fill in the details to create a new apartment
+                </p>
+            </div>
+            <a th:href="@{/admin/apartments}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>Back to List
+            </a>
+        </div>
+
+        <!-- Error Messages -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="form-card">
+            <form th:action="@{/admin/apartments/save}" th:object="${apartment}" method="post">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Building *</label>
+                            <select th:field="*{building.id}" class="form-select" required>
+                                <option value="">Select Building</option>
+                                <option th:each="building : ${buildings}"
+                                        th:value="${building.id}"
+                                        th:text="${building.name}">Building A</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Apartment Number *</label>
+                            <input type="text" th:field="*{apartmentNumber}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Floor</label>
+                            <input type="number" th:field="*{floor}" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Surface (m²)</label>
+                            <input type="number" step="0.01" th:field="*{surface}" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Number of Rooms</label>
+                            <input type="number" th:field="*{numberOfRooms}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Assign Resident (Optional)</label>
+                        <select th:field="*{resident.id}" class="form-select">
+                            <option value="">No Resident</option>
+                            <option th:each="resident : ${residents}"
+                                    th:value="${resident.id}"
+                                    th:text="${resident.user.fullName}">John Doe</option>
+                        </select>
+                    </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>Save Apartment
+                    </button>
+                    <a th:href="@{/admin/apartments}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+</body>
+</html>

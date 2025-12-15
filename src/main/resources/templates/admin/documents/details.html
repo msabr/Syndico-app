@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
+<link rel="stylesheet" th:href="@{/css/admin/finance/documents.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='documents')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1><i class="bi bi-file-earmark-text"></i> Document Details</h1>
+                <p class="mb-0" style="opacity: 0.9;">View and manage document information</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/documents}" class="btn">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </a>
+                <a th:href="@{/admin/documents/edit/{id}(id=${document.id})}"
+                   class="btn"
+                   style="background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); color: white;">
+                    <i class="bi bi-pencil me-2"></i>Edit
+                </a>
+                <a th:href="@{/admin/documents/download/{id}(id=${document.id})}"
+                   class="btn"
+                   style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                    <i class="bi bi-download me-2"></i>Download
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Document Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Document Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless mb-0">
+                            <tr>
+                                <th width="30%">
+                                    <i class="bi bi-card-heading me-2" style="color: var(--tertiary);"></i>Title:
+                                </th>
+                                <td><strong th:text="${document.title}">Annual Report 2024</strong></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-text-paragraph me-2" style="color: var(--tertiary);"></i>Description:
+                                </th>
+                                <td th:text="${document.description != null ? document.description : 'N/A'}">
+                                    Financial report for the year 2024
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-tag me-2" style="color: var(--tertiary);"></i>Category:
+                                </th>
+                                <td>
+                                    <span class="badge bg-info" th:text="${document.category}">Reports</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-file-earmark me-2" style="color: var(--tertiary);"></i>File Type:
+                                </th>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${document.fileType}">PDF</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-eye me-2" style="color: var(--tertiary);"></i>Visibility:
+                                </th>
+                                <td>
+                                    <span th:if="${document.isPublic}" class="badge bg-success">
+                                        <i class="bi bi-globe"></i> Public
+                                    </span>
+                                    <span th:unless="${document.isPublic}" class="badge bg-warning">
+                                        <i class="bi bi-lock"></i> Private
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-calendar3 me-2" style="color: var(--tertiary);"></i>Uploaded Date:
+                                </th>
+                                <td th:text="${#temporals.format(document.uploadedAt, 'dd MMMM yyyy - HH:mm')}">
+                                    15 December 2024 - 14:30
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <i class="bi bi-hash me-2" style="color: var(--tertiary);"></i>Document ID:
+                                </th>
+                                <td><code th:text="${document.id}">#12345</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- File Preview -->
+                <div class="detail-card">
+                    <h4><i class="bi bi-eye"></i> File Preview</h4>
+                    <div style="text-align: center;">
+                        <!-- Image Preview -->
+                        <div th:if="${document.fileType == 'PNG' or document.fileType == 'JPG' or document.fileType == 'JPEG'}">
+                            <img th:src="@{${document.fileUrl}}"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 500px; border: 3px solid var(--secondary);"
+                                 th:alt="${document.title}">
+                        </div>
+
+                        <!-- PDF Preview -->
+                        <div th:if="${document.fileType == 'PDF'}">
+                            <embed th:src="@{${document.fileUrl}}"
+                                   type="application/pdf"
+                                   width="100%"
+                                   height="600px"
+                                   class="rounded shadow"
+                                   style="border: 3px solid var(--secondary);">
+                        </div>
+
+                        <!-- Other file types -->
+                        <div th:if="${document.fileType != 'PDF' and document.fileType != 'PNG' and document.fileType != 'JPG' and document.fileType != 'JPEG'}">
+                            <div class="empty-state">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <h3>Preview Not Available</h3>
+                                <p>Preview not available for <strong th:text="${document.fileType}">DOCX</strong> files</p>
+                                <a th:href="@{/admin/documents/download/{id}(id=${document.id})}"
+                                   class="btn-submit">
+                                    <i class="bi bi-download me-2"></i>Download to View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- QR Code -->
+                <div class="detail-card qr-code-container">
+                    <h4><i class="bi bi-qr-code"></i> QR Code</h4>
+                    <div th:if="${document.qrCodeUrl != null}">
+                        <img th:src="@{${document.qrCodeUrl}}"
+                             class="img-fluid"
+                             alt="QR Code"
+                             style="max-width: 250px;">
+                        <p class="text-muted small mt-3 mb-2">
+                            <i class="bi bi-info-circle"></i> Scan to access document
+                        </p>
+                        <a th:href="@{${document.qrCodeUrl}}"
+                           download
+                           class="btn btn-sm btn-outline-success mt-2">
+                            <i class="bi bi-download me-2"></i>Download QR Code
+                        </a>
+                    </div>
+                    <div th:unless="${document.qrCodeUrl != null}">
+                        <div class="empty-state" style="padding: 40px 20px;">
+                            <i class="bi bi-qr-code" style="font-size: 3rem;"></i>
+                            <p class="text-muted">QR Code not available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/admin/documents/download/{id}(id=${document.id})}"
+                               class="btn btn-success">
+                                <i class="bi bi-download me-2"></i>Download Document
+                            </a>
+                            <a th:href="@{/admin/documents/edit/{id}(id=${document.id})}"
+                               class="btn btn-warning">
+                                <i class="bi bi-pencil me-2"></i>Edit Document
+                            </a>
+                            <button type="button"
+                                    class="btn btn-info"
+                                    onclick="copyLink()">
+                                <i class="bi bi-link-45deg me-2"></i>Copy Link
+                            </button>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    onclick="confirmDelete()">
+                                <i class="bi bi-trash me-2"></i>Delete Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Statistics -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <h6 class="mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>Document Statistics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="mb-3" style="color: var(--tertiary);">
+                                <i class="bi bi-eye-fill" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="mb-0" style="color: var(--dark);">N/A</h3>
+                            <small class="text-muted">Total Views</small>
+                            <p class="small text-muted mb-0">(Coming Soon)</p>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <div class="mb-3" style="color: var(--accent);">
+                                <i class="bi bi-download" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h3 class="mb-0" style="color: var(--dark);">N/A</h3>
+                            <small class="text-muted">Total Downloads</small>
+                            <p class="small text-muted mb-0">(Coming Soon)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Information -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                        <h6 class="mb-0">
+                            <i class="bi bi-file-earmark-check me-2"></i>File Information
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0" style="line-height: 2;">
+                            <li>
+                                <i class="bi bi-file-earmark me-2" style="color: var(--tertiary);"></i>
+                                <strong>Type:</strong> <span th:text="${document.fileType}">PDF</span>
+                            </li>
+                            <li>
+                                <i class="bi bi-calendar-check me-2" style="color: var(--tertiary);"></i>
+                                <strong>Uploaded:</strong>
+                                <span th:text="${#temporals.format(document.uploadedAt, 'dd/MM/yyyy')}">15/12/2024</span>
+                            </li>
+                            <li th:if="${document.qrCodeUrl != null}">
+                                <i class="bi bi-qr-code me-2" style="color: var(--tertiary);"></i>
+                                <strong>QR Code:</strong> <span class="text-success">Available</span>
+                            </li>
+                            <li>
+                                <i class="bi bi-shield-check me-2" style="color: var(--tertiary);"></i>
+                                <strong>Access:</strong>
+                                <span th:text="${document.isPublic ? 'Public' : 'Private'}">Public</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this document?</p>
+                <p><strong th:text="${document.title}">Annual Report 2024</strong></p>
+                <p class="text-danger mb-0">
+                    <i class="bi bi-exclamation-circle"></i> This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form th:action="@{/admin/documents/delete/{id}(id=${document.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    function confirmDelete() {
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    function copyLink() {
+        const link = window.location.origin + '/documents/view/' + /*[[${document.id}]]*/ '12345';
+
+        navigator.clipboard.writeText(link).then(() => {
+            // Show success message
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            const originalClass = btn.className;
+
+            btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Copied!';
+            btn.className = 'btn btn-success';
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.className = originalClass;
+            }, 2000);
+        }).catch(err => {
+            alert('❌ Failed to copy link. Please try again.');
+            console.error('Copy failed:', err);
+        });
+    }
+
+    // Show tooltip on hover for action buttons
+    document.querySelectorAll('[title]').forEach(element => {
+        element.addEventListener('mouseenter', function() {
+            this.style.cursor = 'pointer';
+        });
+    });
+</script>
+</body>
+</html>

@@ -3,6 +3,9 @@ package com.syndico.syndicoapp.models;
 import com.syndico.syndicoapp.models.enums.ChargeStatus;
 import com.syndico.syndicoapp.models.enums.ChargeType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -23,16 +26,22 @@ public class Charge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Le type de charge est obligatoire")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChargeType type;
 
+    @NotNull(message = "Le montant est obligatoire")
+    @DecimalMin(value = "0.01", message = "Le montant doit être supérieur à 0")
+    @DecimalMax(value = "1000000.00", message = "Le montant ne peut pas dépasser 1 000 000")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    @NotNull(message = "La date d'échéance est obligatoire")
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
+    @NotNull(message = "La date d'émission est obligatoire")
     @Column(name = "issue_date", nullable = false)
     private LocalDate issueDate;
 

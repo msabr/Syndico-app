@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='messages')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>
+                    <i class="bi bi-envelope"></i> Messages
+                    <span th:if="${unreadCount > 0}" class="unread-badge" th:text="${unreadCount}">3</span>
+                </h1>
+                <p class="mb-0" style="opacity: 0.9;">Manage your communications</p>
+            </div>
+            <a th:href="@{/admin/messages/compose}" class="btn">
+                <i class="bi bi-pencil-square me-2"></i>Compose Message
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${success}">Message sent successfully!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}">An error occurred!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stat-card stat-card-primary position-relative">
+                    <h6>Total Messages</h6>
+                    <h3 th:text="${statistics.totalMessages}">42</h3>
+                    <i class="bi bi-envelope-fill stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card stat-card-warning position-relative">
+                    <h6>Unread Messages</h6>
+                    <h3 th:text="${unreadCount}">8</h3>
+                    <i class="bi bi-envelope-open-fill stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card stat-card-success position-relative">
+                    <h6>Sent Messages</h6>
+                    <h3 th:text="${statistics.sentMessages}">15</h3>
+                    <i class="bi bi-send-fill stat-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${filter == null or filter == 'all' ? 'active' : ''}"
+                   th:href="@{/admin/messages}">
+                    <i class="bi bi-inbox-fill me-2"></i>Inbox
+                    <span th:if="${unreadCount > 0}" class="badge bg-danger" th:text="${unreadCount}">3</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${filter == 'unread' ? 'active' : ''}"
+                   th:href="@{/admin/messages(filter='unread')}">
+                    <i class="bi bi-envelope-open me-2"></i>Unread
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${filter == 'sent' ? 'active' : ''}"
+                   th:href="@{/admin/messages(filter='sent')}">
+                    <i class="bi bi-send me-2"></i>Sent
+                </a>
+            </li>
+        </ul>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <form th:action="@{/admin/messages}" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search messages by subject, sender, or content..."
+                           th:value="${searchQuery}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+            <a th:href="@{/admin/messages}" class="btn btn-secondary btn-sm mt-2">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+            </a>
+        </div>
+
+        <!-- Messages List -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th width="5%"></th>
+                            <th width="20%" th:text="${filter == 'sent' ? 'To' : 'From'}">From</th>
+                            <th width="45%">Subject</th>
+                            <th width="20%">Date</th>
+                            <th width="10%">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(messages)}">
+                            <td colspan="5" class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>No messages found</p>
+                            </td>
+                        </tr>
+                        <tr th:each="msg : ${messages}"
+                            class="message-row"
+                            th:classappend="${!msg.isRead and filter != 'sent' ? 'unread' : ''}"
+                            onclick="window.location.href=this.getAttribute('data-href')"
+                            th:attr="data-href=@{/admin/messages/{id}(id=${msg.id})}">
+                            <td class="text-center">
+                                <i th:if="${!msg.isRead and filter != 'sent'}"
+                                   class="bi bi-circle-fill"
+                                   style="font-size: 0.6rem; color: var(--primary);"
+                                   title="Unread"></i>
+                            </td>
+                            <td>
+                                <div th:if="${filter == 'sent'}" class="message-receiver">
+                                    <div class="receiver-avatar"
+                                         th:text="${#strings.substring(receiverName, 0, 1)}">R</div>
+                                    <strong class="receiver-name" th:text="${receiverName}">Receiver Name</strong>
+                                </div>
+                                <div th:unless="${filter == 'sent'}" class="message-sender">
+                                    <div class="sender-avatar"
+                                         th:text="${#strings.substring(senderName, 0, 1)}">S</div>
+                                    <strong class="sender-name" th:text="${senderName}">Sender Name</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="message-subject" th:text="${msg.subject}">Important Update</div>
+                                <div class="message-preview"
+                                     th:text="${#strings.abbreviate(msg.content, 80)}">
+                                    This is a preview of the message content...
+                                </div>
+                            </td>
+                            <td>
+                                <small th:text="${#temporals.format(msg.sentAt, 'dd/MM/yyyy HH:mm')}">
+                                    15/12/2024 14:30
+                                </small>
+                            </td>
+                            <td onclick="event.stopPropagation();">
+                                <div class="action-buttons">
+                                    <a th:href="@{/admin/messages/{id}(id=${msg.id})}"
+                                       class="btn-view"
+                                       title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn-delete"
+                                            onclick="confirmDelete(this)"
+                                            th:data-id="${msg.id}"
+                                            title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination (optional) -->
+        <nav th:if="${totalPages > 1}" class="mt-4" aria-label="Messages pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/messages(page=${currentPage - 1})}">Previous</a>
+                </li>
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/admin/messages(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/messages(page=${currentPage + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this message?</p>
+                <p class="text-danger mb-0">
+                    <i class="bi bi-exclamation-circle"></i> This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete(button) {
+        event.stopPropagation();
+        const msgId = button.getAttribute('data-id');
+        document.getElementById('deleteForm').action = '/admin/messages/delete/' + msgId;
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+</body>
+</html>

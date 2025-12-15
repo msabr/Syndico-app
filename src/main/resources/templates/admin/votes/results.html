@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/operations/genAssembliesSt.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='votes')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2"><i class="fas fa-chart-bar me-2"></i>Vote Results</h2>
+                    <p class="mb-0" th:text="${results.vote.question}">Question</p>
+                </div>
+                <a th:href="@{/admin/votes}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Votes
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Results -->
+            <div class="col-lg-8">
+                <!-- Vote Information -->
+                <div class="results-card">
+                    <h5 class="mb-4"><i class="fas fa-info-circle me-2"></i>Vote Information</h5>
+                    <p><strong>Question:</strong> <span th:text="${results.vote.question}">Question</span></p>
+                    <p><strong>Status:</strong> <span class="badge bg-success" th:text="${results.vote.status}">OUVERT</span></p>
+                    <p><strong>Voting Period:</strong>
+                        <span th:text="${#temporals.format(results.vote.startDate, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</span>
+                        -
+                        <span th:text="${#temporals.format(results.vote.endDate, 'dd/MM/yyyy HH:mm')}">03/01/2025 18:00</span>
+                    </p>
+                    <p><strong>Total Votes:</strong> <span th:text="${results.totalVotes}">0</span></p>
+                </div>
+
+                <!-- Results by Option -->
+                <div class="results-card">
+                    <h5 class="mb-4"><i class="fas fa-poll me-2"></i>Results by Option</h5>
+
+                    <div th:each="entry : ${results.resultsByOption}" class="result-item">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong th:text="${entry.key}">Option</strong>
+                            <span>
+                                <strong th:text="${entry.value}">0</strong> votes
+                                (<span th:text="${#numbers.formatDecimal(results.getPercentage(entry.key), 0, 1)}">0</span>%)
+                            </span>
+                        </div>
+                        <div class="progress progress-custom">
+                            <div class="progress-bar"
+                                 th:style="'width: ' + ${results.getPercentage(entry.key)} + '%; background-color: var(--primary);'"
+                                 role="progressbar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Chart -->
+            <div class="col-lg-4">
+                <div class="results-card">
+                    <h5 class="mb-4 text-center"><i class="fas fa-chart-pie me-2"></i>Visual Results</h5>
+                    <div class="chart-container">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+<script th:inline="javascript">
+    const resultsData = [[${results.resultsByOption}]];
+
+    const labels = Object.keys(resultsData);
+    const data = Object.values(resultsData);
+
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#28a745',
+                    '#dc3545',
+                    '#ffc107',
+                    '#17a2b8',
+                    '#6c757d'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.parsed + ' votes';
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

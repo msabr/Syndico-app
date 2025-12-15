@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/finance/chList.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='charges')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2">
+                        <i class="fas fa-receipt me-2"></i>
+                        <span th:text="${charge.id != null ? 'Edit Charge' : 'Create New Charge'}">Create New Charge</span>
+                    </h2>
+                    <p class="mb-0">Fill in the charge details below</p>
+                </div>
+                <a th:href="@{/admin/charges}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box" th:if="${charge.id == null}">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Note:</strong> Invoice number will be generated automatically if not provided.
+            Issue date defaults to today.
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <form th:action="${charge.id != null ? '/admin/charges/update/' + charge.id : '/admin/charges/create'}"
+                  th:object="${charge}"
+                  method="post">
+
+                <div class="row">
+                    <!-- Resident Selection -->
+                    <div class="col-md-6 mb-3">
+                        <label for="resident" class="form-label required-field">Resident</label>
+                        <select id="resident" th:field="*{resident.id}" class="form-select" required>
+                            <option value="">Select a resident...</option>
+                            <option th:each="resident : ${residents}"
+                                    th:value="${resident.id}"
+                                    th:text="${resident.user?.firstName + ' ' + resident.user?.lastName + ' - Apt: ' + resident.apartmentNumber}">
+                                Resident Name - Apt: A101
+                            </option>
+                        </select>
+                        <div class="form-text">Select the resident for this charge</div>
+                    </div>
+
+                    <!-- Charge Type -->
+                    <div class="col-md-6 mb-3">
+                        <label for="type" class="form-label required-field">Charge Type</label>
+                        <select id="type" th:field="*{type}" class="form-select" required>
+                            <option value="">Select type...</option>
+                            <option th:each="type : ${chargeTypes}"
+                                    th:value="${type}"
+                                    th:text="${type}">
+                                MENSUELLE
+                            </option>
+                        </select>
+                        <div class="form-text">Type of charge (Monthly, Exceptional, etc.)</div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="col-md-6 mb-3">
+                        <label for="amount" class="form-label required-field">Amount (DH)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                            <input type="number"
+                                   id="amount"
+                                   th:field="*{amount}"
+                                   class="form-control"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="0.00"
+                                   required>
+                        </div>
+                        <div class="form-text">Amount in Moroccan Dirhams</div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6 mb-3">
+                        <label for="status" class="form-label required-field">Status</label>
+                        <select id="status" th:field="*{status}" class="form-select" required>
+                            <option th:each="status : ${chargeStatuses}"
+                                    th:value="${status}"
+                                    th:text="${status}">
+                                EN_ATTENTE
+                            </option>
+                        </select>
+                        <div class="form-text">Current payment status</div>
+                    </div>
+
+                    <!-- Issue Date -->
+                    <div class="col-md-6 mb-3">
+                        <label for="issueDate" class="form-label required-field">Issue Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                            <input type="date"
+                                   id="issueDate"
+                                   th:field="*{issueDate}"
+                                   class="form-control"
+                                   required>
+                        </div>
+                        <div class="form-text">Date when the charge was issued</div>
+                    </div>
+
+                    <!-- Due Date -->
+                    <div class="col-md-6 mb-3">
+                        <label for="dueDate" class="form-label required-field">Due Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                            <input type="date"
+                                   id="dueDate"
+                                   th:field="*{dueDate}"
+                                   class="form-control"
+                                   required>
+                        </div>
+                        <div class="form-text">Payment deadline</div>
+                    </div>
+
+                    <!-- Invoice Number (Optional) -->
+                    <div class="col-md-6 mb-3">
+                        <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                            <input type="text"
+                                   id="invoiceNumber"
+                                   th:field="*{invoiceNumber}"
+                                   class="form-control"
+                                   placeholder="Auto-generated if empty">
+                        </div>
+                        <div class="form-text">Leave empty for auto-generation</div>
+                    </div>
+
+                    <!-- Payment Method (if already paid) -->
+                    <div class="col-md-6 mb-3" th:if="${charge.id != null && charge.status?.toString() == 'PAYEE'}">
+                        <label for="paymentMethod" class="form-label">Payment Method</label>
+                        <select id="paymentMethod" th:field="*{paymentMethod}" class="form-select">
+                            <option value="">Not specified</option>
+                            <option value="Espèces">Cash (Espèces)</option>
+                            <option value="Chèque">Check (Chèque)</option>
+                            <option value="Virement">Bank Transfer (Virement)</option>
+                            <option value="Stripe">Stripe</option>
+                            <option value="PayPal">PayPal</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12 mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description"
+                                  th:field="*{description}"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Enter charge description, notes, or details..."></textarea>
+                        <div class="form-text">Additional information about this charge</div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <a th:href="@{/admin/charges}" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${charge.id != null ? 'Update Charge' : 'Create Charge'}">Create Charge</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Additional Info Panel (for edit mode) -->
+        <div class="form-container mt-4" th:if="${charge.id != null}">
+            <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>Charge Information</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="mb-2"><strong>Invoice Number:</strong></p>
+                    <p class="text-muted" th:text="${charge.invoiceNumber}">INV-2025-001</p>
+                </div>
+                <div class="col-md-4" th:if="${charge.paidAt != null}">
+                    <p class="mb-2"><strong>Paid At:</strong></p>
+                    <p class="text-muted" th:text="${#temporals.format(charge.paidAt, 'dd/MM/yyyy HH:mm')}">01/01/2025 14:30</p>
+                </div>
+                <div class="col-md-4" th:if="${charge.receiptUrl != null}">
+                    <p class="mb-2"><strong>Receipt:</strong></p>
+                    <a th:href="${charge.receiptUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-download me-1"></i>Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Set default issue date to today if creating new charge
+    document.addEventListener('DOMContentLoaded', function() {
+        const issueDateInput = document.getElementById('issueDate');
+        if (issueDateInput && !issueDateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            issueDateInput.value = today;
+        }
+
+        // Set due date validation (must be after issue date)
+        const dueDateInput = document.getElementById('dueDate');
+        issueDateInput.addEventListener('change', function() {
+            dueDateInput.min = this.value;
+        });
+    });
+</script>
+</body>
+</html>
