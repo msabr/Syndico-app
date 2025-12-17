@@ -85,6 +85,11 @@ public class ReclamationService {
         return reclamationRepository.findByResidentId(residentId);
     }
 
+    // Get reclamations by resident and status
+    public List<Reclamation> findByResidentIdAndStatus(Long residentId, ReclamationStatus status) {
+        return reclamationRepository.findByResidentIdAndStatus(residentId, status);
+    }
+
     // Get reclamations by status
     public List<Reclamation> getReclamationsByStatus(ReclamationStatus status) {
         return reclamationRepository.findByStatus(status);

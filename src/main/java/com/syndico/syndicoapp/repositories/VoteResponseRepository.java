@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface VoteResponseRepository extends JpaRepository<VoteResponse, Long> {
     List<VoteResponse> findByVoteId(Long voteId);
+    List<VoteResponse> findByResidentId(Long residentId);
     boolean existsByVoteIdAndResidentId(Long voteId, Long residentId);
 }

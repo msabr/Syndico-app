@@ -36,9 +36,19 @@ public class AssemblyMeetingService {
         return assemblyMeetingRepository.findAll();
     }
 
+    // Alias for getAllMeetings
+    public List<AssemblyMeeting> findAll() {
+        return getAllMeetings();
+    }
+
     // Get meeting by ID
     public Optional<AssemblyMeeting> getMeetingById(Long id) {
         return assemblyMeetingRepository.findById(id);
+    }
+
+    // Alias for getMeetingById that throws exception if not found
+    public AssemblyMeeting findById(Long id) {
+        return getMeetingById(id).orElseThrow(() -> new RuntimeException("Meeting not found with id: " + id));
     }
 
     // Update meeting
@@ -69,6 +79,11 @@ public class AssemblyMeetingService {
     // Get meetings by status
     public List<AssemblyMeeting> getMeetingsByStatus(MeetingStatus status) {
         return assemblyMeetingRepository.findByStatus(status);
+    }
+
+    // Alias for getMeetingsByStatus
+    public List<AssemblyMeeting> findByStatus(MeetingStatus status) {
+        return getMeetingsByStatus(status);
     }
 
     // Get upcoming meetings

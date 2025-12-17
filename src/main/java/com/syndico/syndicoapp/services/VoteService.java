@@ -74,6 +74,25 @@ public class VoteService {
         return voteRepository.findByStatus(status);
     }
 
+    // Alias for findByStatus
+    public List<Vote> findByStatus(VoteStatus status) {
+        return getVotesByStatus(status);
+    }
+
+    // Get votes where resident has already voted
+    public List<Vote> getVotesWhereResidentVoted(Long residentId) {
+        List<VoteResponse> responses = voteResponseRepository.findByResidentId(residentId);
+        return responses.stream()
+                .map(VoteResponse::getVote)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    // Cast vote (alias for submitVote)
+    public VoteResponse castVote(Long voteId, Long residentId, String choice) {
+        return submitVote(voteId, residentId, choice);
+    }
+
     // Get active votes (open and current)
     public List<Vote> getActiveVotes() {
         LocalDateTime now = LocalDateTime.now();

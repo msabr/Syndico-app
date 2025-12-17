@@ -86,6 +86,11 @@ public class ChargeService {
         return chargeRepository.findByResidentId(residentId);
     }
 
+    // Get charges by resident and status
+    public List<Charge> getChargesByResidentAndStatus(Long residentId, ChargeStatus status) {
+        return chargeRepository.findByResidentIdAndStatus(residentId, status);
+    }
+
     // Get charges by status
     public List<Charge> getChargesByStatus(ChargeStatus status) {
         return chargeRepository.findByStatus(status);

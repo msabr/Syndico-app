@@ -112,13 +112,13 @@
         <!-- Calendar & Events -->
         <div class="sidebar-section">
             <div class="section-title">Community</div>
-            <a th:href="@{/client/calendar}"
+            <a th:href="@{/client/community/calendar}"
                class="sidebar-item"
                th:classappend="${activePage == 'calendar'} ? 'active' : ''">
                 <i class="fas fa-calendar-week"></i>
                 <span>Calendar</span>
             </a>
-            <a th:href="@{/client/work-projects}"
+            <a th:href="@{/client/community/ongoing-works}"
                class="sidebar-item"
                th:classappend="${activePage == 'work-projects'} ? 'active' : ''">
                 <i class="fas fa-hard-hat"></i>
@@ -129,14 +129,14 @@
         <!-- Votes & Assemblies -->
         <div class="sidebar-section">
             <div class="section-title">Governance</div>
-            <a th:href="@{/client/votes}"
+            <a th:href="@{/client/governance/active-votes}"
                class="sidebar-item"
                th:classappend="${activePage == 'votes'} ? 'active' : ''">
                 <i class="fas fa-vote-yea"></i>
                 <span>Active Votes</span>
                 <span class="badge badge-success">1</span>
             </a>
-            <a th:href="@{/client/assemblies}"
+            <a th:href="@{/client/governance/general-assemblies}"
                class="sidebar-item"
                th:classappend="${activePage == 'assemblies'} ? 'active' : ''">
                 <i class="fas fa-users"></i>
