@@ -11,6 +11,7 @@ import com.syndico.syndicoapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,238 +21,222 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ResidentService {
 
-    private final ResidentRepository residentRepository;
-    private final UserRepository userRepository;
-    private final BuildingRepository buildingRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private ResidentRepository residentRepository;
 
-    // Find all with filters
-    public Page<Resident> findAll(String search, Long buildingId, String status, String type, Pageable pageable) {
-        Specification<Resident> spec = (root, query, cb) -> cb.conjunction();
+    @Autowired
+    private UserRepository userRepository;
 
-        if (search != null && !search.isEmpty()) {
-            spec = spec.and((root, query, cb) -> cb.or(
-                    cb.like(cb.lower(root.get("user").get("firstName")), "%" + search.toLowerCase() + "%"),
-                    cb.like(cb.lower(root.get("user").get("lastName")), "%" + search.toLowerCase() + "%"),
-                    cb.like(cb.lower(root.get("user").get("email")), "%" + search.toLowerCase() + "%"),
-                    cb.like(cb.lower(root.get("apartmentNumber")), "%" + search.toLowerCase() + "%")
-            ));
-        }
+    @Autowired
+    private BuildingRepository buildingRepository;
 
-        if (buildingId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("building").get("id"), buildingId));
-        }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        if ("active".equals(status)) {
-            spec = spec.and((root, query, cb) -> cb.isTrue(root.get("user").get("isEmailVerified")));
-        } else if ("inactive".equals(status)) {
-            spec = spec.and((root, query, cb) -> cb.isFalse(root.get("user").get("isEmailVerified")));
-        }
-
-        if ("owner".equals(type)) {
-            spec = spec.and((root, query, cb) -> cb.isTrue(root.get("isOwner")));
-        } else if ("tenant".equals(type)) {
-            spec = spec.and((root, query, cb) -> cb.isFalse(root.get("isOwner")));
-        }
-
-        return residentRepository.findAll(spec, pageable);
-    }
-
-    public List<Resident> findAll() {
+    // Get all residents
+    public List<Resident> getAllResidents() {
         return residentRepository.findAll();
     }
 
-    public Optional<Resident> findById(Long id) {
-        return residentRepository.findById(id);
+    // Get resident by ID
+    public Resident getResidentById(Long id) {
+        return residentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resident not found with id: " + id));
     }
 
-    public long count() {
-        return residentRepository.count();
+    // Get resident by user ID
+    public Resident getResidentByUserId(Long userId) {
+        return residentRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Resident not found for user id: " + userId));
     }
 
-    public long countByActive(boolean isActive) {
-        return residentRepository.countByUserIsEmailVerified(isActive);
+    // Get residents by building
+    public List<Resident> getResidentsByBuilding(Long buildingId) {
+        return residentRepository.findByBuilding_Id(buildingId);
     }
 
-    public long countByIsOwner(boolean isOwner) {
-        return residentRepository.countByIsOwner(isOwner);
+    // Search residents
+    public List<Resident> searchResidents(String keyword) {
+        List<User> users = userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                keyword, keyword, keyword
+        );
+
+        return users.stream()
+                .filter(user -> user.getRole() == UserRole.RESIDENT)
+                .map(user -> residentRepository.findByUser_Id(user.getId()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
+    // Create new resident with user account
     @Transactional
-    public Resident create(ResidentDTO dto) {
+    public Resident createResident(ResidentDTO residentDTO) {
         // Check if email already exists
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists!");
+        if (userRepository.findByEmail(residentDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists: " + residentDTO.getEmail());
         }
 
-        // Create User
-        User user = User.builder()
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .phoneNumber(dto.getPhoneNumber())
-                .role(UserRole.RESIDENT)
-                .isEmailVerified(true) // Auto-activate for admin creation
-                .preferredLanguage(dto.getPreferredLanguage() != null ? dto.getPreferredLanguage() : "EN")
-                .build();
-
-        user = userRepository.save(user);
-
-        // Get building
-        Building building = buildingRepository.findById(dto.getBuildingId())
+        // Verify building exists
+        Building building = buildingRepository.findById(residentDTO.getBuildingId())
                 .orElseThrow(() -> new RuntimeException("Building not found"));
 
-        // Create Resident
-        Resident resident = Resident.builder()
-                .user(user)
-                .building(building)
-                .apartmentNumber(dto.getApartmentNumber())
-                .moveInDate(dto.getMoveInDate())
-                .isOwner(dto.getIsOwner())
-                .emergencyContact(dto.getEmergencyContact())
-                .build();
+        // Create User entity
+        User user = new User();
+        user.setEmail(residentDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(residentDTO.getPassword()));
+        user.setFirstName(residentDTO.getFirstName());
+        user.setLastName(residentDTO.getLastName());
+        user.setPhoneNumber(residentDTO.getPhoneNumber());
+        user.setRole(UserRole.RESIDENT);
+        user.setIsEmailVerified(true); // Auto-verify for admin-created accounts
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setPreferredLanguage("FR");
+
+        User savedUser = userRepository.save(user);
+
+        // Create Resident entity
+        Resident resident = new Resident();
+        resident.setUserId(savedUser.getId());
+        resident.setApartmentNumber(residentDTO.getApartmentNumber());
+        resident.setBuildingId(residentDTO.getBuildingId());
+        resident.setMoveInDate(residentDTO.getMoveInDate() != null ?
+                residentDTO.getMoveInDate() : LocalDate.now());
+        resident.setIsOwner(residentDTO.getIsOwner() != null ?
+                residentDTO.getIsOwner() : false);
+        resident.setEmergencyContact(residentDTO.getEmergencyContact());
 
         return residentRepository.save(resident);
     }
 
+    // Update resident
     @Transactional
-    public Resident update(Long id, ResidentDTO dto) {
-        Resident resident = residentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resident not found"));
+    public Resident updateResident(Long id, ResidentDTO residentDTO) {
+        Resident resident = getResidentById(id);
+        User user = userRepository.findById(resident.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        User user = resident.getUser();
-
-        // Update user info
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setPhoneNumber(dto.getPhoneNumber());
-        user.setPreferredLanguage(dto.getPreferredLanguage());
-
-        // Only update password if provided
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // Check if email is being changed and if it's already taken
+        if (!user.getEmail().equals(residentDTO.getEmail())) {
+            if (userRepository.findByEmail(residentDTO.getEmail()).isPresent()) {
+                throw new RuntimeException("Email already exists: " + residentDTO.getEmail());
+            }
+            user.setEmail(residentDTO.getEmail());
         }
 
-        // Update email if changed
-        if (!user.getEmail().equals(dto.getEmail())) {
-            if (userRepository.existsByEmail(dto.getEmail())) {
-                throw new RuntimeException("Email already exists!");
-            }
-            user.setEmail(dto.getEmail());
+        // Update User entity
+        user.setFirstName(residentDTO.getFirstName());
+        user.setLastName(residentDTO.getLastName());
+        user.setPhoneNumber(residentDTO.getPhoneNumber());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        // Update password only if provided
+        if (residentDTO.getPassword() != null && !residentDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(residentDTO.getPassword()));
         }
 
         userRepository.save(user);
 
-        // Update resident info
-        Building building = buildingRepository.findById(dto.getBuildingId())
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+        // Update Resident entity
+        if (residentDTO.getBuildingId() != null) {
+            buildingRepository.findById(residentDTO.getBuildingId())
+                    .orElseThrow(() -> new RuntimeException("Building not found"));
+            resident.setBuildingId(residentDTO.getBuildingId());
+        }
 
-        resident.setBuilding(building);
-        resident.setApartmentNumber(dto.getApartmentNumber());
-        resident.setMoveInDate(dto.getMoveInDate());
-        resident.setIsOwner(dto.getIsOwner());
-        resident.setEmergencyContact(dto.getEmergencyContact());
+        resident.setApartmentNumber(residentDTO.getApartmentNumber());
+        resident.setMoveInDate(residentDTO.getMoveInDate());
+        resident.setIsOwner(residentDTO.getIsOwner());
+        resident.setEmergencyContact(residentDTO.getEmergencyContact());
 
         return residentRepository.save(resident);
     }
 
+    // Delete resident
     @Transactional
-    public void delete(Long id) {
-        Resident resident = residentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resident not found"));
+    public void deleteResident(Long id) {
+        Resident resident = getResidentById(id);
+        Long userId = resident.getUserId();
 
-        User user = resident.getUser();
-
-        residentRepository.delete(resident);
-        userRepository.delete(user);
-    }
-
-    @Transactional
-    public Resident save(Resident resident) {
-        return residentRepository.save(resident);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
+        // Delete resident first
         residentRepository.deleteById(id);
+
+        // Then delete user account
+        userRepository.deleteById(userId);
     }
 
-    // Convert to DTO
-    public ResidentDTO toDTO(Resident resident) {
-        return ResidentDTO.builder()
-                .id(resident.getId())
-                .firstName(resident.getUser().getFirstName())
-                .lastName(resident.getUser().getLastName())
-                .email(resident.getUser().getEmail())
-                .phoneNumber(resident.getUser().getPhoneNumber())
-                .buildingId(resident.getBuilding().getId())
-                .apartmentNumber(resident.getApartmentNumber())
-                .moveInDate(resident.getMoveInDate())
-                .isOwner(resident.getIsOwner())
-                .emergencyContact(resident.getEmergencyContact())
-                .preferredLanguage(resident.getUser().getPreferredLanguage())
-                .build();
+    // Get resident with user details (for display)
+    public ResidentDTO getResidentDTOById(Long id) {
+        Resident resident = getResidentById(id);
+        User user = userRepository.findById(resident.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return mapToDTO(resident, user);
     }
 
-    // Export to Excel
-    public void exportToExcel(List<Resident> residents, HttpServletResponse response) throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Residents");
-
-        // Header Row
-        Row headerRow = sheet.createRow(0);
-        String[] columns = {"ID", "Name", "Email", "Phone", "Building", "Apartment", "Type", "Move In Date", "Status"};
-
-        CellStyle headerStyle = workbook.createCellStyle();
-        Font headerFont = workbook.createFont();
-        headerFont.setBold(true);
-        headerStyle.setFont(headerFont);
-
-        for (int i = 0; i < columns.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columns[i]);
-            cell.setCellStyle(headerStyle);
-        }
-
-        // Data Rows
-        int rowNum = 1;
-        for (Resident resident : residents) {
-            Row row = sheet.createRow(rowNum++);
-
-            row.createCell(0).setCellValue(resident.getId());
-            row.createCell(1).setCellValue(resident.getUser().getFullName());
-            row.createCell(2).setCellValue(resident.getUser().getEmail());
-            row.createCell(3).setCellValue(resident.getUser().getPhoneNumber());
-            row.createCell(4).setCellValue(resident.getBuilding().getName());
-            row.createCell(5).setCellValue(resident.getApartmentNumber());
-            row.createCell(6).setCellValue(resident.getIsOwner() ? "Owner" : "Tenant");
-            row.createCell(7).setCellValue(resident.getMoveInDate() != null ? resident.getMoveInDate().toString() : "");
-            row.createCell(8).setCellValue(resident.getUser().getIsEmailVerified() ? "Active" : "Inactive");
-        }
-
-        // Auto-size columns
-        for (int i = 0; i < columns.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
-
-        // Write to response
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=residents_" + System.currentTimeMillis() + ".xlsx");
-
-        workbook.write(response.getOutputStream());
-        workbook.close();
+    // Get all residents with user details
+    public List<ResidentDTO> getAllResidentsDTO() {
+        List<Resident> residents = getAllResidents();
+        return residents.stream()
+                .map(resident -> {
+                    User user = userRepository.findById(resident.getUserId()).orElse(null);
+                    return user != null ? mapToDTO(resident, user) : null;
+                })
+                .filter(dto -> dto != null)
+                .collect(Collectors.toList());
     }
 
-    // Get All Resident
-    public List<Resident> getAllResidents() {
+    // Map Resident and User to ResidentDTO
+    private ResidentDTO mapToDTO(Resident resident, User user) {
+        ResidentDTO dto = new ResidentDTO();
+        dto.setId(resident.getId());
+        dto.setUserId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setApartmentNumber(resident.getApartmentNumber());
+        dto.setBuildingId(resident.getBuildingId());
+        dto.setMoveInDate(resident.getMoveInDate());
+        dto.setIsOwner(resident.getIsOwner());
+        dto.setEmergencyContact(resident.getEmergencyContact());
+        dto.setCreatedAt(user.getCreatedAt());
+
+        // Get building name
+        if (resident.getBuildingId() != null) {
+            buildingRepository.findById(resident.getBuildingId())
+                    .ifPresent(building -> dto.setBuildingName(building.getName()));
+        }
+
+        return dto;
+    }
+
+    // Count total residents
+    public long countResidents() {
+        return residentRepository.count();
+    }
+
+    // Get owners only
+    public List<Resident> getOwners() {
+        return residentRepository.findByIsOwnerTrue();
+    }
+
+    // Get tenants only
+    public List<Resident> getTenants() {
+        return residentRepository.findByIsOwnerFalse();
+    }
+
+    public Object findAll() {
         return residentRepository.findAll();
     }
 }

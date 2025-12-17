@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 public class ResidentDTO {
 
     private Long id;
+    private Long userId;
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
@@ -42,10 +44,19 @@ public class ResidentDTO {
 
     private LocalDate moveInDate;
 
+    private String buildingName;
+
+    private LocalDateTime createdAt;
+
     @NotNull(message = "Please specify if owner or tenant")
     private Boolean isOwner;
 
     private String emergencyContact;
 
     private String preferredLanguage;
+
+    // Helper method to get full name
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

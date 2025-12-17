@@ -1,5 +1,6 @@
 package com.syndico.syndicoapp.controllers;
 
+import com.syndico.syndicoapp.dto.ResidentDTO;
 import com.syndico.syndicoapp.models.*;
 import com.syndico.syndicoapp.models.enums.*;
 import com.syndico.syndicoapp.repositories.PrestataireRepository;
@@ -57,7 +58,7 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         // Statistics Cards
-        model.addAttribute("totalResidents", residentService.findAll().size());
+        model.addAttribute("totalResidents", residentService.getAllResidents().size());
         model.addAttribute("totalBuildings", buildingService.findAll().size());
         model.addAttribute("totalApartments", apartmentService.findAll().size());
 
@@ -128,53 +129,103 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    // ========  Residents Management  =========
+    // ========== RESIDENTS MANAGEMENT (COMPLETE) ==========
+
     @GetMapping("/residents")
-    public String listResidents(Model model) {
-        model.addAttribute("residents", residentService.findAll());
-        model.addAttribute("activePage", "residents");
+    public String listResidents(Model model,
+                                @RequestParam(required = false) String search,
+                                @RequestParam(required = false) String filter) {
+        List<ResidentDTO> residents;
+
+        if (search != null && !search.isEmpty()) {
+            // Search residents by name, email, or apartment
+            residents = residentService.searchResidents(search).stream()
+                    .map(r -> residentService.getResidentDTOById(r.getId()))
+                    .collect(Collectors.toList());
+        } else if ("owners".equals(filter)) {
+            residents = residentService.getOwners().stream()
+                    .map(r -> residentService.getResidentDTOById(r.getId()))
+                    .collect(Collectors.toList());
+        } else if ("tenants".equals(filter)) {
+            residents = residentService.getTenants().stream()
+                    .map(r -> residentService.getResidentDTOById(r.getId()))
+                    .collect(Collectors.toList());
+        } else {
+            residents = residentService.getAllResidentsDTO();
+        }
+
+        model.addAttribute("residents", residents);
+        model.addAttribute("totalResidents", residentService.countResidents());
+        model.addAttribute("searchTerm", search);
+        model.addAttribute("filter", filter);
+
         return "admin/residents/list";
     }
 
-    // Add New Resident
+    // Show resident details
+    @GetMapping("/residents/{id}")
+    public String viewResident(@PathVariable Long id, Model model) {
+        ResidentDTO resident = residentService.getResidentDTOById(id);
+        model.addAttribute("resident", resident);
+        return "admin/residents/details";
+    }
+
+    // Show create resident form
     @GetMapping("/residents/new")
     public String newResidentForm(Model model) {
-        model.addAttribute("resident", new Resident());
-        model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("activePage", "residents-new");
+        List<Building> buildings = buildingService.getAllBuildings();
+        model.addAttribute("residentDTO", new ResidentDTO());
+        model.addAttribute("buildings", buildings);
         return "admin/residents/form";
     }
 
-    // Edit Resident
-    @GetMapping("/residents/edit/{id}")
-    public String editResidentForm(@PathVariable Long id, Model model) {
-        model.addAttribute("resident", residentService.findById(id));
-        model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("activePage", "residents");
-        return "admin/residents/form";
-    }
-
-    // Save Resident
-    @PostMapping("/residents/save")
-    public String saveResident(@ModelAttribute Resident resident, RedirectAttributes redirectAttributes) {
+    // Create resident
+    @PostMapping("/residents/create")
+    public String createResident(@ModelAttribute ResidentDTO residentDTO,
+                                 RedirectAttributes redirectAttributes) {
         try {
-            residentService.save(resident);
-            redirectAttributes.addFlashAttribute("successMessage", "Resident saved successfully!");
+            residentService.createResident(residentDTO);
+            redirectAttributes.addFlashAttribute("success", "Resident created successfully");
             return "redirect:/admin/residents";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error saving resident: " + e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to create resident: " + e.getMessage());
             return "redirect:/admin/residents/new";
         }
     }
 
-    // Delete Resident
-    @GetMapping("/residents/delete/{id}")
+    // Show edit resident form
+    @GetMapping("/residents/edit/{id}")
+    public String editResidentForm(@PathVariable Long id, Model model) {
+        ResidentDTO residentDTO = residentService.getResidentDTOById(id);
+        List<Building> buildings = buildingService.getAllBuildings();
+        model.addAttribute("residentDTO", residentDTO);
+        model.addAttribute("buildings", buildings);
+        return "admin/residents/form";
+    }
+
+    // Update resident
+    @PostMapping("/residents/update/{id}")
+    public String updateResident(@PathVariable Long id,
+                                 @ModelAttribute ResidentDTO residentDTO,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            residentService.updateResident(id, residentDTO);
+            redirectAttributes.addFlashAttribute("success", "Resident updated successfully");
+            return "redirect:/admin/residents";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to update resident: " + e.getMessage());
+            return "redirect:/admin/residents/edit/" + id;
+        }
+    }
+
+    // Delete resident
+    @PostMapping("/residents/delete/{id}")
     public String deleteResident(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            residentService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Resident deleted successfully!");
+            residentService.deleteResident(id);
+            redirectAttributes.addFlashAttribute("success", "Resident deleted successfully");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting resident: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Failed to delete resident: " + e.getMessage());
         }
         return "redirect:/admin/residents";
     }

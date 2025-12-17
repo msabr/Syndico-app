@@ -68,4 +68,26 @@ public class Resident {
         }
         return "Adresse non définie";
     }
+
+    public void setUserId(Long id) {
+        if (this.user == null) {
+            this.user = new User();
+        }
+        this.user.setId(id);
+    }
+
+    public void setBuildingId(@NotNull(message = "Building is required") Long buildingId) {
+        if (this.building == null) {
+            this.building = new Building();
+        }
+        this.building.setId(buildingId);
+    }
+
+    public Long getUserId() {
+        return this.user != null ? this.user.getId() : null;
+    }
+
+    public Long getBuildingId() {
+        return this.building != null ? this.building.getId() : null;
+    }
 }

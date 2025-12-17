@@ -10,10 +10,20 @@ import java.util.Optional;
 
 @Repository
 public interface ResidentRepository extends JpaRepository<Resident, Long>, JpaSpecificationExecutor<Resident> {
-    Optional<Resident> findByUserId(Long userId);
-    List<Resident> findByBuildingId(Long buildingId);
-    List<Resident> findByApartmentNumber(String apartmentNumber);
-    long countByUserIsEmailVerified(boolean isEmailVerified);
+    Optional<Resident> findByUser_Id(Long userId);
+    List<Resident> findByBuilding_Id(Long buildingId);
+    long countByUser_IsEmailVerified(boolean isEmailVerified);
     long countByIsOwner(boolean isOwner);
-    List<Resident> findByIsOwner(Boolean isOwner);
+
+    // Find residents by apartment number
+    List<Resident> findByApartmentNumberContainingIgnoreCase(String apartmentNumber);
+
+    // Find owners only
+    List<Resident> findByIsOwnerTrue();
+
+    // Find tenants only (non-owners)
+    List<Resident> findByIsOwnerFalse();
+
+    // Check if apartment is occupied
+    boolean existsByBuilding_IdAndApartmentNumber(Long buildingId, String apartmentNumber);
 }

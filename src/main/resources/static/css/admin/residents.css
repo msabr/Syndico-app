@@ -8,6 +8,7 @@
     --tertiary: #B08968;
     --accent: #DDB892;
     --dark: #3C3734;
+    --white: #ffffff;
     --success: #28a745;
     --danger: #dc3545;
     --warning: #ffc107;
@@ -15,30 +16,137 @@
 }
 
 /* ============================================
-   Resident Badges
+   Main Content Container
    ============================================ */
-.resident-badge-owner {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+.main-content {
+    margin-left: 280px;
+    margin-top: 76px;
+    padding: 0;
+    min-height: calc(100vh - 76px);
+    background-color: var(--secondary);
 }
 
-.resident-badge-tenant {
+/* ============================================
+   Page Header
+   ============================================ */
+.page-header {
+    background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(60, 55, 52, 0.15);
+}
+
+.page-header h2 {
+    color: var(--white);
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.page-header h2 i {
+    margin-right: 0.75rem;
+}
+
+.page-header p {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.btn-light {
+    background: var(--white);
+    color: var(--dark);
+    border: none;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-light:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   Statistics Cards
+   ============================================ */
+.stat-card {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(60, 55, 52, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(60, 55, 52, 0.15);
+}
+
+.stat-card h6 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    color: #6c757d;
+}
+
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--dark);
+}
+
+.stat-icon {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    font-size: 3rem;
+    opacity: 0.1;
+}
+
+.stat-card-primary {
+    border-left: 4px solid var(--primary);
+}
+
+.stat-card-success {
+    border-left: 4px solid var(--success);
+}
+
+.stat-card-warning {
+    border-left: 4px solid var(--warning);
+}
+
+.stat-card-info {
+    border-left: 4px solid var(--info);
+}
+
+/* ============================================
+   Badges
+   ============================================ */
+.badge-owner {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.badge-tenant {
     background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.85rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    font-size: 0.8rem;
 }
 
 /* ============================================
@@ -50,84 +158,88 @@
     border-radius: 50%;
     background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
     color: white;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 1.1rem;
-    margin-right: 10px;
-}
-
-.resident-info {
-    display: inline-flex;
-    align-items: center;
-}
-
-.resident-name {
-    font-weight: 600;
-    color: var(--dark);
-}
-
-.resident-email {
-    font-size: 0.85rem;
-    color: #6c757d;
-    display: block;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(176, 137, 104, 0.3);
 }
 
 /* ============================================
-   Form Sections
+   Cards & Sections
    ============================================ */
-.form-section {
-    background: white;
+.card {
+    background: var(--white);
     border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    border-left: 4px solid var(--primary);
+    box-shadow: 0 4px 20px rgba(60, 55, 52, 0.08);
+    border: none;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 30px rgba(60, 55, 52, 0.12);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.filter-section {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(60, 55, 52, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.form-section {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
 }
 
 .section-title {
     color: var(--dark);
     font-weight: 700;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--secondary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .section-title i {
-    color: var(--tertiary);
+    color: var(--primary);
 }
 
 /* ============================================
    Form Controls
    ============================================ */
 .form-label {
-    color: var(--dark);
     font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-
-.form-label i {
-    color: var(--tertiary);
-    margin-right: 5px;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
 }
 
 .form-control,
 .form-select {
-    border: 2px solid var(--secondary);
-    border-radius: 8px;
-    padding: 12px 15px;
-    transition: all 0.3s;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: var(--tertiary);
-    box-shadow: 0 0 0 0.2rem rgba(176, 137, 104, 0.25);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(255, 166, 158, 0.25);
 }
 
 .form-control.is-invalid,
@@ -136,17 +248,18 @@
 }
 
 .invalid-feedback {
+    display: block;
     color: var(--danger);
     font-size: 0.875rem;
-    margin-top: 5px;
+    margin-top: 0.25rem;
 }
 
 /* ============================================
-   Radio Buttons Styling
+   Radio Buttons & Checkboxes
    ============================================ */
 .form-check-input:checked {
-    background-color: var(--tertiary);
-    border-color: var(--tertiary);
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 .form-check-label {
@@ -155,8 +268,77 @@
 }
 
 /* ============================================
+   Buttons
+   ============================================ */
+.btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, #ff8a80 100%);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff8a80 0%, var(--primary) 100%);
+    box-shadow: 0 6px 20px rgba(255, 166, 158, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: var(--dark);
+    border: 2px solid var(--tertiary);
+}
+
+.btn-secondary:hover {
+    background: var(--tertiary);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    color: var(--dark);
+    border: 2px solid var(--tertiary);
+}
+
+.btn-outline-secondary:hover {
+    background: var(--tertiary);
+    color: var(--white);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================
    Table Enhancements
    ============================================ */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    color: var(--dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border-bottom: 2px solid var(--primary);
+}
+
 .table tbody tr {
     transition: all 0.3s;
     border-left: 4px solid transparent;
@@ -166,6 +348,11 @@
     background-color: var(--secondary);
     border-left-color: var(--primary);
     transform: translateX(2px);
+}
+
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
 }
 
 /* ============================================

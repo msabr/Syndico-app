@@ -50,4 +50,8 @@ public class BuildingService {
     public List<Building> searchByName(String name) {
         return buildingRepository.findByNameContainingIgnoreCase(name);
     }
+
+    public List<Building> getAllBuildings() {
+        return buildingRepository.findAll();
+    }
 }
