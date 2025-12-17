@@ -1,3 +1,8 @@
+-- Note: This will work if user with ID 2 exists from DataInitializer
+INSERT INTO residents (user_id, apartment_number, is_owner, move_in_date, emergency_contact)
+SELECT 2, 'A-101', true, '2023-01-15', '+212612345678'
+WHERE NOT EXISTS (SELECT 1 FROM residents WHERE user_id = 2);
+
 -- Chatbot QA Data
 INSERT INTO chatbot_qa (question, answer, category, is_active, created_at) VALUES
                                                                                ('How do I pay my fees?', 'You can pay your fees online through your dashboard. Go to "Payments" section, select the amount due, and pay securely via credit card, bank transfer, or mobile payment.', 'payment', true, NOW()),

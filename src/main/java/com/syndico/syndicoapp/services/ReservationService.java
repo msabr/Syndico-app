@@ -69,6 +69,16 @@ public class ReservationService {
         return reservationRepository.findByResidentId(residentId);
     }
 
+    // Get upcoming reservations by resident
+    public List<Reservation> getUpcomingReservationsByResident(Long residentId) {
+        LocalDateTime now = LocalDateTime.now();
+        return reservationRepository.findByResidentId(residentId).stream()
+                .filter(r -> r.getStatus() == ReservationStatus.CONFIRMEE)
+                .filter(r -> r.getStartDateTime().isAfter(now))
+                .sorted((r1, r2) -> r1.getStartDateTime().compareTo(r2.getStartDateTime()))
+                .collect(Collectors.toList());
+    }
+
     // Get reservations by space type
     public List<Reservation> getReservationsBySpaceType(SpaceType spaceType) {
         return reservationRepository.findBySpaceType(spaceType);

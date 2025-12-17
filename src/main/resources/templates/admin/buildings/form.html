@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{fragments/Header :: head}"></head>
 <link rel="stylesheet" th:href="@{/css/admin/admin-pages.css}">
+
 <body>
 
 <header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
 <aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='buildings')}"></aside>
 
-<div class="admin-container">
-
-    <main class="admin-main-content">
+<div class="main-content">
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
         <div class="page-header">
-            <div>
-                <h1 class="page-title">
-                    <i class="fas fa-building"></i>
-                    <span th:text="${building.id != null} ? 'Edit Building' : 'New Building'">New Building</span>
-                </h1>
-                <p class="page-subtitle" th:text="${building.id != null} ? 'Update building information' : 'Fill in the details to create a new building'">
-                    Fill in the details to create a new building
-                </p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2">
+                        <i class="fas fa-building me-2"></i>
+                        <span th:text="${building.id != null} ? 'Edit Building' : 'Add New Building'">New Building</span>
+                    </h2>
+                    <p class="mb-0" th:text="${building.id != null} ? 'Update building information' : 'Complete the form to add a new building'">
+                        Fill in the details to create a new building
+                    </p>
+                </div>
+                <a th:href="@{/admin/buildings}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
             </div>
-            <a th:href="@{/admin/buildings}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i>Back to List
-            </a>
         </div>
 
-        <!-- Error Messages -->
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-            <i class="fas fa-exclamation-circle"></i>
-            <span th:text="${error}"></span>
+        <!-- Alert Messages -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
@@ -144,7 +147,7 @@
                 </div>
             </form>
         </div>
-    </main>
+    </div>
 </div>
 
 <footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>

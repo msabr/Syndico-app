@@ -43,9 +43,19 @@ public class WorkProjectService {
         return workProjectRepository.findAll();
     }
 
+    // Alias for getAllWorkProjects
+    public List<WorkProject> findAll() {
+        return getAllWorkProjects();
+    }
+
     // Get work project by ID
     public Optional<WorkProject> getWorkProjectById(Long id) {
         return workProjectRepository.findById(id);
+    }
+
+    // Alias for getWorkProjectById that throws exception if not found
+    public WorkProject findById(Long id) {
+        return getWorkProjectById(id).orElseThrow(() -> new RuntimeException("Work project not found with id: " + id));
     }
 
     // Update work project
@@ -77,6 +87,11 @@ public class WorkProjectService {
     // Get work projects by status
     public List<WorkProject> getWorkProjectsByStatus(WorkStatus status) {
         return workProjectRepository.findByStatus(status);
+    }
+
+    // Alias for getWorkProjectsByStatus
+    public List<WorkProject> findByStatus(WorkStatus status) {
+        return getWorkProjectsByStatus(status);
     }
 
     // Update work project status

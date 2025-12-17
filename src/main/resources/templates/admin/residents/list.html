@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{fragments/Header :: head}"></head>
-<link rel="stylesheet" th:href="@{/css/admin/finance/messages.css}">
 <link rel="stylesheet" th:href="@{/css/admin/residents.css}">
 
 <body>
@@ -14,192 +13,145 @@
     <div class="container-fluid px-4 py-4">
         <!-- Page Header -->
         <div class="page-header">
-            <div>
-                <h1><i class="fas fa-users me-2"></i> Residents Management</h1>
-                <p class="page-subtitle">Manage all residents in the system</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2"><i class="fas fa-users me-2"></i>Residents Management</h2>
+                    <p class="mb-0">Manage all building residents and their information</p>
+                </div>
+                <a th:href="@{/admin/residents/new}" class="btn btn-light btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Add Resident
+                </a>
             </div>
-            <a th:href="@{/admin/residents/new}" class="btn">
-                <i class="fas fa-plus me-2"></i>Add New Resident
-            </a>
         </div>
 
         <!-- Alert Messages -->
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
-            <span th:text="${successMessage}">Resident added successfully!</span>
+            <span th:text="${successMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>
-            <span th:text="${errorMessage}">An error occurred!</span>
+            <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <!-- Statistics Cards -->
         <div class="row mb-4">
-            <div class="col-md-3">
+            <div class="col-md-12">
                 <div class="stat-card stat-card-primary position-relative">
-                    <h6>Total Residents</h6>
-                    <h3 th:text="${statistics.totalResidents}">245</h3>
+                    <h6 class="text-uppercase mb-2">Total Residents</h6>
+                    <h3 class="mb-0" th:text="${residents != null ? residents.size() : 0}">0</h3>
                     <i class="fas fa-users stat-icon"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card stat-card-success position-relative">
-                    <h6>Owners</h6>
-                    <h3 th:text="${statistics.totalOwners}">156</h3>
-                    <i class="fas fa-home stat-icon"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card position-relative" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
-                    <h6>Tenants</h6>
-                    <h3 th:text="${statistics.totalTenants}">89</h3>
-                    <i class="fas fa-key stat-icon"></i>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card stat-card-warning position-relative">
-                    <h6>Buildings</h6>
-                    <h3 th:text="${statistics.totalBuildings}">12</h3>
-                    <i class="fas fa-building stat-icon"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Filters -->
+        <!-- Filter Section -->
         <div class="filter-section">
             <form th:action="@{/admin/residents}" method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">
-                        <i class="fas fa-building me-2"></i>Building
-                    </label>
-                    <select name="buildingId" class="form-select">
-                        <option value="">All Buildings</option>
-                        <option th:each="building : ${buildings}"
-                                th:value="${building.id}"
-                                th:text="${building.name}"
-                                th:selected="${building.id == selectedBuildingId}">
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">
-                        <i class="fas fa-user-tag me-2"></i>Resident Type
-                    </label>
-                    <select name="residentType" class="form-select">
-                        <option value="">All Types</option>
-                        <option value="OWNER" th:selected="${residentType == 'OWNER'}">Owner</option>
-                        <option value="TENANT" th:selected="${residentType == 'TENANT'}">Tenant</option>
-                    </select>
-                </div>
                 <div class="col-md-4">
-                    <label class="form-label">
-                        <i class="fas fa-search me-2"></i>Search
-                    </label>
+                    <label class="form-label">Filter by Type</label>
+                    <select name="filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Residents</option>
+                        <option value="owners" th:selected="${filter == 'owners'}">Owners Only</option>
+                        <option value="tenants" th:selected="${filter == 'tenants'}">Tenants Only</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Search</label>
                     <input type="text"
                            name="search"
                            class="form-control"
-                           placeholder="Search by name, email, or apartment..."
-                           th:value="${searchTerm}">
+                           placeholder="Search by name, email, or apartment"
+                           th:value="${search}">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-filter me-2"></i>Filter
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
-            <a th:href="@{/admin/residents}" class="btn btn-secondary btn-sm mt-2">
-                <i class="fas fa-redo me-1"></i>Reset
-            </a>
         </div>
 
         <!-- Residents Table -->
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
                         <tr>
-                            <th width="5%">ID</th>
-                            <th width="25%">Resident</th>
-                            <th width="15%">Building</th>
-                            <th width="10%">Apartment</th>
-                            <th width="15%">Phone</th>
-                            <th width="10%">Type</th>
-                            <th width="10%">Move In</th>
-                            <th width="10%">Actions</th>
+                            <th>Resident</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Building</th>
+                            <th>Apartment</th>
+                            <th>Type</th>
+                            <th>Move-in Date</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:if="${#lists.isEmpty(residents)}">
-                            <td colspan="8" class="empty-state">
-                                <i class="fas fa-users"></i>
-                                <p>No residents found</p>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                                <p class="mt-3">No residents found</p>
                             </td>
                         </tr>
                         <tr th:each="resident : ${residents}">
-                            <td th:text="${resident.id}">1</td>
                             <td>
-                                <div class="resident-info">
-                                    <div class="resident-avatar"
-                                         th:text="${#strings.substring(resident.user.firstName, 0, 1)}">J</div>
+                                <div class="d-flex align-items-center">
+                                    <div class="resident-avatar me-2">
+                                        <span th:text="${#strings.substring(resident.firstName, 0, 1)}"></span>
+                                    </div>
                                     <div>
-                                        <div class="resident-name"
-                                             th:text="${resident.user.firstName + ' ' + resident.user.lastName}">
-                                            John Doe
-                                        </div>
-                                        <small class="resident-email" th:text="${resident.user.email}">
-                                            john.doe@example.com
-                                        </small>
+                                        <strong th:text="${resident.firstName + ' ' + resident.lastName}"></strong>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                    <span class="building-badge"
-                                          th:text="${resident.building?.name ?: 'N/A'}">Building A</span>
+                                <small th:text="${resident.email}"></small>
                             </td>
                             <td>
-                                <strong th:text="${resident.apartmentNumber}">A-101</strong>
+                                <small th:text="${resident.phoneNumber ?: 'N/A'}"></small>
                             </td>
                             <td>
-                                <small th:text="${resident.user.phoneNumber ?: 'N/A'}">+212 600 123 456</small>
+                                <span class="badge bg-info" th:text="${resident.buildingName ?: 'N/A'}"></span>
                             </td>
                             <td>
-                                    <span th:if="${resident.isOwner}" class="resident-badge-owner">
-                                        <i class="fas fa-home"></i> Owner
-                                    </span>
-                                <span th:unless="${resident.isOwner}" class="resident-badge-tenant">
-                                        <i class="fas fa-key"></i> Tenant
-                                    </span>
+                                <strong th:text="${resident.apartmentNumber}"></strong>
                             </td>
                             <td>
-                                <small th:if="${resident.moveInDate}"
-                                       th:text="${#temporals.format(resident.moveInDate, 'dd/MM/yyyy')}">
-                                    15/01/2024
-                                </small>
-                                <small th:unless="${resident.moveInDate}" class="text-muted">N/A</small>
+                                <span th:if="${resident.isOwner}" class="badge badge-owner">
+                                    <i class="bi bi-house-fill"></i> Owner
+                                </span>
+                                <span th:unless="${resident.isOwner}" class="badge badge-tenant">
+                                    <i class="bi bi-key-fill"></i> Tenant
+                                </span>
                             </td>
                             <td>
-                                <div class="action-buttons-group">
-                                    <a th:href="@{/admin/residents/view/{id}(id=${resident.id})}"
-                                       class="btn-action-view"
-                                       title="View Details">
-                                        <i class="fas fa-eye"></i>
+                                <small th:text="${resident.moveInDate != null ? #temporals.format(resident.moveInDate, 'dd/MM/yyyy') : 'N/A'}"></small>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/admin/residents/{id}(id=${resident.id})}"
+                                       class="btn btn-outline-info"
+                                       title="View">
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                     <a th:href="@{/admin/residents/edit/{id}(id=${resident.id})}"
-                                       class="btn-action-edit"
-                                       title="Edit Resident">
-                                        <i class="fas fa-edit"></i>
+                                       class="btn btn-outline-warning"
+                                       title="Edit">
+                                        <i class="bi bi-pencil"></i>
                                     </a>
                                     <button type="button"
-                                            class="btn-action-delete"
+                                            class="btn btn-outline-danger"
                                             onclick="confirmDelete(this)"
                                             th:data-id="${resident.id}"
-                                            th:data-name="${resident.user.firstName + ' ' + resident.user.lastName}"
-                                            title="Delete Resident">
-                                        <i class="fas fa-trash"></i>
+                                            th:data-name="${resident.firstName + ' ' + resident.lastName}"
+                                            title="Delete">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -209,23 +161,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Pagination (optional) -->
-        <nav th:if="${totalPages > 1}" class="mt-4" aria-label="Residents pagination">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                    <a class="page-link" th:href="@{/admin/residents(page=${currentPage - 1})}">Previous</a>
-                </li>
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${i == currentPage ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/admin/residents(page=${i})}" th:text="${i + 1}">1</a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                    <a class="page-link" th:href="@{/admin/residents(page=${currentPage + 1})}">Next</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </div>
 
@@ -233,23 +168,28 @@
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
-                </h5>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete resident: <strong id="residentName"></strong>?</p>
-                <p class="text-danger mb-0">
-                    <i class="fas fa-exclamation-circle"></i> This action cannot be undone and will remove all associated data.
+                <p class="text-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This will permanently delete:
                 </p>
+                <ul>
+                    <li>Resident account</li>
+                    <li>Associated user account</li>
+                    <li>All related data</li>
+                </ul>
+                <p class="text-danger"><strong>This action cannot be undone!</strong></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="post">
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Delete Resident
+                        <i class="bi bi-trash"></i> Delete Resident
                     </button>
                 </form>
             </div>
@@ -271,11 +211,10 @@
         modal.show();
     }
 
-    // Auto-hide alerts after 5 seconds
+    // Auto-hide alerts
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(alert => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            new bootstrap.Alert(alert).close();
         });
     }, 5000);
 </script>

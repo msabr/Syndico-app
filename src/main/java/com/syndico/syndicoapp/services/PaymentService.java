@@ -81,6 +81,13 @@ public class PaymentService {
         return paymentRepository.findByPaymentDateBetween(startDate, endDate);
     }
 
+    // Get payments by resident and year
+    public List<Payment> getPaymentsByResidentAndYear(Long residentId, int year) {
+        LocalDateTime startDate = LocalDateTime.of(year, 1, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(year, 12, 31, 23, 59);
+        return paymentRepository.findByChargeResidentIdAndPaymentDateBetween(residentId, startDate, endDate);
+    }
+
     // Update payment status
     public Payment updatePaymentStatus(Long paymentId, PaymentStatus status) {
         Payment payment = paymentRepository.findById(paymentId)
@@ -138,6 +145,10 @@ public class PaymentService {
     }
 
     // Generate payment receipt PDF
+    public byte[] generateReceiptPdf(Long paymentId) throws IOException {
+        return generatePaymentReceipt(paymentId);
+    }
+
     public byte[] generatePaymentReceipt(Long paymentId) throws IOException {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));

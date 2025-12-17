@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{fragments/Header :: head}"></head>
 <link rel="stylesheet" th:href="@{/css/admin/admin-pages.css}">
 
@@ -8,25 +8,31 @@
 <header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
 <aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='buildings')}"></aside>
 
-<div class="admin-container">
+<div class="main-content">
 
-    <main class="admin-main-content">
-        <div class="content-header">
-            <h1><i class="fas fa-building"></i>All Buildings</h1>
-            <a th:href="@{/admin/buildings/new}" class="btn btn-primary">
-                <i class="fas fa-plus"></i>Add New Building
-            </a>
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2"><i class="fas fa-building me-2"></i>Buildings Management</h2>
+                    <p class="mb-0">Manage all buildings in the syndicate</p>
+                </div>
+                <a th:href="@{/admin/buildings/new}" class="btn btn-light btn-lg">
+                    <i class="fas fa-plus me-2"></i>Add New Building
+                </a>
+            </div>
         </div>
 
-        <!-- Messages -->
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
-            <i class="fas fa-check-circle"></i>
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
             <span th:text="${successMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
-            <i class="fas fa-exclamation-circle"></i>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
             <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -83,7 +89,7 @@
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 </div>
 
 <footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
