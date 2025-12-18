@@ -71,13 +71,13 @@
         <!-- Reservations -->
         <div class="sidebar-section">
             <div class="section-title">Facilities</div>
-            <a th:href="@{/client/reservations}"
+            <a th:href="@{/client/my-reservations}"
                class="sidebar-item"
                th:classappend="${activePage == 'reservations'} ? 'active' : ''">
                 <i class="fas fa-calendar-alt"></i>
                 <span>My Reservations</span>
             </a>
-            <a th:href="@{/client/reservations/new}"
+            <a th:href="@{/client/book-space}"
                class="sidebar-item"
                th:classappend="${activePage == 'new-reservation'} ? 'active' : ''">
                 <i class="fas fa-calendar-plus"></i>

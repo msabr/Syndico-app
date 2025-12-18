@@ -28,6 +28,9 @@ public class ClientController {
     private final AssemblyMeetingService assemblyMeetingService;
     private final VoteService voteService;
     private final PaymentService paymentService;
+    private final DocumentService documentService;
+    private final MessageService messageService;
+    private final NotificationService notificationService;
 
     // ========== DASHBOARD ==========
     @GetMapping("/dashboard")
@@ -269,5 +272,316 @@ public class ClientController {
             model.addAttribute("errorMessage", "Assembly not found");
             return "redirect:/client/governance/general-assemblies";
         }
+    }
+
+    // ========== FACILITIES - MY RESERVATIONS ==========
+    @GetMapping("/my-reservations")
+    public String myReservations(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            // Get all reservations for the resident
+            List<Reservation> allReservations = reservationService.getReservationsByResident(resident.getId());
+
+            // Filter by status
+            List<Reservation> upcomingReservations = allReservations.stream()
+                .filter(r -> r.getStatus() == ReservationStatus.CONFIRMEE
+                          && r.getStartDateTime().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
+
+            List<Reservation> confirmedReservations = allReservations.stream()
+                .filter(r -> r.getStatus() == ReservationStatus.CONFIRMEE)
+                .collect(Collectors.toList());
+
+            List<Reservation> pendingReservations = allReservations.stream()
+                .filter(r -> r.getStatus() == ReservationStatus.EN_ATTENTE)
+                .collect(Collectors.toList());
+
+            List<Reservation> cancelledReservations = allReservations.stream()
+                .filter(r -> r.getStatus() == ReservationStatus.ANNULEE)
+                .collect(Collectors.toList());
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("reservations", allReservations);
+            model.addAttribute("upcomingCount", upcomingReservations.size());
+            model.addAttribute("confirmedCount", confirmedReservations.size());
+            model.addAttribute("pendingCount", pendingReservations.size());
+            model.addAttribute("cancelledCount", cancelledReservations.size());
+
+            return "client/facilities/my-reservations";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading reservations: " + e.getMessage());
+            model.addAttribute("reservations", new java.util.ArrayList<>());
+            return "client/facilities/my-reservations";
+        }
+    }
+
+    // ========== FACILITIES - BOOK SPACE ==========
+    @GetMapping("/book-space")
+    public String bookSpace(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            // Get all space types
+            SpaceType[] spaceTypes = SpaceType.values();
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("spaceTypes", spaceTypes);
+            model.addAttribute("reservation", new Reservation());
+
+            return "client/facilities/book-space";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading booking page: " + e.getMessage());
+            return "client/facilities/book-space";
+        }
+    }
+
+    // Submit new reservation
+    @PostMapping("/book-space")
+    public String submitReservation(
+            @RequestParam SpaceType spaceType,
+            @RequestParam String startDateTime,
+            @RequestParam String endDateTime,
+            @RequestParam(required = false) String notes,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            Reservation reservation = Reservation.builder()
+                .resident(resident)
+                .spaceType(spaceType)
+                .startDateTime(LocalDateTime.parse(startDateTime))
+                .endDateTime(LocalDateTime.parse(endDateTime))
+                .notes(notes)
+                .status(ReservationStatus.EN_ATTENTE)
+                .build();
+
+            reservationService.createReservation(reservation);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Reservation submitted successfully!");
+            return "redirect:/client/my-reservations";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating reservation: " + e.getMessage());
+            return "redirect:/client/book-space";
+        }
+    }
+
+    // Cancel reservation
+    @PostMapping("/reservations/{id}/cancel")
+    public String cancelReservation(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            reservationService.cancelReservation(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Reservation cancelled successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error cancelling reservation: " + e.getMessage());
+        }
+        return "redirect:/client/my-reservations";
+    }
+
+    // ========== INFORMATION - DOCUMENTS ==========
+    @GetMapping("/documents")
+    public String documents(
+            @RequestParam(required = false) DocumentCategory category,
+            @RequestParam(required = false) String search,
+            Model model,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            List<Document> documents;
+
+            if (search != null && !search.isEmpty()) {
+                // Search documents
+                documents = documentService.searchDocuments(search);
+            } else if (category != null) {
+                // Filter by category
+                documents = documentService.getDocumentsByCategory(category);
+            } else {
+                // Get all public documents
+                documents = documentService.getPublicDocuments();
+            }
+
+            // Filter only public documents for residents
+            documents = documents.stream()
+                .filter(Document::getIsPublic)
+                .collect(Collectors.toList());
+
+            // Get statistics
+            long totalDocuments = documents.size();
+            long recentDocuments = documents.stream()
+                .filter(d -> d.getUploadedAt().isAfter(LocalDateTime.now().minusDays(7)))
+                .count();
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("documents", documents);
+            model.addAttribute("categories", DocumentCategory.values());
+            model.addAttribute("selectedCategory", category);
+            model.addAttribute("searchQuery", search);
+            model.addAttribute("totalDocuments", totalDocuments);
+            model.addAttribute("recentDocuments", recentDocuments);
+
+            return "client/information/documents";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading documents: " + e.getMessage());
+            model.addAttribute("documents", new java.util.ArrayList<>());
+            return "client/information/documents";
+        }
+    }
+
+    // ========== INFORMATION - MESSAGES ==========
+    @GetMapping("/messages")
+    public String messages(
+            @RequestParam(required = false) String search,
+            Model model,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+            User user = userDetails.getUser();
+
+            List<Message> receivedMessages;
+            if (search != null && !search.isEmpty()) {
+                receivedMessages = messageService.searchMessages(user.getId(), search);
+            } else {
+                receivedMessages = messageService.getReceivedMessages(user.getId());
+            }
+
+            List<Message> sentMessages = messageService.getSentMessages(user.getId());
+            long unreadCount = messageService.getUnreadCount(user.getId());
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("receivedMessages", receivedMessages);
+            model.addAttribute("sentMessages", sentMessages);
+            model.addAttribute("unreadCount", unreadCount);
+            model.addAttribute("searchQuery", search);
+
+            return "client/information/messages";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading messages: " + e.getMessage());
+            model.addAttribute("receivedMessages", new java.util.ArrayList<>());
+            model.addAttribute("sentMessages", new java.util.ArrayList<>());
+            return "client/information/messages";
+        }
+    }
+
+    // Send new message
+    @PostMapping("/messages/send")
+    public String sendMessage(
+            @RequestParam Long receiverId,
+            @RequestParam String subject,
+            @RequestParam String content,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User sender = userDetails.getUser();
+            messageService.sendMessage(sender.getId(), receiverId, subject, content);
+            redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error sending message: " + e.getMessage());
+        }
+        return "redirect:/client/messages";
+    }
+
+    // Mark message as read
+    @PostMapping("/messages/{id}/read")
+    public String markMessageAsRead(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            messageService.markAsRead(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Message marked as read!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error marking message: " + e.getMessage());
+        }
+        return "redirect:/client/messages";
+    }
+
+    // ========== INFORMATION - NOTIFICATIONS ==========
+    @GetMapping("/notifications")
+    public String notifications(
+            @RequestParam(required = false) NotificationType type,
+            @RequestParam(required = false) Boolean unreadOnly,
+            Model model,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            User user = userDetails.getUser();
+            Resident resident = residentService.getResidentByUserId(user.getId());
+
+            List<Notification> notifications;
+
+            if (Boolean.TRUE.equals(unreadOnly)) {
+                notifications = notificationService.getUnreadNotifications(user.getId());
+            } else {
+                notifications = notificationService.getNotificationsByUser(user.getId());
+            }
+
+            // Filter by type if specified
+            if (type != null) {
+                notifications = notifications.stream()
+                    .filter(n -> n.getType() == type)
+                    .collect(Collectors.toList());
+            }
+
+            // Get statistics
+            long totalNotifications = notifications.size();
+            long unreadCount = notificationService.getUnreadCount(user.getId());
+            long todayCount = notifications.stream()
+                .filter(n -> n.getSentAt().toLocalDate().equals(LocalDateTime.now().toLocalDate()))
+                .count();
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("notifications", notifications);
+            model.addAttribute("types", NotificationType.values());
+            model.addAttribute("selectedType", type);
+            model.addAttribute("unreadOnly", unreadOnly);
+            model.addAttribute("totalNotifications", totalNotifications);
+            model.addAttribute("unreadCount", unreadCount);
+            model.addAttribute("todayCount", todayCount);
+
+            return "client/information/notifications";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading notifications: " + e.getMessage());
+            model.addAttribute("notifications", new java.util.ArrayList<>());
+            return "client/information/notifications";
+        }
+    }
+
+    // Mark notification as read
+    @PostMapping("/notifications/{id}/read")
+    public String markNotificationAsRead(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            notificationService.markAsRead(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Notification marked as read!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error marking notification: " + e.getMessage());
+        }
+        return "redirect:/client/notifications";
+    }
+
+    // Mark all notifications as read
+    @PostMapping("/notifications/mark-all-read")
+    public String markAllNotificationsAsRead(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User user = userDetails.getUser();
+            notificationService.markAllAsRead(user.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "All notifications marked as read!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error marking notifications: " + e.getMessage());
+        }
+        return "redirect:/client/notifications";
     }
 }

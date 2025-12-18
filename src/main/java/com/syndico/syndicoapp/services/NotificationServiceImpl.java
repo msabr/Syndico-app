@@ -76,4 +76,24 @@ public class NotificationServiceImpl implements NotificationService {
                 .userId(notification.getUser() != null ? notification.getUser().getId() : null)
                 .build();
     }
+
+    // Additional methods for controller support
+    public List<Notification> getNotificationsByUser(Long userId) {
+        return notificationRepository.findByUser_IdOrderBySentAtDesc(userId);
+    }
+
+    public List<Notification> getUnreadNotifications(Long userId) {
+        return notificationRepository.findByUserIdAndIsReadFalse(userId);
+    }
+
+    public long getUnreadCount(Long userId) {
+        return notificationRepository.countByUser_IdAndIsRead(userId, false);
+    }
+
+    public void markAsRead(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        notification.setIsRead(true);
+        notificationRepository.save(notification);
+    }
 }
