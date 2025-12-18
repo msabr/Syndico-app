@@ -19,13 +19,13 @@
         <!-- Personal Info -->
         <div class="sidebar-section">
             <div class="section-title">Profile</div>
-            <a th:href="@{/client/profile}"
+            <a th:href="@{/client/profile/my-information}"
                class="sidebar-item"
                th:classappend="${activePage == 'profile'} ? 'active' : ''">
                 <i class="fas fa-user-circle"></i>
                 <span>My Information</span>
             </a>
-            <a th:href="@{/client/apartment}"
+            <a th:href="@{/client/profile/my-apartment}"
                class="sidebar-item"
                th:classappend="${activePage == 'apartment'} ? 'active' : ''">
                 <i class="fas fa-door-open"></i>
@@ -36,14 +36,14 @@
         <!-- Financial -->
         <div class="sidebar-section">
             <div class="section-title">Finance</div>
-            <a th:href="@{/client/charges}"
+            <a th:href="@{/client/my-charges}"
                class="sidebar-item"
                th:classappend="${activePage == 'charges'} ? 'active' : ''">
                 <i class="fas fa-file-invoice-dollar"></i>
                 <span>My Charges</span>
                 <span class="badge badge-warning">3</span>
             </a>
-            <a th:href="@{/client/payments}"
+            <a th:href="@{/client/payment-history}"
                class="sidebar-item"
                th:classappend="${activePage == 'payments'} ? 'active' : ''">
                 <i class="fas fa-credit-card"></i>
@@ -54,13 +54,13 @@
         <!-- Complaints -->
         <div class="sidebar-section">
             <div class="section-title">Services</div>
-            <a th:href="@{/client/reclamations}"
+            <a th:href="@{/client/my-complaints}"
                class="sidebar-item"
                th:classappend="${activePage == 'reclamations'} ? 'active' : ''">
                 <i class="fas fa-exclamation-triangle"></i>
                 <span>My Complaints</span>
             </a>
-            <a th:href="@{/client/reclamations/new}"
+            <a th:href="@{/client/new-complaint}"
                class="sidebar-item"
                th:classappend="${activePage == 'new-reclamation'} ? 'active' : ''">
                 <i class="fas fa-plus-circle"></i>
@@ -152,10 +152,6 @@
                th:classappend="${activePage == 'help'} ? 'active' : ''">
                 <i class="fas fa-question-circle"></i>
                 <span>Help & FAQ</span>
-            </a>
-            <a href="#" onclick="openChatbot()" class="sidebar-item">
-                <i class="fas fa-robot"></i>
-                <span>Chat Support</span>
             </a>
         </div>
 

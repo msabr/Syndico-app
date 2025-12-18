@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/profile/newComplaint.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='new-reclamation')}"></aside>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="page-header">
+                <h1 class="mb-2"><i class="bi bi-plus-circle"></i> New Complaint</h1>
+                <p class="mb-0">Submit a service request or report an issue</p>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/client/new-complaint}" method="post">
+                    <div class="mb-4">
+                        <label class="form-label">Category <span class="text-danger">*</span></label>
+                        <select name="category" class="form-control" required>
+                            <option value="">-- Select Category --</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.name()}"
+                                    th:text="${cat.name() == 'PLOMBERIE' ? 'Plumbing' :
+                                             (cat.name() == 'ELECTRICITE' ? 'Electrical' :
+                                             (cat.name() == 'NETTOYAGE' ? 'Cleaning' :
+                                             (cat.name() == 'SECURITE' ? 'Security' : 'Other')))}">
+                                Category
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Priority <span class="text-danger">*</span></label>
+                        <select name="priority" class="form-control">
+                            <option value="BASSE">Low</option>
+                            <option value="MOYENNE" selected>Normal</option>
+                            <option value="HAUTE">High</option>
+                            <option value="URGENTE">Urgent</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                        <input type="text"
+                               name="title"
+                               class="form-control"
+                               placeholder="Brief description of the issue"
+                               required
+                               minlength="3"
+                               maxlength="200">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea name="description"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Provide detailed information about the issue..."
+                                  required
+                                  minlength="10"
+                                  maxlength="5000"></textarea>
+                        <small class="text-muted">Minimum 10 characters required</small>
+                    </div>
+
+                    <div class="mb-4" style="display: none;">
+                        <label class="form-label">Attachments (Optional)</label>
+                        <input type="file" class="form-control" multiple accept="image/*,.pdf">
+                        <small class="text-muted">Upload photos or documents (Max 5 files, 10MB each)</small>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="submit-btn">
+                            <i class="bi bi-send"></i> Submit Complaint
+                        </button>
+                        <a th:href="@{/client/my-complaints}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Form validation message in French
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const title = this.querySelector('[name="title"]').value;
+        const description = this.querySelector('[name="description"]').value;
+        const category = this.querySelector('[name="category"]').value;
+
+        if (!category) {
+            e.preventDefault();
+            alert('Please select a category');
+            return false;
+        }
+
+        return true;
+    });
+</script>
+</body>
+</html>
