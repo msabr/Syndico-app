@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/profile/edInformation.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='profile')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2"><i class="bi bi-pencil-square"></i> Edit My Information</h1>
+                        <p class="mb-0">Update your personal information and contact details</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div style="font-size: 4rem; opacity: 0.2;">
+                            <i class="bi bi-person-gear"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-info">
+                <i class="bi bi-info-circle" style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong>Note:</strong> Fields marked with an asterisk (*) are required. Your changes will be reviewed by the administration before being applied.
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <form th:action="@{/client/profile/update}" method="post">
+                <div class="profile-card">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h5><i class="bi bi-person-vcard"></i> Personal Information</h5>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required-field">
+                                    <i class="bi bi-person input-icon"></i> First Name
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="firstName"
+                                       th:value="${residentForm != null ? residentForm['firstName'] : user.firstName}"
+                                       placeholder="Enter your first name"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">
+                                    <i class="bi bi-person input-icon"></i> Last Name
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="lastName"
+                                       th:value="${residentForm != null ? residentForm['lastName'] : user.lastName}"
+                                       placeholder="Enter your last name"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    <i class="bi bi-envelope input-icon"></i> Email
+                                </label>
+                                <input type="email"
+                                       class="form-control"
+                                       th:value="${residentForm != null ? residentForm['email'] : user.email}"
+                                       placeholder="your.email@example.com"
+                                       disabled>
+                                <small class="text-muted" style="margin-top: 0.5rem; display: block;">
+                                    <i class="bi bi-lock"></i> Email cannot be modified
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="bi bi-telephone input-icon"></i> Phone
+                                </label>
+                                <input type="tel"
+                                       class="form-control"
+                                       name="phoneNumber"
+                                       th:value="${residentForm != null ? residentForm['phoneNumber'] : user.phoneNumber}"
+                                       placeholder="+212 6 12 34 56 78">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="form-section">
+                        <h5><i class="bi bi-exclamation-triangle"></i> Emergency Contact</h5>
+
+                        <div class="form-row single">
+                            <div class="form-group">
+                                <label>
+                                    <i class="bi bi-telephone input-icon"></i> Emergency Contact Phone
+                                </label>
+                                <input type="tel"
+                                       class="form-control"
+                                       name="emergencyContact"
+                                       th:value="${residentForm != null ? residentForm['emergencyContact'] : resident.emergencyContact}"
+                                       placeholder="+212 6 98 76 54 32"
+                                       pattern="^[+]?[0-9]{10,20}$"
+                                       title="Please enter a valid phone number">
+                                <small class="text-muted" style="margin-top: 0.5rem; display: block;">
+                                    <i class="bi bi-info-circle"></i> Enter a valid phone number (10-20 digits)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note: Password change functionality can be added later -->
+                    <div class="text-muted text-center mb-3">
+                        <small><i class="bi bi-info-circle"></i> Contact administration to change your password</small>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-custom btn-save">
+                            <i class="bi bi-check-circle"></i> Save Changes
+                        </button>
+                        <a th:href="@{/client/profile/my-information}" class="btn-custom btn-cancel">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

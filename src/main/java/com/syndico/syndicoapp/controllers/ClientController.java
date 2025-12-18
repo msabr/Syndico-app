@@ -584,4 +584,417 @@ public class ClientController {
         }
         return "redirect:/client/notifications";
     }
+
+    // ========== PROFILE PAGES ==========
+
+    // My Information Page
+    @GetMapping("/profile/my-information")
+    public String myInformation(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+            User user = userDetails.getUser();
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "client/profile/myInformation";
+            }
+
+            // Create a view object with all necessary information
+            java.util.Map<String, Object> residentView = new java.util.HashMap<>();
+            residentView.put("fullName", user.getFirstName() + " " + user.getLastName());
+            residentView.put("email", user.getEmail());
+            residentView.put("phone", user.getPhoneNumber() != null ? user.getPhoneNumber() : "Not provided");
+            residentView.put("dateOfBirth", null); // Can be added to User model if needed
+            residentView.put("idNumber", "N/A"); // Can be added to Resident model if needed
+            residentView.put("emergencyContactName", "N/A"); // Can be added to Resident model
+            residentView.put("emergencyContactPhone", resident.getEmergencyContact());
+            residentView.put("emergencyContactRelationship", "N/A"); // Can be added to Resident model
+            residentView.put("memberSince", resident.getMoveInDate());
+            residentView.put("lastPasswordChange", "N/A"); // Can be tracked in User model
+
+            model.addAttribute("residentView", residentView);
+            model.addAttribute("resident", resident);
+            model.addAttribute("user", user);
+
+            return "client/profile/myInformation";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading profile information: " + e.getMessage());
+            return "client/profile/myInformation";
+        }
+    }
+
+    // Edit Information Page
+    @GetMapping("/profile/edit")
+    public String editInformation(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+            User user = userDetails.getUser();
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "redirect:/client/profile/my-information";
+            }
+
+            // Create a DTO for the form
+            java.util.Map<String, Object> residentForm = new java.util.HashMap<>();
+            residentForm.put("firstName", user.getFirstName());
+            residentForm.put("lastName", user.getLastName());
+            residentForm.put("email", user.getEmail());
+            residentForm.put("phoneNumber", user.getPhoneNumber());
+            residentForm.put("emergencyContact", resident.getEmergencyContact());
+            residentForm.put("apartmentNumber", resident.getApartmentNumber());
+
+            model.addAttribute("residentForm", residentForm);
+            model.addAttribute("resident", resident);
+            model.addAttribute("user", user);
+
+            return "client/profile/edit-information";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading profile: " + e.getMessage());
+            return "redirect:/client/profile/my-information";
+        }
+    }
+
+    // Update Profile Information
+    @PostMapping("/profile/update")
+    public String updateProfile(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String emergencyContact,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+            User user = userDetails.getUser();
+
+            if (resident == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Resident profile not found.");
+                return "redirect:/client/profile/my-information";
+            }
+
+            // Create ResidentDTO with updated values
+            com.syndico.syndicoapp.dto.ResidentDTO residentDTO = com.syndico.syndicoapp.dto.ResidentDTO.builder()
+                .id(resident.getId())
+                .userId(user.getId())
+                .firstName(firstName != null && !firstName.trim().isEmpty() ? firstName.trim() : user.getFirstName())
+                .lastName(lastName != null && !lastName.trim().isEmpty() ? lastName.trim() : user.getLastName())
+                .email(user.getEmail())
+                .phoneNumber(phoneNumber != null && !phoneNumber.trim().isEmpty() ? phoneNumber.trim() : user.getPhoneNumber())
+                .emergencyContact(emergencyContact != null && !emergencyContact.trim().isEmpty() ? emergencyContact.trim() : resident.getEmergencyContact())
+                .buildingId(resident.getBuilding() != null ? resident.getBuilding().getId() : null)
+                .apartmentNumber(resident.getApartmentNumber())
+                .moveInDate(resident.getMoveInDate())
+                .isOwner(resident.getIsOwner())
+                .preferredLanguage(user.getPreferredLanguage() != null ? user.getPreferredLanguage() : "FR")
+                .build();
+
+            // Save updates using the service
+            residentService.updateResident(resident.getId(), residentDTO);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+            return "redirect:/client/profile/my-information";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating profile: " + e.getMessage());
+            return "redirect:/client/profile/edit";
+        }
+    }
+
+    // My Apartment Page
+    @GetMapping("/profile/my-apartment")
+    public String myApartment(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null || resident.getBuilding() == null) {
+                model.addAttribute("errorMessage", "Apartment information not found.");
+                return "client/profile/myApartment";
+            }
+
+            Building building = resident.getBuilding();
+
+            // Create apartment view object
+            java.util.Map<String, Object> apartmentView = new java.util.HashMap<>();
+            apartmentView.put("building", building.getName());
+            apartmentView.put("number", resident.getApartmentNumber());
+            apartmentView.put("residenceName", building.getName());
+            apartmentView.put("city", building.getAddress() != null ? building.getAddress() : "N/A");
+            apartmentView.put("area", "N/A"); // Can be added to Apartment/Resident model
+            apartmentView.put("bedrooms", "N/A"); // Can be added to model
+            apartmentView.put("bathrooms", "N/A"); // Can be added to model
+            apartmentView.put("floor", "N/A"); // Can be added to model
+            apartmentView.put("type", resident.getIsOwner() ? "Owner" : "Tenant");
+            apartmentView.put("moveInDate", resident.getMoveInDate());
+            apartmentView.put("buildingFloors", building.getNumberOfFloors());
+            apartmentView.put("buildingApartments", building.getNumberOfApartments());
+            apartmentView.put("yearBuilt", building.getYearBuilt());
+
+            model.addAttribute("apartment", apartmentView);
+            model.addAttribute("resident", resident);
+            model.addAttribute("building", building);
+
+            return "client/profile/myApartment";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading apartment information: " + e.getMessage());
+            return "client/profile/myApartment";
+        }
+    }
+
+    // ========== FINANCE PAGES ==========
+
+    // My Charges Page
+    @GetMapping("/my-charges")
+    public String myCharges(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "client/finance/myCharges";
+            }
+
+            // Get all charges for the resident
+            List<Charge> allCharges = chargeService.getChargesByResident(resident.getId());
+
+            // Calculate statistics
+            double pendingAmount = allCharges.stream()
+                .filter(c -> c.getStatus() == ChargeStatus.EN_ATTENTE)
+                .mapToDouble(c -> c.getAmount().doubleValue())
+                .sum();
+
+            double paidThisYear = allCharges.stream()
+                .filter(c -> c.getStatus() == ChargeStatus.PAYEE &&
+                            c.getDueDate().getYear() == java.time.LocalDate.now().getYear())
+                .mapToDouble(c -> c.getAmount().doubleValue())
+                .sum();
+
+            double overdueAmount = allCharges.stream()
+                .filter(c -> c.getStatus() == ChargeStatus.EN_RETARD)
+                .mapToDouble(c -> c.getAmount().doubleValue())
+                .sum();
+
+            double totalThisYear = allCharges.stream()
+                .filter(c -> c.getDueDate().getYear() == java.time.LocalDate.now().getYear())
+                .mapToDouble(c -> c.getAmount().doubleValue())
+                .sum();
+
+            // Create summary
+            java.util.Map<String, Object> summary = new java.util.HashMap<>();
+            summary.put("pending", pendingAmount);
+            summary.put("paidThisYear", paidThisYear);
+            summary.put("overdue", overdueAmount);
+            summary.put("totalThisYear", totalThisYear);
+
+            model.addAttribute("charges", allCharges);
+            model.addAttribute("summary", summary);
+            model.addAttribute("resident", resident);
+
+            return "client/finance/myCharges";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading charges: " + e.getMessage());
+            model.addAttribute("charges", new java.util.ArrayList<>());
+            return "client/finance/myCharges";
+        }
+    }
+
+    // Payment History Page
+    @GetMapping("/payment-history")
+    public String paymentHistory(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "client/finance/paymentHistory";
+            }
+
+            // Get all payments for the resident (filter by resident's charges)
+            List<Payment> payments = paymentService.getAllPayments().stream()
+                .filter(p -> p.getCharge() != null &&
+                            p.getCharge().getResident() != null &&
+                            p.getCharge().getResident().getId().equals(resident.getId()))
+                .collect(java.util.stream.Collectors.toList());
+
+            // Calculate statistics
+            double totalPaid = payments.stream()
+                .filter(p -> p.getStatus() == PaymentStatus.SUCCESS)
+                .mapToDouble(p -> p.getAmount().doubleValue())
+                .sum();
+
+            long paymentsThisYear = payments.stream()
+                .filter(p -> p.getPaymentDate() != null &&
+                            p.getPaymentDate().getYear() == java.time.LocalDateTime.now().getYear())
+                .count();
+
+            double averagePayment = payments.isEmpty() ? 0 : totalPaid / payments.size();
+
+            Payment lastPayment = payments.stream()
+                .filter(p -> p.getPaymentDate() != null)
+                .max(java.util.Comparator.comparing(Payment::getPaymentDate))
+                .orElse(null);
+
+            // Create statistics map
+            java.util.Map<String, Object> statistics = new java.util.HashMap<>();
+            statistics.put("totalPaid", totalPaid);
+            statistics.put("paymentsThisYear", paymentsThisYear);
+            statistics.put("averagePayment", averagePayment);
+            statistics.put("lastPaymentDate", lastPayment != null ? lastPayment.getPaymentDate() : null);
+
+            model.addAttribute("payments", payments);
+            model.addAttribute("statistics", statistics);
+            model.addAttribute("resident", resident);
+
+            return "client/finance/paymentHistory";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading payment history: " + e.getMessage());
+            model.addAttribute("payments", new java.util.ArrayList<>());
+            return "client/finance/paymentHistory";
+        }
+    }
+
+    // ========== SERVICES PAGES ==========
+
+    // My Complaints Page
+    @GetMapping("/my-complaints")
+    public String myComplaints(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "client/services/my-complaints";
+            }
+
+            // Get all complaints for the resident
+            List<Reclamation> complaints = reclamationService.getReclamationsByResident(resident.getId());
+
+            // Calculate statistics
+            long totalComplaints = complaints.size();
+            long pendingComplaints = complaints.stream()
+                .filter(r -> r.getStatus() == ReclamationStatus.NOUVELLE)
+                .count();
+            long inProgressComplaints = complaints.stream()
+                .filter(r -> r.getStatus() == ReclamationStatus.EN_COURS)
+                .count();
+            long resolvedComplaints = complaints.stream()
+                .filter(r -> r.getStatus() == ReclamationStatus.RESOLUE)
+                .count();
+
+            // Create statistics map
+            java.util.Map<String, Object> statistics = new java.util.HashMap<>();
+            statistics.put("total", totalComplaints);
+            statistics.put("pending", pendingComplaints);
+            statistics.put("inProgress", inProgressComplaints);
+            statistics.put("resolved", resolvedComplaints);
+
+            model.addAttribute("complaints", complaints);
+            model.addAttribute("statistics", statistics);
+            model.addAttribute("resident", resident);
+
+            return "client/services/my-complaints";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading complaints: " + e.getMessage());
+            model.addAttribute("complaints", new java.util.ArrayList<>());
+            return "client/services/my-complaints";
+        }
+    }
+
+    // New Complaint Page
+    @GetMapping("/new-complaint")
+    public String newComplaintPage(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null) {
+                model.addAttribute("errorMessage", "Resident profile not found.");
+                return "redirect:/client/my-complaints";
+            }
+
+            model.addAttribute("resident", resident);
+            model.addAttribute("categories", ReclamationCategory.values());
+
+            return "client/services/new-complaint";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/client/my-complaints";
+        }
+    }
+
+    // Submit New Complaint
+    @PostMapping("/new-complaint")
+    public String submitComplaint(
+            @RequestParam String title,
+            @RequestParam String category,
+            @RequestParam String description,
+            @RequestParam(required = false) String priority,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+
+            if (resident == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Resident profile not found.");
+                return "redirect:/client/my-complaints";
+            }
+
+            // Create new complaint
+            Reclamation complaint = new Reclamation();
+            complaint.setResident(resident);
+            complaint.setTitle(title);
+            complaint.setDescription(description);
+
+            // Set category
+            try {
+                complaint.setCategory(ReclamationCategory.valueOf(category));
+            } catch (IllegalArgumentException e) {
+                complaint.setCategory(ReclamationCategory.AUTRE);
+            }
+
+            // Set priority
+            if (priority != null && !priority.isEmpty()) {
+                try {
+                    complaint.setPriority(Priority.valueOf(priority));
+                } catch (IllegalArgumentException e) {
+                    complaint.setPriority(Priority.MOYENNE);
+                }
+            } else {
+                complaint.setPriority(Priority.MOYENNE);
+            }
+
+            complaint.setStatus(ReclamationStatus.NOUVELLE);
+
+            // Save complaint
+            reclamationService.createReclamation(complaint);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Complaint submitted successfully!");
+            return "redirect:/client/my-complaints";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error submitting complaint: " + e.getMessage());
+            return "redirect:/client/new-complaint";
+        }
+    }
+
+    //  ========== SUPPORT PAGES ==========
+
+    // Help & FAQ Page
+    @GetMapping("/help")
+    public String helpPage(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Resident resident = residentService.getResidentByUserId(userDetails.getId());
+            model.addAttribute("resident", resident);
+            return "client/support/help-faq";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error loading help page: " + e.getMessage());
+            return "client/support/help-faq";
+        }
+    }
 }

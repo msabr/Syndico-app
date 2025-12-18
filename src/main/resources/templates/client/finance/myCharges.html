@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/profile/myCharges.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='charges')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2"><i class="bi bi-credit-card"></i> My Charges</h1>
+                        <p class="mb-0">View and manage your monthly charges and payments</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div style="font-size: 3rem; opacity: 0.2;">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card pending">
+                    <div class="summary-icon"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="summary-amount" th:text="${'MAD ' + (summary['pending'] ?: 0)}">MAD 0</div>
+                    <small class="text-muted">Pending Payments</small>
+                </div>
+                <div class="summary-card paid">
+                    <div class="summary-icon"><i class="bi bi-check-circle"></i></div>
+                    <div class="summary-amount" th:text="${'MAD ' + (summary['paidThisYear'] ?: 0)}">MAD 0</div>
+                    <small class="text-muted">Paid This Year</small>
+                </div>
+                <div class="summary-card overdue">
+                    <div class="summary-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="summary-amount" th:text="${'MAD ' + (summary['overdue'] ?: 0)}">MAD 0</div>
+                    <small class="text-muted">Overdue</small>
+                </div>
+                <div class="summary-card total">
+                    <div class="summary-icon"><i class="bi bi-cash-stack"></i></div>
+                    <div class="summary-amount" th:text="${'MAD ' + (summary['totalThisYear'] ?: 0)}">MAD 0</div>
+                    <small class="text-muted">Total This Year</small>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterCharges('all', this)">
+                    <i class="bi bi-list"></i> All Charges
+                </button>
+                <button class="filter-btn" onclick="filterCharges('pending', this)">
+                    <i class="bi bi-hourglass"></i> Pending
+                </button>
+                <button class="filter-btn" onclick="filterCharges('paid', this)">
+                    <i class="bi bi-check-circle"></i> Paid
+                </button>
+                <button class="filter-btn" onclick="filterCharges('overdue', this)">
+                    <i class="bi bi-exclamation-triangle"></i> Overdue
+                </button>
+            </div>
+
+            <!-- Charges Table -->
+            <div class="charges-table">
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(charges)}" class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #999;"></i>
+                    <h3 class="mt-3">No Charges Found</h3>
+                    <p class="text-muted">You don't have any charges at the moment.</p>
+                </div>
+
+                <!-- Dynamic Charges Loop -->
+                <div th:each="charge : ${charges}"
+                     class="charge-row"
+                     th:attr="data-status=${charge.status.name() == 'PAYEE' ? 'paid' : (charge.status.name() == 'EN_RETARD' ? 'overdue' : 'pending')}">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="mb-2" th:text="${charge.description}">Charge Description</h5>
+                            <span class="charge-type-badge"
+                                  th:classappend="${charge.type.name() == 'MENSUELLE' ? 'badge-mensuelle' : 'badge-exceptionnelle'}"
+                                  th:text="${charge.type.name()}">Type</span>
+                        </div>
+                        <div class="text-end">
+                            <h4 class="mb-1"
+                                th:classappend="${charge.status.name() == 'PAYEE' ? 'text-success' : (charge.status.name() == 'EN_RETARD' ? 'text-danger' : 'text-warning')}"
+                                th:text="${'MAD ' + charge.amount}">MAD 0</h4>
+                            <span class="status-badge"
+                                  th:classappend="${charge.status.name() == 'PAYEE' ? 'status-paid' : (charge.status.name() == 'EN_RETARD' ? 'status-overdue' : 'status-pending')}"
+                                  th:text="${charge.status.name() == 'PAYEE' ? 'Paid' : (charge.status.name() == 'EN_RETARD' ? 'Overdue' : 'Pending')}">Status</span>
+                        </div>
+                    </div>
+
+                    <div class="charge-details">
+                        <div class="detail-item">
+                            <i class="bi bi-calendar"></i>
+                            <div>
+                                <small class="text-muted d-block">Issue Date</small>
+                                <strong th:text="${#temporals.format(charge.issueDate, 'MMM dd, yyyy')}">Date</strong>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="bi bi-calendar-x"></i>
+                            <div>
+                                <small class="text-muted d-block">Due Date</small>
+                                <strong th:text="${#temporals.format(charge.dueDate, 'MMM dd, yyyy')}">Date</strong>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="bi bi-hash"></i>
+                            <div>
+                                <small class="text-muted d-block">Charge ID</small>
+                                <strong th:text="'CHG-' + ${charge.id}">ID</strong>
+                            </div>
+                        </div>
+                        <div class="detail-item" th:if="${charge.status.name() != 'PAYEE'}">
+                            <i class="bi bi-clock-history"></i>
+                            <div>
+                                <small class="text-muted d-block">Days Left</small>
+                                <strong th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), charge.dueDate) + ' days'}">Days</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-3 mb-0 text-muted small" th:if="${charge.description != null}">
+                        <i class="bi bi-info-circle"></i>
+                        <span th:text="${charge.description}">Description</span>
+                    </p>
+
+                    <div class="action-buttons">
+                        <button th:if="${charge.status.name() != 'PAYEE'}"
+                                class="action-btn pay"
+                                th:onclick="'openPaymentModal(' + ${charge.amount} + ', \'CHG-' + ${charge.id} + '\')'">
+                            <i class="bi bi-credit-card"></i> Pay Now
+                        </button>
+                        <button class="action-btn download">
+                            <i class="bi bi-download"></i> Download Invoice
+                        </button>
+                        <button class="action-btn view">
+                            <i class="bi bi-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Process Payment</h4>
+            <button class="btn-close" onclick="closePaymentModal()"></button>
+        </div>
+
+        <div class="amount-highlight" id="paymentAmount">MAD 2,500</div>
+        <p class="text-center text-muted mb-4">Invoice #<span id="invoiceNumber">INV-2026-001</span></p>
+
+        <h6 class="mb-3">Select Payment Method</h6>
+        <div class="payment-methods">
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'card')">
+                <i class="bi bi-credit-card"></i>
+                <div><strong>Credit Card</strong></div>
+                <small class="text-muted">Visa, Mastercard</small>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'bank')">
+                <i class="bi bi-bank"></i>
+                <div><strong>Bank Transfer</strong></div>
+                <small class="text-muted">Direct Transfer</small>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'paypal')">
+                <i class="bi bi-paypal"></i>
+                <div><strong>PayPal</strong></div>
+                <small class="text-muted">Online Payment</small>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'cash')">
+                <i class="bi bi-cash"></i>
+                <div><strong>Cash</strong></div>
+                <small class="text-muted">At Office</small>
+            </div>
+        </div>
+
+        <button class="pay-btn" onclick="processPayment()">
+            <i class="bi bi-check-circle"></i> Confirm Payment
+        </button>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let selectedMethod = '';
+
+    function filterCharges(status, button) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const rows = document.querySelectorAll('.charge-row');
+        rows.forEach(row => {
+            if (status === 'all' || row.dataset.status === status) {
+                row.style.display = 'block';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function openPaymentModal(amount, invoice) {
+        document.getElementById('paymentAmount').textContent = 'MAD ' + amount.toLocaleString();
+        document.getElementById('invoiceNumber').textContent = invoice;
+        document.getElementById('paymentModal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+        document.getElementById('paymentModal').classList.remove('active');
+        selectedMethod = '';
+        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+    }
+
+    function selectPaymentMethod(element, method) {
+        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedMethod = method;
+    }
+
+    function processPayment() {
+        if (!selectedMethod) {
+            alert('Please select a payment method');
+            return;
+        }
+        alert('Processing payment via ' + selectedMethod + '...\nPayment successful!');
+        closePaymentModal();
+        location.reload();
+    }
+
+    // Close modal on outside click
+    document.getElementById('paymentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePaymentModal();
+        }
+    });
+</script>
+</body>
+</html>
