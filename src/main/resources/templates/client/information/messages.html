@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/finfaci/messages.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside  th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='messages')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+            <div class="messages-container">
+                <!-- Messages Sidebar -->
+                <div class="messages-sidebar">
+                    <div class="sidebar-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                <i class="bi bi-chat-dots"></i> Messages
+                                <span class="unread-badge ms-2">3</span>
+                            </h4>
+                            <button class="new-message-btn" onclick="newMessage()">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" placeholder="Search messages..." onkeyup="searchMessages(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="messages-list">
+                        <!-- No Messages -->
+                        <div th:if="${#lists.isEmpty(receivedMessages)}" class="alert alert-info m-3">
+                            <i class="bi bi-inbox"></i> No messages yet.
+                        </div>
+
+                        <!-- Messages Loop -->
+                        <div th:each="message, iterStat : ${receivedMessages}"
+                             class="message-item"
+                             th:classappend="${!message.isRead ? 'unread' : ''} + ${iterStat.first ? ' active' : ''}"
+                             th:attr="data-message-id=${message.id}"
+                             onclick="openMessage(this)">
+                            <div class="d-flex">
+                                <div class="message-avatar"
+                                     th:style="${'background: hsl(' + (message.sender.id * 50 % 360) + ', 60%, 50%);'}">
+                                    <span th:text="${message.sender.firstName.substring(0,1).toUpperCase() + message.sender.lastName.substring(0,1).toUpperCase()}">AA</span>
+                                </div>
+                                <div class="message-preview">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="message-sender"
+                                             th:text="${message.sender.firstName + ' ' + message.sender.lastName}">Sender</div>
+                                        <div class="message-time"
+                                             th:text="${#temporals.format(message.sentAt, 'dd MMM HH:mm')}">Time</div>
+                                    </div>
+                                    <div class="message-subject" th:if="${message.subject}" th:text="${message.subject}">Subject</div>
+                                    <div class="message-text"
+                                         th:text="${#strings.abbreviate(message.content, 60)}">Message preview...</div>
+                                </div>
+                            </div>
+                            <!-- Mark as read button -->
+                            <form th:if="${!message.isRead}"
+                                  th:action="@{/client/messages/{id}/read(id=${message.id})}"
+                                  method="post"
+                                  style="position: absolute; top: 10px; right: 10px;"
+                                  onclick="event.stopPropagation();">
+                                <button type="submit" class="btn btn-sm btn-link" title="Mark as read">
+                                    <i class="bi bi-check2"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Container -->
+                <div class="chat-container" id="chatContainer">
+                    <div class="chat-header">
+                        <div class="chat-user-info">
+                            <div class="chat-avatar">SM</div>
+                            <div>
+                                <h5 class="mb-0">Syndic Management</h5>
+                                <small class="text-muted">
+                                    <i class="bi bi-circle-fill text-success" style="font-size: 0.5rem;"></i>
+                                    Online
+                                </small>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle me-2" title="Call">
+                                <i class="bi bi-telephone"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle" title="More">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Received Message -->
+                        <div class="chat-bubble received">
+                            <div class="bubble-content">
+                                <div>Hello! How can I help you today?</div>
+                                <div class="bubble-time">9:00 AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Sent Message -->
+                        <div class="chat-bubble sent">
+                            <div class="bubble-content">
+                                <div>Hi! I wanted to inquire about my monthly charge.</div>
+                                <div class="bubble-time text-end">9:15 AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Received Message -->
+                        <div class="chat-bubble received">
+                            <div class="bubble-content">
+                                <div>Sure! Let me check your account. Can you please provide your apartment number?</div>
+                                <div class="bubble-time">9:16 AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Sent Message -->
+                        <div class="chat-bubble sent">
+                            <div class="bubble-content">
+                                <div>It's apartment A-205</div>
+                                <div class="bubble-time text-end">9:17 AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Received Message -->
+                        <div class="chat-bubble received">
+                            <div class="bubble-content">
+                                <div>Thank you! I can see that your monthly charge of MAD 2,500 has been successfully paid on December 5, 2025. Your next payment is due on January 5, 2026.</div>
+                                <div class="bubble-time">10:30 AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Sent Message -->
+                        <div class="chat-bubble sent">
+                            <div class="bubble-content">
+                                <div>Perfect! Thank you for the confirmation.</div>
+                                <div class="bubble-time text-end">10:32 AM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle" title="Attach file">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <input type="text"
+                               class="chat-input"
+                               id="messageInput"
+                               placeholder="Type your message..."
+                               onkeypress="handleKeyPress(event)">
+                        <button class="send-btn" onclick="sendMessage()">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openChat(chatId) {
+        // Remove active class from all messages
+        document.querySelectorAll('.message-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        // Add active class to clicked message
+        event.currentTarget.classList.add('active');
+        // Remove unread status
+        event.currentTarget.classList.remove('unread');
+
+        // Update unread badge
+        updateUnreadCount();
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+
+        if (message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble sent';
+            bubble.innerHTML = `
+                    <div class="bubble-content">
+                        <div>${message}</div>
+                        <div class="bubble-time text-end">${time}</div>
+                    </div>
+                `;
+
+            chatMessages.appendChild(bubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            input.value = '';
+
+            // Simulate response after 2 seconds
+            setTimeout(() => {
+                const response = document.createElement('div');
+                response.className = 'chat-bubble received';
+                response.innerHTML = `
+                        <div class="bubble-content">
+                            <div>Thank you for your message! We'll get back to you shortly.</div>
+                            <div class="bubble-time">${time}</div>
+                        </div>
+                    `;
+                chatMessages.appendChild(response);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 2000);
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function searchMessages(query) {
+        const items = document.querySelectorAll('.message-item');
+        const lowerQuery = query.toLowerCase();
+
+        items.forEach(item => {
+            const sender = item.querySelector('.message-sender').textContent.toLowerCase();
+            const text = item.querySelector('.message-text').textContent.toLowerCase();
+
+            if (sender.includes(lowerQuery) || text.includes(lowerQuery)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function newMessage() {
+        alert('Compose new message feature');
+    }
+
+    function updateUnreadCount() {
+        const unreadMessages = document.querySelectorAll('.message-item.unread').length;
+        const badge = document.querySelector('.unread-badge');
+        if (unreadMessages > 0) {
+            badge.textContent = unreadMessages;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // Auto-scroll to bottom on load
+    window.addEventListener('load', () => {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+</script>
+</body>
+</html>

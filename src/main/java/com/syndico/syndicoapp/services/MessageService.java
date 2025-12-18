@@ -121,4 +121,19 @@ public class MessageService {
                         userId, keyword
                 );
     }
+
+    // Send message with Message object
+    public Message sendMessage(Message message) {
+        return messageRepository.save(message);
+    }
+
+    // Get received messages
+    public List<Message> getReceivedMessages(Long userId) {
+        return messageRepository.findByReceiver_IdOrderBySentAtDesc(userId);
+    }
+
+    // Get unread count
+    public long getUnreadCount(Long userId) {
+        return messageRepository.countByReceiver_IdAndIsReadFalse(userId);
+    }
 }
