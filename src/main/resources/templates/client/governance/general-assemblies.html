@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/work/assemblies.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside  th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='assemblies')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2"><i class="bi bi-people-fill"></i> General Assemblies</h1>
+                        <p class="mb-0">View and participate in building assemblies and meetings</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div style="font-size: 4rem; opacity: 0.2;">
+                            <i class="bi bi-calendar-event-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <a th:href="@{/client/governance/general-assemblies}"
+                   class="filter-btn"
+                   th:classappend="${selectedStatus == null ? 'active' : ''}">
+                    <i class="bi bi-list"></i> All Assemblies
+                    <span class="badge bg-secondary" th:text="${assemblies.size()}">0</span>
+                </a>
+                <a th:href="@{/client/governance/general-assemblies(status='PLANIFIEE')}"
+                   class="filter-btn"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'PLANIFIEE' ? 'active' : ''}">
+                    <i class="bi bi-calendar-check"></i> Upcoming
+                    <span class="badge bg-primary" th:text="${upcomingCount}">0</span>
+                </a>
+                <a th:href="@{/client/governance/general-assemblies(status='TERMINEE')}"
+                   class="filter-btn"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'TERMINEE' ? 'active' : ''}">
+                    <i class="bi bi-check-circle"></i> Completed
+                    <span class="badge bg-success" th:text="${completedCount}">0</span>
+                </a>
+            </div>
+
+            <!-- No assemblies message -->
+            <div th:if="${#lists.isEmpty(assemblies)}" class="text-center text-muted py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem;"></i>
+                <h4 class="mt-3">No assemblies found</h4>
+                <p>There are no assemblies matching your filter criteria.</p>
+            </div>
+
+            <!-- Assembly Cards -->
+            <div th:each="assembly : ${assemblies}"
+                 class="assembly-card"
+                 th:classappend="${assembly.scheduledDate.isAfter(T(java.time.LocalDateTime).now()) ? 'upcoming' : 'completed'}"
+                 th:data-status="${assembly.scheduledDate.isAfter(T(java.time.LocalDateTime).now()) ? 'upcoming' : 'completed'}">
+                <div class="assembly-header">
+                    <div class="d-flex align-items-center">
+                        <div class="assembly-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1" th:text="${assembly.title}">Assembly Title</h3>
+                            <p class="text-muted mb-0" th:text="${assembly.agenda}">Assembly Agenda</p>
+                        </div>
+                    </div>
+                    <span class="status-badge upcoming" th:if="${assembly.status.name() == 'PLANIFIEE'}">
+                        <i class="bi bi-clock-history"></i> Upcoming
+                    </span>
+                    <span class="status-badge in-progress" th:if="${assembly.status.name() == 'EN_COURS'}">
+                        <i class="bi bi-hourglass-split"></i> In Progress
+                    </span>
+                    <span class="status-badge completed" th:if="${assembly.status.name() == 'TERMINEE'}">
+                        <i class="bi bi-check-circle"></i> Completed
+                    </span>
+                    <span class="status-badge cancelled" th:if="${assembly.status.name() == 'ANNULEE'}">
+                        <i class="bi bi-x-circle"></i> Cancelled
+                    </span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="bi bi-calendar3"></i>
+                        <div>
+                            <small class="text-muted">Date</small>
+                            <div><strong th:text="${#temporals.format(assembly.scheduledDate, 'dd MMMM, yyyy')}">Date</strong></div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-clock"></i>
+                        <div>
+                            <small class="text-muted">Time</small>
+                            <div><strong th:text="${#temporals.format(assembly.scheduledDate, 'HH:mm')}">Time</strong></div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <div>
+                            <small class="text-muted">Location</small>
+                            <div><strong th:text="${assembly.location}">Location</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agenda-section" th:if="${assembly.agenda != null and !#strings.isEmpty(assembly.agenda)}">
+                    <h5 class="mb-3"><i class="bi bi-list-check"></i> Meeting Agenda</h5>
+                    <p class="text-muted" th:text="${assembly.agenda}">Agenda details</p>
+                </div>
+
+                <div class="action-buttons">
+                    <a th:href="@{/client/governance/general-assemblies/{id}(id=${assembly.id})}"
+                       class="action-btn primary">
+                        <i class="bi bi-eye"></i> View Details
+                    </a>
+                    <button class="action-btn secondary" th:if="${assembly.scheduledDate.isAfter(T(java.time.LocalDateTime).now())}">
+                        <i class="bi bi-calendar-plus"></i> Add to Calendar
+                    </button>
+                    <a th:if="${assembly.minutesUrl != null}"
+                       th:href="${assembly.minutesUrl}"
+                       target="_blank"
+                       class="action-btn secondary">
+                        <i class="bi bi-file-earmark-text"></i> View Minutes
+                    </a>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+</div>
+
+<footer  th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function filterAssemblies(status) {
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Filter assembly cards
+        const cards = document.querySelectorAll('.assembly-card');
+        cards.forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

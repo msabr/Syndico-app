@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Syndico</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="login-body">
+
+<div class="login-container">
+    <div class="row g-0 h-100">
+
+        <div class="col-lg-6 d-none d-lg-flex login-left">
+            <div class="d-flex flex-column justify-content-center align-items-center text-white px-5">
+                <img th:src="@{/images/syndico_logo.png}" alt="Syndico Logo" class="logo-large mb-4 animate-float">
+
+                <h1 class="display-4 fw-bold mb-3">SYNDICO</h1>
+
+                <p class="lead text-center mb-5">
+                    Your complete solution for modern property management
+                </p>
+
+                <div class="features-list text-start">
+                    <div class="feature-item mb-3">
+                        <i class="fas fa-check-circle fa-2x me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Simplified Management</h5>
+                            <p class="mb-0 small opacity-75">All your data centralized</p>
+                        </div>
+                    </div>
+                    <div class="feature-item mb-3">
+                        <i class="fas fa-credit-card fa-2x me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Online Payments</h5>
+                            <p class="mb-0 small opacity-75">Pay your fees in one click</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt fa-2x me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Maximum Security</h5>
+                            <p class="mb-0 small opacity-75">Your data is protected</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 d-flex align-items-center justify-content-center login-right">
+            <div class="login-form-wrapper">
+
+                <div class="text-center d-lg-none mb-4">
+                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico" width="80" height="80" class="mb-3">
+                    <h3 class="fw-bold">SYNDICO</h3>
+                </div>
+
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold mb-2">Create Account</h2>
+                    <p class="text-muted">
+                        Join us today and start managing your property
+                    </p>
+                </div>
+
+                <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span>Registration failed. Please try again.</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span>Registration successful! Please check your email.</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <form th:action="@{/perform_register}"
+                      th:object="${user}"
+                      method="post"
+                      class="login-form">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="firstName" class="form-label">
+                                <i class="fas fa-user me-2"></i>First Name
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   th:field="*{firstName}"
+                                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                                   placeholder="Enter your first name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                                 th:errors="*{firstName}"></div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label for="lastName" class="form-label">
+                                <i class="fas fa-user me-2"></i>Last Name
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   th:field="*{lastName}"
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                                   placeholder="Enter your last name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                                 th:errors="*{lastName}"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email Address
+                        </label>
+                        <input type="email"
+                               class="form-control form-control-lg"
+                               th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="example@email.com">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="phoneNumber" class="form-label">
+                            <i class="fas fa-phone me-2"></i>Phone Number
+                        </label>
+                        <input type="tel"
+                               class="form-control form-control-lg"
+                               th:field="*{phoneNumber}"
+                               th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                               placeholder="+212 6XX-XXXXXX">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}"
+                             th:errors="*{phoneNumber}"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password"
+                                   class="form-control form-control-lg"
+                                   th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                   placeholder="••••••••">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>
+                        <small class="text-muted">
+                            Min 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special char
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Confirm Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password"
+                                   class="form-control form-control-lg"
+                                   th:field="*{confirmPassword}"
+                                   th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                                   placeholder="••••••••">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}"
+                             th:errors="*{confirmPassword}"></div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               th:field="*{acceptTerms}"
+                               required>
+                        <label class="form-check-label" for="acceptTerms">
+                            I agree to the
+                            <a th:href="@{/TermsUse}" class="text-decoration-none">Terms and Conditions</a>
+                            and
+                            <a th:href="@{/PrivacyPolicy}" class="text-decoration-none">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="fas fa-user-plus me-2"></i>Sign Up
+                    </button>
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                </form>
+
+                <div class="divider my-4">
+                    <span>OR</span>
+                </div>
+
+                <div class="text-center">
+                    <p class="mb-0">
+                        Already have an account?
+                        <a th:href="@{/login}" class="fw-bold text-decoration-none">
+                            Log in
+                        </a>
+                    </p>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a th:href="@{/home}" class="text-muted text-decoration-none">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to home
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    toggleConfirmPassword.addEventListener('click', function() {
+        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.setAttribute('type', type);
+
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            new bootstrap.Alert(alert).close();
+        });
+    }, 5000);
+</script>
+
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; }
+    .login-body { height: 100vh; overflow: auto; }
+    .login-container { height: 100vh; }
+    .login-left {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--tertiary) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .login-left::before {
+        content: '';
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        top: -200px;
+        right: -200px;
+    }
+    .login-left::after {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        bottom: -100px;
+        left: -100px;
+    }
+    .logo-large {
+        width: 150px;
+        height: 150px;
+        filter: drop-shadow(0 10px 30px rgba(0,0,0,0.2));
+        position: relative;
+        z-index: 2;
+    }
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    .feature-item {
+        display: flex;
+        align-items-start;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    .feature-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(10px);
+    }
+    .login-right { background-color: #ffffff; padding: 2rem; }
+    .login-form-wrapper { width: 100%; max-width: 450px; padding: 2rem; }
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(255, 166, 158, 0.25);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        border: none;
+        border-radius: 12px;
+        padding: 0.9rem 1rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 166, 158, 0.3);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 166, 158, 0.4);
+    }
+    .btn-outline-secondary {
+        border: 2px solid #e0e0e0;
+        border-radius: 0 12px 12px 0;
+        color: var(--tertiary);
+    }
+    .btn-outline-secondary:hover {
+        background-color: var(--secondary);
+        border-color: var(--tertiary);
+        color: var(--dark);
+    }
+    .divider {
+        position: relative;
+        text-align: center;
+    }
+    .divider::before,
+    .divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: #e0e0e0;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #999;
+        font-size: 0.9rem;
+    }
+    a { color: var(--primary); transition: color 0.3s ease; }
+    a:hover { color: var(--tertiary); }
+    .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 991px) {
+        .login-form-wrapper { padding: 1rem; }
+    }
+    @media (max-width: 576px) {
+        .login-right { padding: 1rem; }
+        .login-form-wrapper { padding: 0.5rem; }
+    }
+</style>
+
+</body>
+</html>

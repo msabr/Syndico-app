@@ -1,0 +1,265 @@
+:root {
+    --primary: #FFA69E;
+    --secondary: #F5EBE0;
+    --tertiary: #B08968;
+    --accent: #DDB892;
+    --dark: #3C3734;
+}
+
+body {
+    background: linear-gradient(135deg, #F5EBE0 0%, #ffffff 100%);
+}
+
+.page-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    text-align: center;
+    border-left: 5px solid;
+    transition: transform 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+}
+
+.summary-card.pending { border-color: #ffc107; }
+.summary-card.paid { border-color: #28a745; }
+.summary-card.overdue { border-color: #dc3545; }
+.summary-card.total { border-color: #007bff; }
+
+.summary-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card.pending .summary-icon { color: #ffc107; }
+.summary-card.paid .summary-icon { color: #28a745; }
+.summary-card.overdue .summary-icon { color: #dc3545; }
+.summary-card.total .summary-icon { color: #007bff; }
+
+.summary-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--tertiary);
+    background: white;
+    color: var(--tertiary);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--tertiary);
+    color: white;
+}
+
+.charges-table {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.charge-row {
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.charge-row:hover {
+    background: var(--secondary);
+}
+
+.charge-row:last-child {
+    border-bottom: none;
+}
+
+.charge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.charge-type-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.badge-mensuelle { background: #d1ecf1; color: #0c5460; }
+.badge-exceptionnelle { background: #fff3cd; color: #856404; }
+.badge-travaux { background: #f8d7da; color: #721c24; }
+.badge-eau { background: #cce5ff; color: #004085; }
+.badge-electricite { background: #fff3cd; color: #856404; }
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.status-paid { background: #d4edda; color: #155724; }
+.status-pending { background: #fff3cd; color: #856404; }
+.status-overdue { background: #f8d7da; color: #721c24; }
+
+.charge-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-item i {
+    color: var(--tertiary);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn.pay {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.action-btn.download {
+    background: var(--tertiary);
+    color: white;
+}
+
+.action-btn.view {
+    background: var(--secondary);
+    color: var(--dark);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.payment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+}
+
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.payment-method {
+    padding: 1.5rem;
+    border: 2px solid var(--secondary);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover, .payment-method.selected {
+    border-color: var(--tertiary);
+    background: var(--secondary);
+}
+
+.payment-method i {
+    font-size: 2rem;
+    color: var(--tertiary);
+    margin-bottom: 0.5rem;
+}
+
+.pay-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.amount-highlight {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--tertiary);
+    text-align: center;
+    margin: 1rem 0;
+}

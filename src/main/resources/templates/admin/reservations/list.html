@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/operations/reservList.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='reservations')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2"><i class="fas fa-calendar-check me-2"></i>Reservations Management</h2>
+                    <p class="mb-0">Manage common space reservations</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Statistics and List -->
+            <div class="col-lg-9">
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-primary position-relative">
+                            <h6 class="text-uppercase mb-2">Total</h6>
+                            <h3 class="mb-0" th:text="${statistics.totalReservations}">0</h3>
+                            <i class="fas fa-calendar-alt stat-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-warning position-relative">
+                            <h6 class="text-uppercase mb-2">Pending</h6>
+                            <h3 class="mb-0" th:text="${statistics.pendingReservations}">0</h3>
+                            <i class="fas fa-clock stat-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-success position-relative">
+                            <h6 class="text-uppercase mb-2">Confirmed</h6>
+                            <h3 class="mb-0" th:text="${statistics.confirmedReservations}">0</h3>
+                            <i class="fas fa-check-circle stat-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-info position-relative">
+                            <h6 class="text-uppercase mb-2">Upcoming</h6>
+                            <h3 class="mb-0" th:text="${statistics.upcomingReservations}">0</h3>
+                            <i class="fas fa-arrow-right stat-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Alert -->
+                <div th:if="${statistics.pendingReservations > 0}" class="alert alert-warning d-flex align-items-center mb-4">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                    <div>
+                        <strong>Action Required!</strong><br>
+                        <span th:text="${statistics.pendingReservations} + ' reservation(s) awaiting approval.'"></span>
+                    </div>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <form th:action="@{/admin/reservations}" method="get" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">Filter by Status</label>
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Statuses</option>
+                                <option th:each="status : ${reservationStatuses}"
+                                        th:value="${status}"
+                                        th:text="${status}"
+                                        th:selected="${status == selectedStatus}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Filter by Space Type</label>
+                            <select name="spaceType" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Spaces</option>
+                                <option th:each="spaceType : ${spaceTypes}"
+                                        th:value="${spaceType}"
+                                        th:text="${spaceType}"
+                                        th:selected="${spaceType == selectedSpaceType}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <a th:href="@{/admin/reservations}" class="btn btn-secondary w-100">
+                                <i class="fas fa-redo"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Reservations Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Reservations</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Resident</th>
+                                    <th>Space</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${reservations.isEmpty()}">
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">No reservations found</p>
+                                    </td>
+                                </tr>
+                                <tr th:each="reservation : ${reservations}">
+                                    <td><strong th:text="'#' + ${reservation.id}">001</strong></td>
+                                    <td>
+                                        <div th:if="${reservation.resident != null}">
+                                            <span th:text="${reservation.resident.user?.firstName + ' ' + reservation.resident.user?.lastName}">Resident</span>
+                                            <br>
+                                            <small class="text-muted" th:text="'Apt: ' + ${reservation.resident.apartmentNumber}">Apt</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${reservation.spaceType}">SALLE_SPORT</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(reservation.startDateTime, 'dd/MM/yyyy HH:mm')}">01/01/2025 14:00</td>
+                                    <td th:text="${#temporals.format(reservation.endDateTime, 'dd/MM/yyyy HH:mm')}">01/01/2025 16:00</td>
+                                    <td>
+                                                <span th:class="'badge badge-' + ${#strings.toLowerCase(reservation.status)}"
+                                                      th:text="${reservation.status}">EN_ATTENTE</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <form th:if="${reservation.status.toString() == 'EN_ATTENTE'}"
+                                                  method="post"
+                                                  th:action="@{/admin/reservations/{id}/approve(id=${reservation.id})}"
+                                                  style="display: inline;">
+                                                <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+
+                                            <form th:if="${reservation.status.toString() == 'EN_ATTENTE'}"
+                                                  method="post"
+                                                  th:action="@{/admin/reservations/{id}/reject(id=${reservation.id})}"
+                                                  style="display: inline;">
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Reject">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+
+                                            <form method="post"
+                                                  th:action="@{/admin/reservations/delete/{id}(id=${reservation.id})}"
+                                                  style="display: inline;"
+                                                  onsubmit="return confirm('Delete this reservation?');">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Upcoming Reservations -->
+            <div class="col-lg-3">
+                <div class="upcoming-card">
+                    <h5 class="mb-3"><i class="fas fa-calendar-day me-2"></i>Upcoming</h5>
+
+                    <div th:if="${upcomingReservations.isEmpty()}" class="text-center text-muted py-4">
+                        <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                        <p class="small">No upcoming reservations</p>
+                    </div>
+
+                    <div th:each="reservation : ${upcomingReservations}" class="upcoming-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <strong class="small" th:text="${reservation.spaceType}">SALLE_SPORT</strong>
+                            <span class="badge badge-confirmee badge-sm" th:text="${reservation.status}">CONFIRMEE</span>
+                        </div>
+                        <p class="small mb-1">
+                            <i class="fas fa-user me-1"></i>
+                            <span th:text="${reservation.resident?.user?.firstName + ' ' + reservation.resident?.user?.lastName}">Resident</span>
+                        </p>
+                        <p class="small mb-0 text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            <span th:text="${#temporals.format(reservation.startDateTime, 'dd/MM HH:mm')}">01/01 14:00</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Space Usage Stats -->
+                <div class="upcoming-card">
+                    <h5 class="mb-3"><i class="fas fa-chart-pie me-2"></i>Space Usage</h5>
+                    <div th:each="entry : ${statistics.bySpaceType}" class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small th:text="${entry.key}">SALLE_SPORT</small>
+                            <small><strong th:text="${entry.value}">0</strong></small>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar"
+                                 th:style="'width: ' + ${(entry.value * 100) / statistics.confirmedReservations} + '%; background-color: var(--primary);'">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+</body>
+</html>

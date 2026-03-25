@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/residents.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='residents')}"></aside>
+
+<div class="main-content">
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2">
+                        <i th:class="${residentDTO.id != null ? 'fas fa-user-edit me-2' : 'fas fa-user-plus me-2'}"></i>
+                        <span th:text="${residentDTO.id != null ? 'Edit Resident' : 'Add New Resident'}"></span>
+                    </h2>
+                    <p class="mb-0">Complete the form below to manage resident information</p>
+                </div>
+                <a th:href="@{/admin/residents}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i> Back to List
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+            <div class="card-body">
+                <form th:action="${residentDTO.id != null ? '/admin/residents/update/' + residentDTO.id : '/admin/residents/create'}"
+                      method="post"
+                      th:object="${residentDTO}"
+                      onsubmit="return validateForm()">
+
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-person-circle"></i> Personal Information
+                        </h5>
+                        <div class="row mb-4">
+
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="firstName"
+                                       th:field="*{firstName}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="lastName"
+                                       th:field="*{lastName}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    Email <span class="text-danger">*</span>
+                                </label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       th:field="*{email}"
+                                       required>
+                                <small class="form-text text-muted">Used for login</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="phoneNumber" class="form-label">
+                                    Phone Number
+                                </label>
+                                <input type="tel"
+                                       class="form-control"
+                                       id="phoneNumber"
+                                       th:field="*{phoneNumber}"
+                                       placeholder="+212 6XX XXX XXX">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">
+                                    Password
+                                    <span th:if="${residentDTO.id == null}" class="text-danger">*</span>
+                                    <span th:if="${residentDTO.id != null}" class="text-muted">(Leave empty to keep current)</span>
+                                </label>
+                                <input type="password"
+                                       class="form-control"
+                                       id="password"
+                                       th:field="*{password}"
+                                       th:required="${residentDTO.id == null}"
+                                       minlength="6">
+                                <small class="form-text text-muted">Minimum 6 characters</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="emergencyContact" class="form-label">
+                                    Emergency Contact
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="emergencyContact"
+                                       th:field="*{emergencyContact}"
+                                       placeholder="Name and phone number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Residence Information Section -->
+                    <div class="form-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-building"></i> Residence Information
+                        </h5>
+                        <div class="row mb-4">
+
+                            <div class="col-md-6 mb-3">
+                                <label for="buildingId" class="form-label">
+                                    Building <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        id="buildingId"
+                                        th:field="*{buildingId}"
+                                        required>
+                                    <option value="">Select a building</option>
+                                    <option th:each="building : ${buildings}"
+                                            th:value="${building.id}"
+                                            th:text="${building.name + ' - ' + building.address}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="apartmentNumber" class="form-label">
+                                    Apartment Number <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="apartmentNumber"
+                                       th:field="*{apartmentNumber}"
+                                       placeholder="e.g., A101, 2-B, etc."
+                                       required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="moveInDate" class="form-label">
+                                    Move-in Date
+                                </label>
+                                <input type="date"
+                                       class="form-control"
+                                       id="moveInDate"
+                                       th:field="*{moveInDate}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label d-block">
+                                    Resident Type <span class="text-danger">*</span>
+                                </label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isOwner"
+                                           id="isOwnerTrue"
+                                           th:field="*{isOwner}"
+                                           value="true"
+                                           th:checked="${residentDTO.isOwner == true}">
+                                    <label class="form-check-label" for="isOwnerTrue">
+                                        <i class="bi bi-house-fill text-success"></i> Owner
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isOwner"
+                                           id="isOwnerFalse"
+                                           th:field="*{isOwner}"
+                                           value="false"
+                                           th:checked="${residentDTO.isOwner == false}">
+                                    <label class="form-check-label" for="isOwnerFalse">
+                                        <i class="bi bi-key-fill text-primary"></i> Tenant
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Current Information (Edit Mode) -->
+                    <div th:if="${residentDTO.id != null}" class="alert alert-info mb-4">
+                        <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Current Information</h6>
+                        <ul class="mb-0">
+                            <li>Resident ID: <strong th:text="${residentDTO.id}"></strong></li>
+                            <li>User ID: <strong th:text="${residentDTO.userId}"></strong></li>
+                            <li>Created: <strong th:text="${residentDTO.createdAt != null ? #temporals.format(residentDTO.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></strong></li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/admin/residents}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i th:class="${residentDTO.id != null ? 'bi bi-check-circle' : 'bi bi-plus-circle'}"></i>
+                            <span th:text="${residentDTO.id != null ? 'Update Resident' : 'Create Resident'}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function validateForm() {
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const buildingId = document.getElementById('buildingId').value;
+        const apartmentNumber = document.getElementById('apartmentNumber').value.trim();
+        const isEditMode = /*[[${residentDTO.id}]]*/ null != null;
+
+        if (!firstName || !lastName) {
+            alert('Please enter first name and last name');
+            return false;
+        }
+
+        if (!email) {
+            alert('Please enter a valid email address');
+            return false;
+        }
+
+        if (!isEditMode && (!password || password.length < 6)) {
+            alert('Password must be at least 6 characters');
+            return false;
+        }
+
+        if (!buildingId) {
+            alert('Please select a building');
+            return false;
+        }
+
+        if (!apartmentNumber) {
+            alert('Please enter an apartment number');
+            return false;
+        }
+
+        const ownerChecked = document.querySelector('input[name="isOwner"]:checked');
+        if (!ownerChecked) {
+            alert('Please select resident type (Owner or Tenant)');
+            return false;
+        }
+
+        return confirm('Are you sure you want to ' + (isEditMode ? 'update' : 'create') + ' this resident?');
+    }
+
+    // Auto-hide alerts
+    setTimeout(() => {
+        document.querySelectorAll('.alert-danger').forEach(alert => {
+            new bootstrap.Alert(alert).close();
+        });
+    }, 5000);
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+:root {
+    --primary: #FFA69E;
+    --secondary: #F5EBE0;
+    --tertiary: #B08968;
+    --accent: #DDB892;
+    --dark: #3C3734;
+}
+
+body {
+    background: linear-gradient(135deg, #F5EBE0 0%, #ffffff 100%);
+}
+
+.page-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-box {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-top: 4px solid;
+}
+
+.stat-box.active { border-color: #ffc107; }
+.stat-box.resolved { border-color: #28a745; }
+.stat-box.total { border-color: #007bff; }
+
+.stat-box i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-box.active i { color: #ffc107; }
+.stat-box.resolved i { color: #28a745; }
+.stat-box.total i { color: #007bff; }
+
+.complaint-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-left: 5px solid;
+    transition: all 0.3s ease;
+}
+
+.complaint-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.complaint-card.urgente { border-color: #dc3545; }
+.complaint-card.haute { border-color: #ffc107; }
+.complaint-card.moyenne { border-color: #17a2b8; }
+.complaint-card.basse { border-color: #6c757d; }
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.status-nouvelle { background: #cce5ff; color: #004085; }
+.status-en-cours { background: #fff3cd; color: #856404; }
+.status-assignee { background: #d1ecf1; color: #0c5460; }
+.status-resolue { background: #d4edda; color: #155724; }
+
+.priority-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.priority-urgente { background: #f8d7da; color: #721c24; }
+.priority-haute { background: #fff3cd; color: #856404; }
+.priority-moyenne { background: #d1ecf1; color: #0c5460; }
+.priority-basse { background: #e2e3e5; color: #383d41; }
+
+.category-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: var(--secondary);
+    font-size: 0.85rem;
+}
+
+.new-complaint-btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.new-complaint-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}

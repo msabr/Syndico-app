@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/home.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='home')}"></header>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">
+                    <span th:text="#{home.hero.welcome}">Welcome</span> to
+                    <span class="gradient-text">Syndico</span>
+                </h1>
+                <p class="lead mb-4">
+                    <span class="fw-semibold" th:text="#{home.hero.simplify}">Simplify</span>
+                    property management,
+                    <span class="fw-semibold" th:text="#{home.hero.elevate}">Elevate</span>
+                    community living
+                </p>
+                <div class="d-flex gap-3 mb-4">
+                    <a th:href="@{/register}" class="btn btn-hero-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>
+                        <span th:text="#{home.hero.register}">Register</span>
+                    </a>
+                    <a th:href="@{/register}" class="btn btn-hero-outline btn-lg">
+                        <span th:text="#{home.hero.newResident}">New Resident? Register Here</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center" data-aos="fade-left">
+                <img th:src="@{/images/hero_image.png}" alt="Happy Residents" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+    <div class="hero-wave">
+        <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#F5EBE0" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Simplify Life Section -->
+<section class="simplify-section py-5" style="background-color: #F5EBE0;">
+    <div class="container text-center" data-aos="fade-up">
+        <h2 class="section-title mb-3" th:text="#{home.simplify.title}">Simplify Your Community Life</h2>
+        <p class="text-muted mb-5" th:text="#{home.simplify.subtitle}">
+            Syndico brings everything together in one place.
+        </p>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h4 th:text="#{home.feature.payments.title}">Online Payments</h4>
+                    <p th:text="#{home.feature.payments.desc}">
+                        Pay your charges securely and save time. Track your payment history easily.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 th:text="#{home.feature.requests.title}">Quick Requests</h4>
+                    <p th:text="#{home.feature.requests.desc}">
+                        Submit and track maintenance requests. Get real-time updates on repairs.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h4 th:text="#{home.feature.informed.title}">Stay Informed</h4>
+                    <p th:text="#{home.feature.informed.desc}">
+                        Receive announcements, news, and updates from your community board.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- All Services Section -->
+<section class="services-section py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5" data-aos="fade-up" th:text="#{home.services.title}">
+            Complete Property Management Solutions
+        </h2>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h5 th:text="#{home.service.charges}">Expense Management</h5>
+                    <p th:text="#{home.service.charges.desc}">Transparent tracking of all condominium expenses</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h5 th:text="#{home.service.complaints}">Complaints</h5>
+                    <p th:text="#{home.service.complaints.desc}">Quick response to resident issues</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h5 th:text="#{home.service.reservations}">Reservations</h5>
+                    <p th:text="#{home.service.reservations.desc}">Book common areas easily</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5 th:text="#{home.service.assemblies}">General Assemblies</h5>
+                    <p th:text="#{home.service.assemblies.desc}">Digital voting and meeting management</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h5 th:text="#{home.service.documents}">Documents</h5>
+                    <p th:text="#{home.service.documents.desc}">Secure access to all important files</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h5 th:text="#{home.service.notifications}">Notifications</h5>
+                    <p th:text="#{home.service.notifications.desc}">Real-time alerts and reminders</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="700">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5 th:text="#{home.service.reports}">Reports</h5>
+                    <p th:text="#{home.service.reports.desc}">Detailed financial analytics</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="800">
+                <div class="service-card-modern">
+                    <div class="service-icon-wrapper">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h5 th:text="#{home.service.communication}">Communication</h5>
+                    <p th:text="#{home.service.communication.desc}">Direct messaging with management</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5" style="background: linear-gradient(135deg, #FFA69E 0%, #DDB892 100%);">
+    <div class="container">
+        <div class="row text-center text-white">
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold">500+</h2>
+                    <p class="lead" th:text="#{home.stats.buildings}">Buildings Managed</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold">10K+</h2>
+                    <p class="lead" th:text="#{home.stats.residents}">Happy Residents</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold">95%</h2>
+                    <p class="lead" th:text="#{home.stats.satisfaction}">Satisfaction Rate</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold">24/7</h2>
+                    <p class="lead" th:text="#{home.stats.support}">Support Available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5" data-aos="fade-up" th:text="#{home.how.title}">
+            How It Works
+        </h2>
+
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right">
+                <img th:src="@{/images/how-it-works.jpg}" alt="How it works" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4 th:text="#{home.how.step1.title}">Create Your Account</h4>
+                    <p th:text="#{home.how.step1.desc}">Register in less than 2 minutes with your email</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4 th:text="#{home.how.step2.title}">Complete Your Profile</h4>
+                    <p th:text="#{home.how.step2.desc}">Add your apartment and personal information</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4 th:text="#{home.how.step3.title}">Start Managing</h4>
+                    <p th:text="#{home.how.step3.desc}">Access all features from your dashboard</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5" data-aos="fade-up" th:text="#{home.testimonials.title}">
+            What Our Residents Say
+        </h2>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" th:text="#{home.testimonial1.text}">
+                        "Syndico has completely transformed how we manage our building. Everything is so much easier now!"
+                    </p>
+                    <div class="d-flex align-items-center mt-3">
+                        <img th:src="@{/images/avatar1.png}" alt="User" class="testimonial-avatar">
+                        <div class="ms-3">
+                            <h6 class="mb-0">Sarah M.</h6>
+                            <small class="text-muted" th:text="#{home.testimonial1.role}">Resident</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" th:text="#{home.testimonial2.text}">
+                        "The online payment system is incredibly convenient. No more checks or trips to the office!"
+                    </p>
+                    <div class="d-flex align-items-center mt-3">
+                        <img th:src="@{/images/avatar2.jpg}" alt="User" class="testimonial-avatar">
+                        <div class="ms-3">
+                            <h6 class="mb-0">Ahmed K.</h6>
+                            <small class="text-muted" th:text="#{home.testimonial2.role}">Owner</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text" th:text="#{home.testimonial3.text}">
+                        "As a property manager, this tool saves me hours every week. Highly recommended!"
+                    </p>
+                    <div class="d-flex align-items-center mt-3">
+                        <img th:src="@{/images/avatar3.png}" alt="User" class="testimonial-avatar">
+                        <div class="ms-3">
+                            <h6 class="mb-0">Fatima Z.</h6>
+                            <small class="text-muted" th:text="#{home.testimonial3.role}">Syndic</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 text-center text-white" style="background: linear-gradient(135deg, #3C3734 0%, #B08968 100%);">
+    <div class="container" data-aos="zoom-in">
+        <h2 class="display-5 fw-bold mb-4" th:text="#{home.cta.title}">
+            Ready to simplify your condominium management?
+        </h2>
+        <p class="lead mb-4" th:text="#{home.cta.subtitle}">
+            Join thousands of satisfied residents and property managers
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a th:href="@{/register}" class="btn btn-light btn-lg">
+                <i class="fas fa-rocket me-2"></i>
+                <span th:text="#{home.cta.button}">Get Started Now</span>
+            </a>
+            <a th:href="@{/contact}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-phone me-2"></i>
+                <span th:text="#{home.cta.contact}">Contact Sales</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/Header :: footer}"></footer>
+
+<!-- Chatbot Widget -->
+<div th:replace="~{fragments/LayoutChatbot :: chatbot}"></div>
+
+<!-- AOS Animation Library -->
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<div th:replace="~{fragments/Header :: scripts}"></div>
+
+<script>
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+    });
+</script>
+
+</body>
+</html>

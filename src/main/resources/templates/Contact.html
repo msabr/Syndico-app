@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/contact.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='contact')}"></header>
+
+<!-- Hero Section -->
+<section class="contact-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <span class="hero-badge">Get In Touch</span>
+                <h1 class="display-4 fw-bold mb-4">
+                    Let's Start a <span class="gradient-text">Conversation</span>
+                </h1>
+                <p class="lead mb-4">
+                    Have questions about our platform or interested in partnering with us?
+                    Reach out to our team and we'll get back to you as soon as possible.
+                </p>
+
+                <!-- Contact Cards -->
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h6>Phone</h6>
+                            <p>+212 5XX-XXXXXX</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h6>Email</h6>
+                            <p>contact@syndico.ma</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h6>Address</h6>
+                            <p>123 Bd Mohamed V, Casablanca</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="contact-form-wrapper">
+                    <h3 class="mb-4">Send Us a Message</h3>
+
+                    <!-- Success Alert -->
+                    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Message sent successfully! We'll get back to you soon.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Something went wrong. Please try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <form th:action="@{/contact/send}" method="post" id="contactForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="firstName"
+                                       name="firstName"
+                                       required
+                                       placeholder="John">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="lastName"
+                                       name="lastName"
+                                       required
+                                       placeholder="Doe">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       name="email"
+                                       required
+                                       placeholder="john@example.com">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel"
+                                       class="form-control"
+                                       id="phone"
+                                       name="phone"
+                                       placeholder="+212 6XX-XXXXXX">
+                            </div>
+
+                            <div class="col-12">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="billing">Billing Question</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control"
+                                          id="message"
+                                          name="message"
+                                          rows="5"
+                                          required
+                                          placeholder="Tell us more about your inquiry..."></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="section-title">Find Us</h2>
+            <p class="section-subtitle">Visit our office in Casablanca</p>
+        </div>
+
+        <div class="map-wrapper" data-aos="zoom-in">
+            <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106387.65289312!2d-7.680149!3d33.572945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cd4778aa113b%3A0xb06c1d84f310fd3!2sCasablanca%2C%20Morocco!5e0!3m2!1sen!2s!4v1234567890"
+                    width="100%"
+                    height="450"
+                    style="border:0; border-radius: 20px;"
+                    allowfullscreen=""
+                    loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- Business Hours -->
+<section class="hours-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                <div class="hours-card">
+                    <i class="fas fa-clock fa-3x mb-3"></i>
+                    <h3 class="mb-4">Business Hours</h3>
+                    <div class="hours-list">
+                        <div class="hours-item">
+                            <span>Monday - Friday</span>
+                            <span class="fw-bold">9:00 AM - 6:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Saturday</span>
+                            <span class="fw-bold">10:00 AM - 4:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Sunday</span>
+                            <span class="fw-bold">Closed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="hours-card">
+                    <i class="fas fa-headset fa-3x mb-3"></i>
+                    <h3 class="mb-4">Support Channels</h3>
+                    <div class="support-list">
+                        <a href="mailto:support@syndico.ma" class="support-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h6>Email Support</h6>
+                                <p>Response within 24 hours</p>
+                            </div>
+                        </a>
+                        <a href="tel:+2125XXXXXXXX" class="support-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h6>Phone Support</h6>
+                                <p>Mon-Fri, 9AM-6PM</p>
+                            </div>
+                        </a>
+                        <button onclick="openChatbot()" class="support-item">
+                            <i class="fas fa-comments"></i>
+                            <div>
+                                <h6>Live Chat</h6>
+                                <p>Instant AI assistance</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Social Media -->
+<section class="social-section py-5 bg-light">
+    <div class="container text-center" data-aos="zoom-in">
+        <h3 class="mb-4">Follow Us on Social Media</h3>
+        <div class="social-buttons">
+            <a href="#" class="social-btn facebook">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="#" class="social-btn linkedin">
+                <i class="fab fa-linkedin-in"></i>
+                <span>LinkedIn</span>
+            </a>
+            <a href="#" class="social-btn twitter">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </a>
+            <a href="#" class="social-btn instagram">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/Header :: footer}"></footer>
+
+<!-- Chatbot Widget -->
+<div th:replace="~{fragments/LayoutChatbot :: chatbot}"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<div th:replace="~{fragments/Header :: scripts}"></div>
+
+<script>
+    AOS.init({ duration: 800, once: true });
+
+    // Form validation
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        const form = this;
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    function openChatbot() {
+        document.getElementById('chatbot-widget').classList.add('open');
+    }
+</script>
+
+</body>
+</html>

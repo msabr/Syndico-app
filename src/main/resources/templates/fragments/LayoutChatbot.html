@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<!-- Chatbot Fragment -->
+<div th:fragment="chatbot">
+
+    <!-- Chatbot Floating Button -->
+    <button class="chatbot-btn" id="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-badge">1</span>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-widget" id="chatbot-widget">
+        <div class="chatbot-header">
+            <div class="d-flex align-items-center">
+                <div class="chatbot-avatar">
+                    <img th:src="@{/images/syndico_logo.png}" alt="Syndico AI">
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0">Syndico Assistant</h6>
+                    <small class="text-white-50">
+                        <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>
+                        Online
+                    </small>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chatbot-messages" id="chatbot-messages">
+            <!-- Welcome Message -->
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <img th:src="@{/images/syndico_logo.png}" alt="Bot">
+                </div>
+                <div class="message-content">
+                    <p>👋 Hello! I'm Syndico AI Assistant. How can I help you today?</p>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="quick-suggestions">
+                <button class="quick-btn" onclick="sendQuickMessage('How do I pay my fees?')">
+                    💳 Payment Help
+                </button>
+                <button class="quick-btn" onclick="sendQuickMessage('How to make a reservation?')">
+                    📅 Reservations
+                </button>
+                <button class="quick-btn" onclick="sendQuickMessage('Contact support')">
+                    📞 Contact Support
+                </button>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <form id="chatbot-form" onsubmit="sendMessage(event)">
+                <input
+                        type="text"
+                        id="chatbot-input-field"
+                        class="form-control"
+                        placeholder="Type your message..."
+                        autocomplete="off"
+                >
+                <button type="submit" class="chatbot-send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+            <div class="chatbot-typing" id="typing-indicator" style="display: none;">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/finfaci/myReservations.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside  th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='reservations')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2"><i class="bi bi-calendar-check"></i> My Reservations</h1>
+                        <p class="mb-0">Manage your facility bookings and reservations</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/client/book-space" class="quick-book-btn">
+                            <i class="bi bi-plus-circle"></i> Book New Space
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-row">
+                <div class="stat-box upcoming">
+                    <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+                    <h3 class="mb-0" th:text="${upcomingCount}">0</h3>
+                    <small class="text-muted">Upcoming</small>
+                </div>
+                <div class="stat-box confirmed">
+                    <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+                    <h3 class="mb-0" th:text="${confirmedCount}">0</h3>
+                    <small class="text-muted">Confirmed</small>
+                </div>
+                <div class="stat-box pending">
+                    <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+                    <h3 class="mb-0" th:text="${pendingCount}">0</h3>
+                    <small class="text-muted">Pending</small>
+                </div>
+                <div class="stat-box cancelled">
+                    <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+                    <h3 class="mb-0" th:text="${cancelledCount}">0</h3>
+                    <small class="text-muted">Cancelled</small>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('all')">
+                    <i class="bi bi-list"></i> All Reservations
+                </button>
+                <button class="tab-btn" onclick="showTab('upcoming')">
+                    <i class="bi bi-calendar-event"></i> Upcoming
+                </button>
+                <button class="tab-btn" onclick="showTab('past')">
+                    <i class="bi bi-clock-history"></i> Past
+                </button>
+                <button class="tab-btn" onclick="showTab('cancelled')">
+                    <i class="bi bi-x-circle"></i> Cancelled
+                </button>
+            </div>
+
+            <!-- Reservations List -->
+            <div id="allTab" class="tab-content">
+
+                <!-- Message if no reservations -->
+                <div th:if="${#lists.isEmpty(reservations)}" class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> You don't have any reservations yet.
+                    <a th:href="@{/client/book-space}" class="btn btn-sm btn-primary ms-2">Book Now</a>
+                </div>
+
+                <!-- Reservations Loop -->
+                <div th:each="reservation : ${reservations}"
+                     class="reservation-card"
+                     th:classappend="${reservation.spaceType.name().toLowerCase()}"
+                     th:attr="data-status=${reservation.startDateTime.isBefore(T(java.time.LocalDateTime).now())} ? 'past' : ${reservation.status.name() == 'ANNULEE'} ? 'cancelled' : 'upcoming'">
+
+                    <div class="reservation-header">
+                        <div class="d-flex align-items-center">
+                            <div class="space-icon">
+                                <i th:class="${reservation.spaceType.name() == 'SALLE_GYM'} ? 'bi bi-dumbbell' :
+                                       ${reservation.spaceType.name() == 'PARKING'} ? 'bi bi-car-front-fill' :
+                                       ${reservation.spaceType.name() == 'SALLE_REUNION'} ? 'bi bi-people-fill' :
+                                       ${reservation.spaceType.name() == 'PISCINE'} ? 'bi bi-water' :
+                                       ${reservation.spaceType.name() == 'TERRASSE'} ? 'bi bi-tree-fill' :
+                                       'bi bi-geo-alt-fill'"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-1" th:text="${reservation.spaceType.name()}">Space Type</h4>
+                                <p class="text-muted mb-0" th:if="${reservation.notes}" th:text="${reservation.notes}">Notes</p>
+                            </div>
+                        </div>
+                        <span class="status-badge"
+                              th:classappend="${reservation.status.name().toLowerCase()}"
+                              th:text="${reservation.status.name() == 'CONFIRMEE'} ? 'Confirmed' :
+                                       ${reservation.status.name() == 'EN_ATTENTE'} ? 'Pending' :
+                                       ${reservation.status.name() == 'ANNULEE'} ? 'Cancelled' :
+                                       ${reservation.status.name() == 'REFUSEE'} ? 'Rejected' : ${reservation.status.name()}">
+                        </span>
+                    </div>
+
+                    <div class="reservation-details">
+                        <div class="detail-item">
+                            <i class="bi bi-calendar3"></i>
+                            <div>
+                                <small class="text-muted d-block">Date</small>
+                                <strong th:text="${#temporals.format(reservation.startDateTime, 'dd MMM yyyy')}">Date</strong>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="bi bi-clock"></i>
+                            <div>
+                                <small class="text-muted d-block">Time</small>
+                                <strong>
+                                    <span th:text="${#temporals.format(reservation.startDateTime, 'HH:mm')}">Start</span>
+                                    -
+                                    <span th:text="${#temporals.format(reservation.endDateTime, 'HH:mm')}">End</span>
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="bi bi-hash"></i>
+                            <div>
+                                <small class="text-muted d-block">Booking ID</small>
+                                <strong th:text="'#RES-' + ${reservation.id}">#RES-ID</strong>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="bi bi-check-circle"></i>
+                            <div>
+                                <small class="text-muted d-block">Status</small>
+                                <strong th:class="${reservation.status.name() == 'CONFIRMEE'} ? 'text-success' :
+                                                   ${reservation.status.name() == 'EN_ATTENTE'} ? 'text-warning' :
+                                                   ${reservation.status.name() == 'ANNULEE'} ? 'text-danger' : 'text-info'"
+                                        th:text="${reservation.status.name() == 'CONFIRMEE'} ? 'Confirmed' :
+                                                 ${reservation.status.name() == 'EN_ATTENTE'} ? 'Pending Approval' :
+                                                 ${reservation.status.name() == 'ANNULEE'} ? 'Cancelled' : ${reservation.status.name()}">
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert for pending reservations -->
+                    <div th:if="${reservation.status.name() == 'EN_ATTENTE'}" class="alert alert-warning mt-3 mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        <small><strong>Note:</strong> Your reservation is pending admin approval. You'll be notified within 24 hours.</small>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="action-buttons" th:if="${reservation.status.name() != 'ANNULEE'}">
+                        <form th:action="@{/client/reservations/{id}/cancel(id=${reservation.id})}"
+                              method="post"
+                              style="display: inline;"
+                              onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                            <button type="submit" class="action-btn danger">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showTab(tab) {
+        const cards = document.querySelectorAll('.reservation-card');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        cards.forEach(card => {
+            if (tab === 'all') {
+                card.style.display = 'block';
+            } else if (tab === 'upcoming') {
+                card.style.display = card.dataset.status === 'upcoming' ? 'block' : 'none';
+            } else if (tab === 'past') {
+                card.style.display = card.dataset.status === 'past' ? 'block' : 'none';
+            } else if (tab === 'cancelled') {
+                card.style.display = card.dataset.status === 'cancelled' ? 'block' : 'none';
+            }
+        });
+    }
+
+    function cancelReservation(id) {
+        if (confirm('Are you sure you want to cancel this reservation?')) {
+            alert('Reservation ' + id + ' has been cancelled');
+            location.reload();
+        }
+    }
+
+    function viewDetails(id) {
+        alert('Viewing details for reservation: ' + id);
+    }
+
+    function downloadConfirmation(id) {
+        alert('Downloading confirmation for: ' + id);
+    }
+</script>
+</body>
+</html>

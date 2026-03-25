@@ -1,0 +1,226 @@
+:root {
+    --primary: #FFA69E;
+    --secondary: #F5EBE0;
+    --tertiary: #B08968;
+    --accent: #DDB892;
+    --dark: #3C3734;
+}
+
+body {
+    background: linear-gradient(135deg, #F5EBE0 0%, #ffffff 100%);
+}
+
+.page-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-bottom: 4px solid;
+}
+
+.stat-card.total { border-color: #007bff; }
+.stat-card.year { border-color: #28a745; }
+.stat-card.month { border-color: #ffc107; }
+.stat-card.average { border-color: #17a2b8; }
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card.total .stat-icon { color: #007bff; }
+.stat-card.year .stat-icon { color: #28a745; }
+.stat-card.month .stat-icon { color: #ffc107; }
+.stat-card.average .stat-icon { color: #17a2b8; }
+
+.filters-section {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.search-input {
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid var(--secondary);
+    border-radius: 25px;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--tertiary);
+}
+
+.timeline-container {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #28a745 0%, #007bff 50%, var(--accent) 100%);
+}
+
+.payment-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 80px;
+}
+
+.payment-dot {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #28a745;
+    border: 4px solid white;
+    box-shadow: 0 0 0 3px #28a745;
+    z-index: 1;
+}
+
+.payment-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-left: 4px solid #28a745;
+}
+
+.payment-card:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.payment-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.payment-method-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-card { background: #cce5ff; color: #004085; }
+.badge-bank { background: #d4edda; color: #155724; }
+.badge-cash { background: #fff3cd; color: #856404; }
+.badge-paypal { background: #f8d7da; color: #721c24; }
+
+.payment-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--secondary);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-item i {
+    color: var(--tertiary);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.action-btn.primary {
+    background: var(--tertiary);
+    color: white;
+}
+
+.action-btn.secondary {
+    background: var(--secondary);
+    color: var(--dark);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.month-divider {
+    margin: 3rem 0 2rem 0;
+    padding-left: 80px;
+}
+
+.month-label {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: var(--tertiary);
+    color: white;
+    border-radius: 25px;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.export-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}

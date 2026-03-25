@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/admin/operations/genAssembliesSt.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside th:replace="~{fragments/AdminSidebar :: admin-sidebar(activePage='general-assemblies')}"></aside>
+
+<div class="main-content">
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2"><i class="fas fa-users me-2"></i>General Assemblies</h2>
+                    <p class="mb-0">Manage general assembly meetings</p>
+                </div>
+                <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#createAssemblyModal">
+                    <i class="fas fa-plus me-2"></i>New Assembly
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card stat-card-primary position-relative">
+                    <h6 class="text-uppercase mb-2">Total Meetings</h6>
+                    <h3 class="mb-0" th:text="${statistics.totalMeetings}">0</h3>
+                    <i class="fas fa-calendar-alt stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-card-warning position-relative">
+                    <h6 class="text-uppercase mb-2">Planned</h6>
+                    <h3 class="mb-0" th:text="${statistics.plannedMeetings}">0</h3>
+                    <i class="fas fa-clock stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-card-info position-relative">
+                    <h6 class="text-uppercase mb-2">In Progress</h6>
+                    <h3 class="mb-0" th:text="${statistics.inProgressMeetings}">0</h3>
+                    <i class="fas fa-spinner stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-card-success position-relative">
+                    <h6 class="text-uppercase mb-2">Completed</h6>
+                    <h3 class="mb-0" th:text="${statistics.completedMeetings}">0</h3>
+                    <i class="fas fa-check-circle stat-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <form th:action="@{/admin/general-assemblies}" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <label class="form-label">Filter by Status</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option th:each="status : ${meetingStatuses}"
+                                th:value="${status}"
+                                th:text="${status}"
+                                th:selected="${status == selectedStatus}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a th:href="@{/admin/general-assemblies}" class="btn btn-secondary w-100">
+                        <i class="fas fa-redo me-2"></i>Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Meetings Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Assemblies</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Scheduled Date</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${meetings.isEmpty()}">
+                            <td colspan="6" class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No assemblies found</p>
+                            </td>
+                        </tr>
+                        <tr th:each="meeting : ${meetings}" class="meeting-row"
+                            th:onclick="'window.location=\'/admin/general-assemblies/' + ${meeting.id} + '\''">
+                            <td><strong th:text="'#' + ${meeting.id}">001</strong></td>
+                            <td>
+                                <strong th:text="${meeting.title}">Assembly Title</strong>
+                                <br>
+                                <small class="text-muted" th:text="${#strings.abbreviate(meeting.agenda, 60)}">Agenda...</small>
+                            </td>
+                            <td th:text="${#temporals.format(meeting.scheduledDate, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+                            <td th:text="${meeting.location}">Location</td>
+                            <td>
+                                    <span th:class="'badge badge-' + ${#strings.toLowerCase(meeting.status)}"
+                                          th:text="${meeting.status}">PLANIFIEE</span>
+                            </td>
+                            <td onclick="event.stopPropagation();">
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/admin/general-assemblies/{id}(id=${meeting.id})}"
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <form method="post"
+                                          th:action="@{/admin/general-assemblies/delete/{id}(id=${meeting.id})}"
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Delete this assembly?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Assembly Modal -->
+<div class="modal fade" id="createAssemblyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Create General Assembly</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" th:action="@{/admin/general-assemblies/create}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Title *</label>
+                            <input type="text" name="title" class="form-control" required
+                                   placeholder="e.g., Annual General Assembly 2025">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Scheduled Date & Time *</label>
+                            <input type="datetime-local" name="scheduledDate" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Location *</label>
+                            <input type="text" name="location" class="form-control" required
+                                   placeholder="e.g., Building A Meeting Room">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Agenda (Order of the Day)</label>
+                            <textarea name="agenda" class="form-control" rows="5" required
+                                      placeholder="1. Opening&#10;2. Review of financial statements&#10;3. Voting on proposed works&#10;4. Questions and answers&#10;5. Closing"></textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="PLANIFIEE" selected>Planned</option>
+                                <option value="EN_COURS">In Progress</option>
+                                <option value="TERMINEE">Completed</option>
+                                <option value="ANNULEE">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Create Assembly
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/AdminSidebar :: mini-footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-pages.js}"></script>
+</body>
+</html>

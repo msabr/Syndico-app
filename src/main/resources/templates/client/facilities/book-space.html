@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/Header :: head}"></head>
+<link rel="stylesheet" th:href="@{/css/client/finfaci/bookSpace.css}">
+
+<body>
+
+<header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
+<aside  th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='new-reservation')}"></aside>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2"><i class="bi bi-calendar-plus"></i> Book a Space</h1>
+                        <p class="mb-0">Reserve shared facilities for your convenience</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/client/my-reservations" style="color: white; text-decoration: none;">
+                            <i class="bi bi-list-ul"></i> View My Reservations
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Spaces -->
+            <div class="spaces-grid">
+                <!-- Gym -->
+                <div class="space-card" onclick="openBookingModal('gym')">
+                    <div class="space-image">
+                        <i class="bi bi-dumbbell"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Fitness Center</h3>
+                        <p class="space-description">Modern gym with cardio and weight training equipment</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-people"></i> Max 8 people</span>
+                            <span class="feature-badge"><i class="bi bi-clock"></i> 2-hour slots</span>
+                            <span class="feature-badge"><i class="bi bi-cash"></i> Free</span>
+                        </div>
+
+                        <div class="availability-status available">
+                            <i class="bi bi-check-circle"></i> Available Today
+                        </div>
+
+                        <button class="book-btn">
+                            <i class="bi bi-calendar-plus"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Parking -->
+                <div class="space-card" onclick="openBookingModal('parking')">
+                    <div class="space-image" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Guest Parking</h3>
+                        <p class="space-description">Dedicated visitor parking spots</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-car-front"></i> 5 spots</span>
+                            <span class="feature-badge"><i class="bi bi-clock"></i> Full day</span>
+                            <span class="feature-badge"><i class="bi bi-shield-check"></i> Approval required</span>
+                        </div>
+
+                        <div class="availability-status limited">
+                            <i class="bi bi-exclamation-triangle"></i> Limited Availability
+                        </div>
+
+                        <button class="book-btn">
+                            <i class="bi bi-calendar-plus"></i> Request Booking
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Meeting Room -->
+                <div class="space-card" onclick="openBookingModal('meeting')">
+                    <div class="space-image" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Meeting Room</h3>
+                        <p class="space-description">Conference room with projector and whiteboard</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-people"></i> 10 people</span>
+                            <span class="feature-badge"><i class="bi bi-display"></i> Projector</span>
+                            <span class="feature-badge"><i class="bi bi-wifi"></i> WiFi</span>
+                        </div>
+
+                        <div class="availability-status available">
+                            <i class="bi bi-check-circle"></i> Available Today
+                        </div>
+
+                        <button class="book-btn">
+                            <i class="bi bi-calendar-plus"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Rooftop Terrace -->
+                <div class="space-card" onclick="openBookingModal('terrace')">
+                    <div class="space-image" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                        <i class="bi bi-tree-fill"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Rooftop Terrace</h3>
+                        <p class="space-description">Outdoor space with BBQ area and seating</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-people"></i> 30 people</span>
+                            <span class="feature-badge"><i class="bi bi-fire"></i> BBQ</span>
+                            <span class="feature-badge"><i class="bi bi-cash-stack"></i> MAD 200</span>
+                        </div>
+
+                        <div class="availability-status available">
+                            <i class="bi bi-check-circle"></i> Available This Week
+                        </div>
+
+                        <button class="book-btn">
+                            <i class="bi bi-calendar-plus"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Swimming Pool (Unavailable) -->
+                <div class="space-card" style="opacity: 0.7;">
+                    <div class="space-image" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Swimming Pool</h3>
+                        <p class="space-description">Olympic-size pool with changing rooms</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-thermometer-half"></i> Heated</span>
+                            <span class="feature-badge"><i class="bi bi-clock"></i> 1-hour slots</span>
+                        </div>
+
+                        <div class="availability-status unavailable">
+                            <i class="bi bi-x-circle"></i> Under Renovation
+                        </div>
+
+                        <button class="book-btn" disabled>
+                            <i class="bi bi-lock"></i> Currently Unavailable
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kids Play Area -->
+                <div class="space-card" onclick="openBookingModal('playground')">
+                    <div class="space-image" style="background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);">
+                        <i class="bi bi-balloon-fill"></i>
+                    </div>
+                    <div class="space-content">
+                        <h3 class="space-title">Kids Play Area</h3>
+                        <p class="space-description">Indoor playground for children under 12</p>
+
+                        <div class="space-features">
+                            <span class="feature-badge"><i class="bi bi-people"></i> 15 kids</span>
+                            <span class="feature-badge"><i class="bi bi-shield-check"></i> Supervised</span>
+                            <span class="feature-badge"><i class="bi bi-cash"></i> Free</span>
+                        </div>
+
+                        <div class="availability-status available">
+                            <i class="bi bi-check-circle"></i> Available Today
+                        </div>
+
+                        <button class="book-btn">
+                            <i class="bi bi-calendar-plus"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div id="bookingModal" class="booking-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Book a Space</h3>
+            <button class="close-btn" onclick="closeBookingModal()">&times;</button>
+        </div>
+
+        <form th:action="@{/client/book-space}" method="post" id="bookingForm">
+            <div class="form-group">
+                <label class="form-label">Space Type</label>
+                <select name="spaceType" class="form-control" id="spaceTypeSelect" required>
+                    <option th:each="type : ${spaceTypes}"
+                            th:value="${type}"
+                            th:text="${type.name()}">Type</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Start Date & Time</label>
+                <input type="datetime-local" name="startDateTime" class="form-control" id="startDateTime" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">End Date & Time</label>
+                <input type="datetime-local" name="endDateTime" class="form-control" id="endDateTime" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Purpose / Notes (Optional)</label>
+                <textarea name="notes" class="form-control" rows="3" placeholder="E.g., Birthday party, Business meeting, etc."></textarea>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <small>Your reservation will be reviewed by the administrator. You will receive a notification once approved.</small>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="bi bi-check-circle"></i> Confirm Booking
+            </button>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Set minimum datetime to now
+    document.addEventListener('DOMContentLoaded', function() {
+        const startInput = document.getElementById('startDateTime');
+        const endInput = document.getElementById('endDateTime');
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const minDateTime = now.toISOString().slice(0, 16);
+
+        if (startInput) {
+            startInput.min = minDateTime;
+        }
+        if (endInput) {
+            endInput.min = minDateTime;
+        }
+
+        // Update end date when start date changes
+        if (startInput && endInput) {
+            startInput.addEventListener('change', function() {
+                endInput.min = this.value;
+                if (endInput.value && endInput.value < this.value) {
+                    endInput.value = '';
+                }
+            });
+        }
+    });
+
+    function openBookingModal(space) {
+        const modal = document.getElementById('bookingModal');
+        modal.classList.add('active');
+
+        const spaceTypeMap = {
+            'gym': 'SALLE_GYM',
+            'parking': 'PARKING',
+            'meeting': 'SALLE_REUNION',
+            'terrace': 'TERRASSE',
+            'playground': 'AIRE_DE_JEUX',
+            'pool': 'PISCINE'
+        };
+
+        const titles = {
+            'gym': 'Book Fitness Center',
+            'parking': 'Book Guest Parking',
+            'meeting': 'Book Meeting Room',
+            'terrace': 'Book Rooftop Terrace',
+            'playground': 'Book Kids Play Area',
+            'pool': 'Book Pool'
+        };
+
+        document.getElementById('modalTitle').textContent = titles[space] || 'Book a Space';
+
+        // Set the space type in the form
+        const spaceTypeSelect = document.getElementById('spaceTypeSelect');
+        if (spaceTypeSelect && spaceTypeMap[space]) {
+            spaceTypeSelect.value = spaceTypeMap[space];
+        }
+    }
+
+    function closeBookingModal() {
+        document.getElementById('bookingModal').classList.remove('active');
+    }
+
+
+    // Close modal when clicking outside
+    document.getElementById('bookingModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeBookingModal();
+        }
+    });
+</script>
+</body>
+</html>

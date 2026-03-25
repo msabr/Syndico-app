@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Admin Sidebar Fragment -->
+<aside th:fragment="admin-sidebar" class="sidebar-admin" id="adminSidebar">
+
+    <div class="sidebar-content">
+
+        <!-- Dashboard -->
+        <div class="sidebar-section">
+            <a th:href="@{/admin/dashboard}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+
+        <!-- Residents Management -->
+        <div class="sidebar-section">
+            <div class="section-title">Residents</div>
+            <a th:href="@{/admin/residents}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'residents'} ? 'active' : ''">
+                <i class="fas fa-users"></i>
+                <span>All Residents</span>
+            </a>
+            <a th:href="@{/admin/residents/new}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'residents-new'} ? 'active' : ''">
+                <i class="fas fa-user-plus"></i>
+                <span>Add Resident</span>
+            </a>
+        </div>
+
+        <!-- Buildings & Apartments -->
+        <div class="sidebar-section">
+            <div class="section-title">Properties</div>
+            <a th:href="@{/admin/buildings}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'buildings'} ? 'active' : ''">
+                <i class="fas fa-building"></i>
+                <span>Buildings</span>
+            </a>
+            <a th:href="@{/admin/apartments}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'apartments'} ? 'active' : ''">
+                <i class="fas fa-door-open"></i>
+                <span>Apartments</span>
+            </a>
+        </div>
+
+        <!-- Financial Management -->
+        <div class="sidebar-section">
+            <div class="section-title">Finance</div>
+            <a th:href="@{/admin/charges}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'charges'} ? 'active' : ''">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Charges</span>
+            </a>
+            <a th:href="@{/admin/payments}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'payments'} ? 'active' : ''">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+            <a th:href="@{/admin/financial-reports}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'financial-reports'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i>
+                <span>Financial Reports</span>
+            </a>
+        </div>
+
+        <!-- Complaints Management -->
+        <div class="sidebar-section">
+            <div class="section-title">Operations</div>
+            <a th:href="@{/admin/complaints}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'complaints'} ? 'active' : ''">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Complaints</span>
+                <span class="badge badge-danger">12</span>
+            </a>
+            <a th:href="@{/admin/reservations}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'reservations'} ? 'active' : ''">
+                <i class="fas fa-calendar-check"></i>
+                <span>Reservations</span>
+            </a>
+            <a th:href="@{/admin/work-projects}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'work-projects'} ? 'active' : ''">
+                <i class="fas fa-hard-hat"></i>
+                <span>Work Projects</span>
+            </a>
+        </div>
+
+        <!-- Service Providers -->
+        <div class="sidebar-section">
+            <div class="section-title">Services</div>
+            <a th:href="@{/admin/service-providers}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'service-providers'} ? 'active' : ''">
+                <i class="fas fa-tools"></i>
+                <span>Service Providers</span>
+            </a>
+        </div>
+
+        <!-- Assemblies & Votes -->
+        <div class="sidebar-section">
+            <div class="section-title">Governance</div>
+            <a th:href="@{/admin/general-assemblies}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'general-assemblies'} ? 'active' : ''">
+                <i class="fas fa-gavel"></i>
+                <span>General Assemblies</span>
+            </a>
+            <a th:href="@{/admin/votes}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'votes'} ? 'active' : ''">
+                <i class="fas fa-vote-yea"></i>
+                <span>Votes</span>
+            </a>
+        </div>
+
+        <!-- Documents & Communications -->
+        <div class="sidebar-section">
+            <div class="section-title">Communication</div>
+            <a th:href="@{/admin/documents}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'documents'} ? 'active' : ''">
+                <i class="fas fa-folder-open"></i>
+                <span>Documents</span>
+            </a>
+            <a th:href="@{/admin/messages}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'messages'} ? 'active' : ''">
+                <i class="fas fa-envelope"></i>
+                <span>Messages</span>
+                <span class="badge badge-primary">5</span>
+            </a>
+            <a th:href="@{/admin/notifications}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'notifications'} ? 'active' : ''">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+        </div>
+
+        <!-- Settings -->
+        <div class="sidebar-section">
+            <div class="section-title">System</div>
+            <a th:href="@{/admin/chatbot-config}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'chatbot-config'} ? 'active' : ''">
+                <i class="fas fa-robot"></i>
+                <span>Chatbot Config</span>
+            </a>
+            <a th:href="@{/admin/settings}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'settings'} ? 'active' : ''">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- Mini Footer Fragment -->
+<footer th:fragment="mini-footer" class="mini-footer">
+    <div class="mini-footer-content">
+        <span>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> <strong>Syndico</strong></span>
+        <span class="separator">•</span>
+        <span>All rights reserved</span>
+    </div>
+</footer>
+
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+
+    /* Sidebar Admin */
+    .sidebar-admin {
+        position: fixed;
+        top: 76px; /* Height of header */
+        left: 0;
+        width: 280px;
+        height: calc(100vh - 76px - 50px); /* minus header and footer */
+        background: linear-gradient(180deg, var(--dark) 0%, #2a2726 100%);
+        overflow-y: auto;
+        z-index: 99;
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-content {
+        padding: 1.5rem 0;
+    }
+
+    .sidebar-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 0 1.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 0.9rem 1.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        gap: 1rem;
+    }
+
+    .sidebar-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-item:hover {
+        background: rgba(255, 166, 158, 0.1);
+        color: var(--primary);
+        padding-left: 2rem;
+    }
+
+    .sidebar-item:hover::before {
+        transform: scaleX(1);
+    }
+
+    .sidebar-item.active {
+        background: linear-gradient(90deg, rgba(255, 166, 158, 0.2), transparent);
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .sidebar-item.active::before {
+        transform: scaleX(1);
+    }
+
+    .sidebar-item i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .sidebar-item span:not(.badge) {
+        flex: 1;
+    }
+
+    .badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    .badge-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .badge-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* Mini Footer */
+    .mini-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 280px;
+        height: 50px;
+        background: var(--dark);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99;
+    }
+
+    .mini-footer-content {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .mini-footer-content strong {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .separator {
+        margin: 0 0.5rem;
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Scrollbar */
+    .sidebar-admin::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-admin::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-admin::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 10px;
+    }
+
+    /* Main content adjustment */
+    .main-content {
+        margin-left: 280px;
+        margin-top: 76px;
+        padding: 2rem;
+        min-height: calc(100vh - 76px - 50px);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar-admin {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-admin.show {
+            transform: translateX(0);
+        }
+
+        .mini-footer {
+            transform: translateX(-100%);
+        }
+
+        .mini-footer.show {
+            transform: translateX(0);
+        }
+
+        .main-content {
+            margin-left: 0;
+        }
+    }
+</style>
+
+</html>

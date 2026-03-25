@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Resident Sidebar Fragment -->
+<aside th:fragment="resident-sidebar" class="sidebar-resident" id="residentSidebar">
+
+    <div class="sidebar-content">
+
+        <!-- Dashboard -->
+        <div class="sidebar-section">
+            <a th:href="@{/client/dashboard}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i>
+                <span>My Dashboard</span>
+            </a>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="sidebar-section">
+            <div class="section-title">Profile</div>
+            <a th:href="@{/client/profile/my-information}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'profile'} ? 'active' : ''">
+                <i class="fas fa-user-circle"></i>
+                <span>My Information</span>
+            </a>
+            <a th:href="@{/client/profile/my-apartment}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'apartment'} ? 'active' : ''">
+                <i class="fas fa-door-open"></i>
+                <span>My Apartment</span>
+            </a>
+        </div>
+
+        <!-- Financial -->
+        <div class="sidebar-section">
+            <div class="section-title">Finance</div>
+            <a th:href="@{/client/my-charges}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'charges'} ? 'active' : ''">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>My Charges</span>
+                <span class="badge badge-warning">3</span>
+            </a>
+            <a th:href="@{/client/payment-history}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'payments'} ? 'active' : ''">
+                <i class="fas fa-credit-card"></i>
+                <span>Payment History</span>
+            </a>
+        </div>
+
+        <!-- Complaints -->
+        <div class="sidebar-section">
+            <div class="section-title">Services</div>
+            <a th:href="@{/client/my-complaints}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'reclamations'} ? 'active' : ''">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>My Complaints</span>
+            </a>
+            <a th:href="@{/client/new-complaint}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'new-reclamation'} ? 'active' : ''">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Complaint</span>
+            </a>
+        </div>
+
+        <!-- Reservations -->
+        <div class="sidebar-section">
+            <div class="section-title">Facilities</div>
+            <a th:href="@{/client/my-reservations}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'reservations'} ? 'active' : ''">
+                <i class="fas fa-calendar-alt"></i>
+                <span>My Reservations</span>
+            </a>
+            <a th:href="@{/client/book-space}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'new-reservation'} ? 'active' : ''">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Book a Space</span>
+            </a>
+        </div>
+
+        <!-- Documents & Communication -->
+        <div class="sidebar-section">
+            <div class="section-title">Information</div>
+            <a th:href="@{/client/documents}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'documents'} ? 'active' : ''">
+                <i class="fas fa-folder"></i>
+                <span>Documents</span>
+            </a>
+            <a th:href="@{/client/messages}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'messages'} ? 'active' : ''">
+                <i class="fas fa-comments"></i>
+                <span>Messages</span>
+                <span class="badge badge-primary">2</span>
+            </a>
+            <a th:href="@{/client/notifications}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'notifications'} ? 'active' : ''">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+        </div>
+
+        <!-- Calendar & Events -->
+        <div class="sidebar-section">
+            <div class="section-title">Community</div>
+            <a th:href="@{/client/community/calendar}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'calendar'} ? 'active' : ''">
+                <i class="fas fa-calendar-week"></i>
+                <span>Calendar</span>
+            </a>
+            <a th:href="@{/client/community/ongoing-works}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'work-projects'} ? 'active' : ''">
+                <i class="fas fa-hard-hat"></i>
+                <span>Ongoing Works</span>
+            </a>
+        </div>
+
+        <!-- Votes & Assemblies -->
+        <div class="sidebar-section">
+            <div class="section-title">Governance</div>
+            <a th:href="@{/client/governance/active-votes}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'votes'} ? 'active' : ''">
+                <i class="fas fa-vote-yea"></i>
+                <span>Active Votes</span>
+                <span class="badge badge-success">1</span>
+            </a>
+            <a th:href="@{/client/governance/general-assemblies}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'assemblies'} ? 'active' : ''">
+                <i class="fas fa-users"></i>
+                <span>General Assemblies</span>
+            </a>
+        </div>
+
+        <!-- Help & Support -->
+        <div class="sidebar-section">
+            <div class="section-title">Support</div>
+            <a th:href="@{/client/help}"
+               class="sidebar-item"
+               th:classappend="${activePage == 'help'} ? 'active' : ''">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & FAQ</span>
+            </a>
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- Mini Footer (same for both) -->
+<footer th:fragment="mini-footer-resident" class="mini-footer-resident">
+    <div class="mini-footer-content">
+        <span>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> <strong>Syndico</strong></span>
+        <span class="separator">•</span>
+        <span>All rights reserved</span>
+    </div>
+</footer>
+
+<script>
+    function openChatbot() {
+        const chatbot = document.getElementById('chatbot-widget');
+        if (chatbot) {
+            chatbot.classList.add('open');
+        }
+    }
+
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar-resident, .sidebar-admin');
+        const footer = document.querySelector('.mini-footer-resident, .mini-footer');
+
+        if (sidebar) sidebar.classList.toggle('show');
+        if (footer) footer.classList.toggle('show');
+    }
+</script>
+
+</html>
