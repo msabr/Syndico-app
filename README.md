@@ -244,20 +244,5 @@ A language selector is available in the navigation bar for dynamic switching.
 
 ---
 
-## 🧑‍💻 Team
-
-| Name | Role | Branch |
-|------|------|--------|
-| **Soufiane ZEKAOUI** | Full Stack Developer & Architect | `soufiane` |
-| **AbdelKrim ZIDOUH** | Full Stack Developer | `branch-1` |
-| **Mohamed SABIR** | Full Stack Developer | `sabir` |
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** — free for educational and professional use.
-
----
 
 <p align="center">Made with ❤️ by the Syndico Team</p>
