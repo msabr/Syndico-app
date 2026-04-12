@@ -81,40 +81,38 @@ public class ResidentService {
     // Create new resident with user account
     @Transactional
     public Resident createResident(ResidentDTO residentDTO) {
-        // Check if email already exists
+
         if (userRepository.findByEmail(residentDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists: " + residentDTO.getEmail());
         }
 
-        // Verify building exists
+        // Fetch real managed Building entity
         Building building = buildingRepository.findById(residentDTO.getBuildingId())
                 .orElseThrow(() -> new RuntimeException("Building not found"));
 
-        // Create User entity
-        User user = new User();
-        user.setEmail(residentDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(residentDTO.getPassword()));
-        user.setFirstName(residentDTO.getFirstName());
-        user.setLastName(residentDTO.getLastName());
-        user.setPhoneNumber(residentDTO.getPhoneNumber());
-        user.setRole(UserRole.RESIDENT);
-        user.setIsEmailVerified(true); // Auto-verify for admin-created accounts
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setPreferredLanguage("FR");
+        User user = User.builder()
+                .email(residentDTO.getEmail())
+                .password(passwordEncoder.encode(residentDTO.getPassword()))
+                .firstName(residentDTO.getFirstName())
+                .lastName(residentDTO.getLastName())
+                .phoneNumber(residentDTO.getPhoneNumber())
+                .role(UserRole.RESIDENT)
+                .isEmailVerified(true)
+                .preferredLanguage("FR")
+                .build();
 
         User savedUser = userRepository.save(user);
 
-        // Create Resident entity
-        Resident resident = new Resident();
-        resident.setUserId(savedUser.getId());
-        resident.setApartmentNumber(residentDTO.getApartmentNumber());
-        resident.setBuildingId(residentDTO.getBuildingId());
-        resident.setMoveInDate(residentDTO.getMoveInDate() != null ?
-                residentDTO.getMoveInDate() : LocalDate.now());
-        resident.setIsOwner(residentDTO.getIsOwner() != null ?
-                residentDTO.getIsOwner() : false);
-        resident.setEmergencyContact(residentDTO.getEmergencyContact());
+        Resident resident = Resident.builder()
+                .user(savedUser)
+                .building(building)
+                .apartmentNumber(residentDTO.getApartmentNumber())
+                .moveInDate(residentDTO.getMoveInDate() != null ?
+                        residentDTO.getMoveInDate() : LocalDate.now())
+                .isOwner(residentDTO.getIsOwner() != null ?
+                        residentDTO.getIsOwner() : false)
+                .emergencyContact(residentDTO.getEmergencyContact())
+                .build();
 
         return residentRepository.save(resident);
     }
@@ -123,10 +121,10 @@ public class ResidentService {
     @Transactional
     public Resident updateResident(Long id, ResidentDTO residentDTO) {
         Resident resident = getResidentById(id);
-        User user = userRepository.findById(resident.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Check if email is being changed and if it's already taken
+        // Get real managed User via the relationship
+        User user = resident.getUser();
+
         if (!user.getEmail().equals(residentDTO.getEmail())) {
             if (userRepository.findByEmail(residentDTO.getEmail()).isPresent()) {
                 throw new RuntimeException("Email already exists: " + residentDTO.getEmail());
@@ -134,24 +132,20 @@ public class ResidentService {
             user.setEmail(residentDTO.getEmail());
         }
 
-        // Update User entity
         user.setFirstName(residentDTO.getFirstName());
         user.setLastName(residentDTO.getLastName());
         user.setPhoneNumber(residentDTO.getPhoneNumber());
-        user.setUpdatedAt(LocalDateTime.now());
 
-        // Update password only if provided
         if (residentDTO.getPassword() != null && !residentDTO.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(residentDTO.getPassword()));
         }
-
         userRepository.save(user);
 
-        // Update Resident entity
+        // Fetch real managed Building entity
         if (residentDTO.getBuildingId() != null) {
-            buildingRepository.findById(residentDTO.getBuildingId())
+            Building building = buildingRepository.findById(residentDTO.getBuildingId())
                     .orElseThrow(() -> new RuntimeException("Building not found"));
-            resident.setBuildingId(residentDTO.getBuildingId());
+            resident.setBuilding(building);
         }
 
         resident.setApartmentNumber(residentDTO.getApartmentNumber());
@@ -166,21 +160,16 @@ public class ResidentService {
     @Transactional
     public void deleteResident(Long id) {
         Resident resident = getResidentById(id);
-        Long userId = resident.getUserId();
+        User user = resident.getUser();
 
-        // Delete resident first
         residentRepository.deleteById(id);
-
-        // Then delete user account
-        userRepository.deleteById(userId);
+        userRepository.deleteById(user.getId());
     }
 
     // Get resident with user details (for display)
     public ResidentDTO getResidentDTOById(Long id) {
         Resident resident = getResidentById(id);
-        User user = userRepository.findById(resident.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+        User user = resident.getUser();
         return mapToDTO(resident, user);
     }
 

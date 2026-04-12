@@ -32,8 +32,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/home", "/about", "/services",
                                 "/contact", "/faq", "/privacy", "/terms",
-                                "/login", "/register", "/forgot-password",
-                                "/verify-email", "/access-denied"
+                                "/login", "/register", "/perform_register",
+                                "/forgot-password", "/verify-email",
+                                "/access-denied"
                         ).permitAll()
 
                         // ----------- STATIC RESOURCES -----------
