@@ -1,248 +1,188 @@
 # 🏢 Syndico App
 
-> A modern web application for residential syndicate (syndic) management — simplifying communication, payment tracking, and administrative operations between residents, clients, and administrators.
+<p align="center">
+  <b>A modern platform for managing residential syndicates</b><br/>
+  Built with Spring Boot • Thymeleaf • MySQL
+</p>
 
-![Java](https://img.shields.io/badge/Java-17+-orange?style=flat-square&logo=java)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.7-brightgreen?style=flat-square&logo=springboot)
-![MySQL](https://img.shields.io/badge/MySQL-8+-blue?style=flat-square&logo=mysql)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?style=flat-square&logo=bootstrap)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-
----
-
-## 📖 Overview
-
-**Syndico** is a full-stack web application built to digitize and streamline the day-to-day operations of residential building syndicates. It provides distinct dashboards and workflows for **residents**, **clients**, and **administrators**, and includes an integrated AI chatbot assistant and multilingual support.
-
-Built by a team of 3 full-stack developers using **Spring Boot + Thymeleaf + MySQL + Bootstrap 5**.
+<p align="center">
+  <img src="https://img.shields.io/badge/Backend-SpringBoot-brightgreen?style=for-the-badge&logo=springboot"/>
+  <img src="https://img.shields.io/badge/Frontend-Thymeleaf-blue?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Database-MySQL-orange?style=for-the-badge&logo=mysql"/>
+  <img src="https://img.shields.io/badge/Architecture-Clean%20MVC-purple?style=for-the-badge"/>
+</p>
 
 ---
 
-## ✨ Features
+## 🌟 Overview
 
-- 👤 **Role-based access** — separate interfaces for residents, clients, and administrators
-- 💳 **Payment tracking** — manage and monitor syndicate fees and payments
-- 📢 **Communication tools** — announcements and messaging between parties
-- 🤖 **Chatbot assistant** — AI-powered assistant to guide users and answer FAQs
-- 🌍 **Multilingual support** — dynamic language switching (French, English, and more)
-- 🔐 **Secure authentication** — Spring Security with role-based authorization
-- 📱 **Responsive design** — mobile-friendly UI with Bootstrap 5
+**Syndico App** is a full-stack web application designed to simplify the management of residential buildings.
+
+It connects:
+
+* 🏠 Residents
+* 👨‍💼 Administrators
+
+Into one unified platform for:
+
+* Payments 💳
+* Complaints 🛠️
+* Communication 📢
+* Governance 🗳️
+
+---
+
+## 🚀 Features
+
+✨ **Core Features**
+
+* 🔐 Secure Authentication (Spring Security)
+* 💳 Payment & Charges Management
+* 📢 Notifications & Messaging
+* 🛠️ Complaint & Maintenance Tracking
+* 📅 Reservations System
+
+🤖 **Smart Assistant**
+
+* Chatbot based on database (Q&A system)
+* Helps users navigate the platform
+
+🌍 **Internationalization**
+
+* Multi-language support (FR / EN / AR ready)
+
+---
+
+## 📸 Screenshots (Main Features)
+
+### 🏠 Home
+
+![Home](screenSyn/home.png)
+
+### 📊 Admin Dashboard
+
+![Admin Dashboard](screenSyn/admin-dashboard.png)
+
+### 👤 Resident Dashboard
+
+![Resident Dashboard](screenSyn/resident-dashboard.png)
+
+### 🤖 Chatbot
+
+![Chatbot](screenSyn/chatbot.png)
+
+---
+
+## 🖼️ More Screens (Full Platform)
+
+👉 All platform screenshots are available here:
+
+```
+/screenSyn/
+```
+
+Examples you can include:
+
+* complaints.png
+* payments.png
+* reservations.png
+* messages.png
+* documents.png
+
+---
+
+## 🧠 Architecture (Clean & Scalable)
+
+The application follows a **modular Clean MVC architecture**:
+
+```
+                ┌────────────────────┐
+                │   Presentation     │
+                │ (Thymeleaf Views)  │
+                └─────────┬──────────┘
+                          │
+                ┌─────────▼──────────┐
+                │    Controllers     │
+                │ (Admin / Resident) │
+                └─────────┬──────────┘
+                          │
+                ┌─────────▼──────────┐
+                │     Services       │
+                │  Business Logic    │
+                └─────────┬──────────┘
+                          │
+                ┌─────────▼──────────┐
+                │   Repositories     │
+                │   (Spring Data)    │
+                └─────────┬──────────┘
+                          │
+                ┌─────────▼──────────┐
+                │     Database       │
+                │      MySQL         │
+                └────────────────────┘
+```
+
+### 🔹 Key Points
+
+* ✔ Feature-based controllers (`admin/`, `resident/`)
+* ✔ Separation of concerns (Controller → Service → Repository)
+* ✔ Thymeleaf for server-side rendering
+* ✔ Refactored from monolithic to modular architecture
 
 ---
 
 ## ⚙️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | HTML5, CSS3, JavaScript (ES6), Thymeleaf, Bootstrap 5 |
-| **Backend** | Spring Boot 3.5.7, Spring MVC, Spring Security, Spring Data JPA |
-| **Database** | MySQL 8+ |
-| **ORM** | Hibernate / JPA |
-| **Build Tool** | Maven |
-| **IDE** | IntelliJ IDEA |
-
----
-
-## 🧱 Project Architecture
-
-```
-syndico-app/
-│
-├── src/main/java/
-│   ├── controllers/        # REST Controllers (API + Thymeleaf routes)
-│   ├── services/           # Business logic layer
-│   ├── repositories/       # Spring Data JPA repositories
-│   ├── models/             # JPA entities (database models)
-│   ├── config/             # Spring Security & global configuration
-│   └── dto/                # Data Transfer Objects
-│
-├── src/main/resources/
-│   ├── templates/          # Thymeleaf HTML views
-│   ├── static/
-│   │   ├── css/            # Bootstrap and custom stylesheets
-│   │   ├── js/             # Frontend JavaScript (ES6)
-│   │   └── images/         # Static image assets
-│   ├── i18n/               # Internationalization message bundles
-│   └── application.properties  # Spring Boot configuration
-│
-└── pom.xml                 # Maven dependencies and build config
-```
+| Layer         | Technology                               |
+|---------------| ---------------------------------------- |
+| 🧠 Backend    | Spring Boot, Spring MVC, Spring Security |
+| 🎨 Frontend   | Thymeleaf, HTML5, CSS3, Bootstrap, JS    |
+| 🗄️ Database  | MySQL                                    |
+| 🔄 ORM        | Hibernate / JPA                          |
+| 🛠️ Build     | Maven                                    |
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- Java 17+
-- Maven 3.8+
-- MySQL 8+
-- IntelliJ IDEA (recommended) or any Java IDE
-
-### 1. Clone the Repository
-
 ```bash
 git clone https://github.com/msabr/Syndico-app.git
-cd Syndico-app
-```
-
-### 2. Configure the Database
-
-Create a MySQL database (or let Spring Boot create it automatically):
-
-```sql
-CREATE DATABASE syndico_db;
-```
-
-Then update `src/main/resources/application.properties` with your credentials:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/syndico_db
-spring.datasource.username=root
-spring.datasource.password=your_password
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.thymeleaf.cache=false
-```
-
-### 3. Build & Run
-
-```bash
-mvn clean install
+cd syndico-app
 mvn spring-boot:run
 ```
 
-Then open your browser at: **[http://localhost:8080](http://localhost:8080)**
+👉 Open: http://localhost:8080
 
 ---
 
-## 👥 Contributing — Adding a New Feature Page
+## 👨‍💻 Team
 
-Each developer follows this standard MVC pattern when adding a new feature:
+<p align="center">
 
-### Step 1 — Create the Entity (Model)
+| 👤 Name              | 🌐 GitHub                          | 💼 LinkedIn                                         | 📧 Email                                                         |
+|----------------------|------------------------------------|-----------------------------------------------------|------------------------------------------------------------------|
+| **Soufiane Zekaoui** | https://github.com/soufianezekaoui | https://linkedin.com/in/soufiane-zekaoui-445b1b352/ | [soufiane.zekaoui@gmail.com](mailto:soufiane.zekaoui@gmail.com)  |
+| **SABR Mohamed**     | https://github.com/msabr           | link                                                | email                                                            |
+| **AbdelkrimZidouh**  | https://github.com/AbdelkrimZidouh | link                                                | email                                                            |
 
-```java
-// src/main/java/models/Payment.java
-@Entity
-public class Payment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private double amount;
-    private LocalDate date;
-    // getters & setters
-}
-```
-
-### Step 2 — Create the Repository
-
-```java
-// src/main/java/repositories/PaymentRepository.java
-public interface PaymentRepository extends JpaRepository<Payment, Long> {}
-```
-
-### Step 3 — Create the Service
-
-```java
-// src/main/java/services/PaymentService.java
-@Service
-public class PaymentService {
-    @Autowired private PaymentRepository repo;
-    public List<Payment> getAll() { return repo.findAll(); }
-}
-```
-
-### Step 4 — Create the Controller
-
-```java
-// src/main/java/controllers/PaymentController.java
-@Controller
-@RequestMapping("/payments")
-public class PaymentController {
-    @Autowired private PaymentService service;
-
-    @GetMapping
-    public String list(Model model) {
-        model.addAttribute("payments", service.getAll());
-        return "payments"; // maps to templates/payments.html
-    }
-}
-```
-
-### Step 5 — Create the Thymeleaf View
-
-```html
-<!-- src/main/resources/templates/payments.html -->
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Payments</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1>Payments</h1>
-        <table class="table">
-            <thead>
-                <tr><th>ID</th><th>Amount</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-                <tr th:each="p : ${payments}">
-                    <td th:text="${p.id}"></td>
-                    <td th:text="${p.amount}"></td>
-                    <td th:text="${p.date}"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
-```
-
-✅ You've added a complete, database-connected page following the MVC pattern.
+</p>
 
 ---
 
-## 🤖 Chatbot Assistant
+## 🚧 Future Work
 
-Syndico includes a built-in AI assistant that can:
-
-- Guide users through platform features
-- Answer frequently asked questions
-- Help administrators manage residents and payments
-
-> 💡 **Roadmap:** The chatbot will be extended with a fine-tuned OpenAI API / LangChain microservice for advanced conversational capabilities.
+* 🐳 Docker deployment
+* ☁️ Cloud hosting
+* 📊 Advanced analytics
+* 📱 Mobile optimization
 
 ---
 
-## 🌍 Multilingual Support
+<p align="center">
+  ⭐ If you like this project, don't forget to star it!
+</p>
 
-The app uses **Spring i18n** (internationalization) with message property files:
+<p align="center">
+  Built with ❤️ by Syndico Team
+</p>
 
-```
-src/main/resources/i18n/
-├── messages_fr.properties   # French
-├── messages_en.properties   # English
-└── messages_ar.properties   # Arabic (planned)
-```
-
-A language selector is available in the navigation bar for dynamic switching.
-
----
-
-## 🚧 Roadmap
-
-- [x] Core syndicate management (residents, payments, announcements)
-- [x] Role-based authentication (Admin / Client / Resident)
-- [x] Integrated AI chatbot assistant
-- [x] Multilingual support (FR / EN)
-- [ ] AI-powered data insights and analytics dashboard
-- [ ] Progressive Web App (PWA) support
-- [ ] Performance optimization (caching, lazy loading)
-- [ ] Mobile-native version
-
----
-
-
-<p align="center">Made with ❤️ by the Syndico Team</p>
