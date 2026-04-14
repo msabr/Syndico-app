@@ -116,4 +116,14 @@ public class AuthController {
     public String forgotPassword() {
         return "auth/ForgotPasswordPage";
     }
+
+    @GetMapping("/privacy")
+    public String privacyPolicy() {
+        return "PrivacyPolicy";
+    }
+
+    @GetMapping("/terms")
+    public String termsOfUse() {
+        return "TermsUse";
+    }
 }

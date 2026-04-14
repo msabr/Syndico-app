@@ -33,5 +33,5 @@ public class UserRegistrationDto {
     @NotBlank(message = "Please confirm your password")
     private String confirmPassword;
 
-    private Boolean acceptTerms;
+    private boolean acceptTerms;
 }
