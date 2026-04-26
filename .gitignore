@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore uploaded postulation files
+uploads/**
+
+# Ignore logs
+*.log
+
+# prod Related Stuff
+production/**
+**/application-prod.properties
