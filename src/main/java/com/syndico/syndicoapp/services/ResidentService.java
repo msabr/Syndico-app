@@ -225,7 +225,8 @@ public class ResidentService {
         return residentRepository.findByIsOwnerFalse();
     }
 
-    public Object findAll() {
+    public List<Resident> findAll() {
         return residentRepository.findAll();
     }
 }
+
