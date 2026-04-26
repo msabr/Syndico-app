@@ -1,6 +1,8 @@
 package com.syndico.syndicoapp.controllers.admin;
 
 import com.syndico.syndicoapp.models.Apartment;
+import com.syndico.syndicoapp.models.Building;
+import com.syndico.syndicoapp.models.Resident;
 import com.syndico.syndicoapp.services.ApartmentService;
 import com.syndico.syndicoapp.services.BuildingService;
 import com.syndico.syndicoapp.services.ResidentService;
@@ -45,11 +47,29 @@ public class AdminApartmentController {
     }
 
     @PostMapping("/save")
-    public String saveApartment(@ModelAttribute Apartment apartment, RedirectAttributes redirectAttributes) {
+    public String saveApartment(
+            @ModelAttribute Apartment apartment,
+            @RequestParam(required = false) Long residentId,
+            RedirectAttributes redirectAttributes) {
         try {
+            // Handle Building — must be a managed entity
+            if (apartment.getBuilding() != null && apartment.getBuilding().getId() != null) {
+                Building building = buildingService.findById(apartment.getBuilding().getId());
+                apartment.setBuilding(building);
+            }
+
+            // Handle Resident — null if not selected
+            if (residentId != null) {
+                Resident resident = residentService.getResidentById(residentId);
+                apartment.setResident(resident);
+            } else {
+                apartment.setResident(null);
+            }
+
             apartmentService.save(apartment);
             redirectAttributes.addFlashAttribute("successMessage", "Apartment saved successfully!");
             return "redirect:/admin/apartments";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error saving apartment: " + e.getMessage());
             return "redirect:/admin/apartments/new";

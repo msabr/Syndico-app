@@ -76,10 +76,11 @@
 
                     <div class="mb-3">
                         <label class="form-label">Assign Resident (Optional)</label>
-                        <select th:field="*{resident.id}" class="form-select">
+                        <select name="residentId" class="form-select">
                             <option value="">No Resident</option>
                             <option th:each="resident : ${residents}"
                                     th:value="${resident.id}"
+                                    th:selected="${apartment.resident != null and apartment.resident.id == resident.id}"
                                     th:text="${resident.user.fullName}">John Doe</option>
                         </select>
                     </div>
