@@ -46,7 +46,7 @@ public class WorkProject {
     @DecimalMax(value = "100000000.0", message = "Le budget ne peut pas dépasser 100 000 000")
     private Double budget;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "prestataire_id")
     private Prestataire prestataire;
 

@@ -81,7 +81,7 @@
                 <div th:each="reservation : ${reservations}"
                      class="reservation-card"
                      th:classappend="${reservation.spaceType.name().toLowerCase()}"
-                     th:attr="data-status=${reservation.startDateTime.isBefore(T(java.time.LocalDateTime).now())} ? 'past' : ${reservation.status.name() == 'ANNULEE'} ? 'cancelled' : 'upcoming'">
+                     th:attr="data-status=${reservation.status.name().toLowerCase()} ? 'past' : ${reservation.status.name() == 'ANNULEE'} ? 'cancelled' : 'upcoming'">
 
                     <div class="reservation-header">
                         <div class="d-flex align-items-center">
@@ -180,14 +180,15 @@
         event.target.classList.add('active');
 
         cards.forEach(card => {
+            const status = card.dataset.status; // 'confirmee', 'en_attente', 'annulee'
             if (tab === 'all') {
                 card.style.display = 'block';
             } else if (tab === 'upcoming') {
-                card.style.display = card.dataset.status === 'upcoming' ? 'block' : 'none';
+                card.style.display = status === 'confirmee' ? 'block' : 'none';
             } else if (tab === 'past') {
-                card.style.display = card.dataset.status === 'past' ? 'block' : 'none';
+                card.style.display = (status === 'refusee') ? 'block' : 'none';
             } else if (tab === 'cancelled') {
-                card.style.display = card.dataset.status === 'cancelled' ? 'block' : 'none';
+                card.style.display = status === 'annulee' ? 'block' : 'none';
             }
         });
     }

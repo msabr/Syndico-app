@@ -151,7 +151,7 @@
                             </tr>
                             <tr th:each="complaint : ${recentComplaints}">
                                 <td th:text="${'#' + complaint.id}">#0</td>
-                                <td th:text="${complaint.resident != null ? complaint.resident.firstName + ' ' + complaint.resident.lastName : 'N/A'}">Resident</td>
+                                <td th:text="${complaint.resident != null and complaint.resident.user != null ? complaint.resident.user.firstName + ' ' + complaint.resident.user.lastName : 'N/A'}"> </td>
                                 <td th:text="${complaint.category}">Category</td>
                                 <td>
                                     <span class="badge"
@@ -211,99 +211,122 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // Revenue Chart - Dynamic data from backend
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    const revenueData = /*[[${revenueByDay}]]*/ {};
-    const revenueLabels = Object.keys(revenueData);
-    const revenueValues = Object.values(revenueData);
 
-    new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-            labels: revenueLabels,
-            datasets: [{
-                label: 'Revenue ($)',
-                data: revenueValues,
-                borderColor: '#FFA69E',
-                backgroundColor: 'rgba(255, 166, 158, 0.1)',
-                tension: 0.4,
-                fill: true,
-                borderWidth: 3,
-                pointBackgroundColor: '#FFA69E',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Revenue: $' + context.parsed.y.toFixed(2);
-                        }
-                    }
-                }
+    // ===== REVENUE CHART =====
+    (function () {
+        const ctx = document.getElementById('revenueChart');
+        if (!ctx) return;
+
+        // Data from backend — fallback to empty week if no data
+        const rawData = /*[[${revenueByDay}]]*/ {};
+        const hasData = rawData && Object.keys(rawData).length > 0;
+
+        const labels = hasData
+            ? Object.keys(rawData)
+            : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+        const values = hasData
+            ? Object.values(rawData)
+            : [0, 0, 0, 0, 0, 0, 0];
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: values,
+                    borderColor: '#FFA69E',
+                    backgroundColor: 'rgba(255, 166, 158, 0.12)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#FFA69E',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return '$' + value;
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                return 'Revenue: $' + ctx.parsed.y.toFixed(2);
+                            }
                         }
                     }
-                }
-            }
-        }
-    });
-
-    // Payment Methods Chart - Dynamic data from backend
-    const paymentCtx = document.getElementById('paymentChart').getContext('2d');
-    const paymentMethods = /*[[${paymentMethods}]]*/ {};
-    const paymentLabels = Object.keys(paymentMethods).map(key => {
-        // Format payment method names
-        return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    });
-    const paymentValues = Object.values(paymentMethods);
-
-    new Chart(paymentCtx, {
-        type: 'doughnut',
-        data: {
-            labels: paymentLabels.length > 0 ? paymentLabels : ['No Data'],
-            datasets: [{
-                data: paymentValues.length > 0 ? paymentValues : [1],
-                backgroundColor: ['#FFA69E', '#B08968', '#DDB892', '#F5EBE0', '#3C3734']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return label + ': ' + value + ' (' + percentage + '%)';
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) { return '$' + value; }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    })();
+
+
+    // ===== PAYMENT METHODS CHART =====
+    (function () {
+        const ctx = document.getElementById('paymentChart');
+        if (!ctx) return;
+
+        const rawMethods = /*[[${paymentMethods}]]*/ {};
+        const hasData = rawMethods && Object.keys(rawMethods).length > 0;
+
+        const labels = hasData
+            ? Object.keys(rawMethods).map(k => k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
+            : ['No Data'];
+
+        const values = hasData
+            ? Object.values(rawMethods)
+            : [1];
+
+        const colors = ['#FFA69E', '#B08968', '#DDB892', '#F5EBE0', '#3C3734', '#6f42c1', '#20c997'];
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors.slice(0, labels.length),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                if (!hasData) return 'No payments yet';
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
+                                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    })();
+
     /*]]>*/
 </script>
 
