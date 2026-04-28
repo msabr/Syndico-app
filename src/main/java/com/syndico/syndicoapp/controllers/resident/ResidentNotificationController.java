@@ -33,44 +33,46 @@ public class ResidentNotificationController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             User user = userDetails.getUser();
-            Resident resident = residentService.getResidentByUserId(user.getId());
 
             List<Notification> notifications;
-
             if (Boolean.TRUE.equals(unreadOnly)) {
                 notifications = notificationService.getUnreadNotifications(user.getId());
             } else {
                 notifications = notificationService.getNotificationsByUser(user.getId());
             }
 
-            // Filter by type if specified
             if (type != null) {
                 notifications = notifications.stream()
-                    .filter(n -> n.getType() == type)
-                    .collect(Collectors.toList());
+                        .filter(n -> n.getType() == type)
+                        .collect(Collectors.toList());
             }
 
-            // Get statistics
             long totalNotifications = notifications.size();
             long unreadCount = notificationService.getUnreadCount(user.getId());
             long todayCount = notifications.stream()
-                .filter(n -> n.getSentAt().toLocalDate().equals(LocalDateTime.now().toLocalDate()))
-                .count();
+                    .filter(n -> n.getSentAt() != null &&
+                            n.getSentAt().toLocalDate().equals(LocalDateTime.now().toLocalDate()))
+                    .count();
 
-            model.addAttribute("resident", resident);
             model.addAttribute("notifications", notifications);
             model.addAttribute("types", NotificationType.values());
             model.addAttribute("selectedType", type);
-            model.addAttribute("unreadOnly", unreadOnly);
+            model.addAttribute("unreadOnly", Boolean.TRUE.equals(unreadOnly));
             model.addAttribute("totalNotifications", totalNotifications);
             model.addAttribute("unreadCount", unreadCount);
             model.addAttribute("todayCount", todayCount);
 
             return "client/information/notifications";
+
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Error loading notifications: " + e.getMessage());
             model.addAttribute("notifications", new ArrayList<>());
+            model.addAttribute("types", NotificationType.values());
+            model.addAttribute("unreadOnly", false);
+            model.addAttribute("totalNotifications", 0L);
+            model.addAttribute("unreadCount", 0L);
+            model.addAttribute("todayCount", 0L);
             return "client/information/notifications";
         }
     }

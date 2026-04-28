@@ -66,15 +66,15 @@
                    th:href="@{/client/notifications(type=${type})}"
                    class="filter-btn"
                    th:classappend="${selectedType == type ? 'active' : ''}">
-                    <i th:class="${type.name() == 'PAYMENT'} ? 'bi bi-credit-card' :
-                                  ${type.name() == 'CHARGE'} ? 'bi bi-receipt' :
-                                  ${type.name() == 'RECLAMATION'} ? 'bi bi-exclamation-triangle' :
-                                  ${type.name() == 'ASSEMBLY'} ? 'bi bi-people' :
-                                  ${type.name() == 'WORK_PROJECT'} ? 'bi bi-tools' :
-                                  ${type.name() == 'RESERVATION'} ? 'bi bi-calendar-check' :
-                                  ${type.name() == 'DOCUMENT'} ? 'bi bi-file-earmark' :
-                                  ${type.name() == 'GENERAL'} ? 'bi bi-info-circle' :
-                                  'bi bi-bell'"></i>
+                    <i th:class="${type.name() == 'PAYMENT' ? 'bi bi-credit-card' :
+                                  (type.name() == 'CHARGE' ? 'bi bi-receipt' :
+                                  (type.name() == 'RECLAMATION' ? 'bi bi-exclamation-triangle' :
+                                  (type.name() == 'ASSEMBLY' ? 'bi bi-people' :
+                                  (type.name() == 'WORK_PROJECT' ? 'bi bi-tools' :
+                                  (type.name() == 'RESERVATION' ? 'bi bi-calendar-check' :
+                                  (type.name() == 'DOCUMENT' ? 'bi bi-file-earmark' :
+                                  (type.name() == 'GENERAL' ? 'bi bi-info-circle' : 'bi bi-bell')))))))}">
+                    </i>
                     <span th:text="${type.name()}">Type</span>
                 </a>
             </div>
@@ -94,15 +94,15 @@
                     <div th:if="${!notification.isRead}" class="unread-indicator"></div>
                     <div class="d-flex">
                         <div class="notification-icon">
-                            <i th:class="${notification.type.name() == 'PAYMENT'} ? 'bi bi-cash-coin' :
-                                         ${notification.type.name() == 'CHARGE'} ? 'bi bi-receipt' :
-                                         ${notification.type.name() == 'RECLAMATION'} ? 'bi bi-exclamation-triangle-fill' :
-                                         ${notification.type.name() == 'ASSEMBLY'} ? 'bi bi-people-fill' :
-                                         ${notification.type.name() == 'WORK_PROJECT'} ? 'bi bi-tools' :
-                                         ${notification.type.name() == 'RESERVATION'} ? 'bi bi-calendar-check-fill' :
-                                         ${notification.type.name() == 'DOCUMENT'} ? 'bi bi-file-earmark-fill' :
-                                         ${notification.type.name() == 'GENERAL'} ? 'bi bi-info-circle-fill' :
-                                         'bi bi-bell-fill'"></i>
+                            <i th:class="${notification.type.name() == 'PAYMENT' ? 'bi bi-cash-coin' :
+                                          (notification.type.name() == 'CHARGE' ? 'bi bi-receipt' :
+                                          (notification.type.name() == 'RECLAMATION' ? 'bi bi-exclamation-triangle-fill' :
+                                          (notification.type.name() == 'ASSEMBLY' ? 'bi bi-people-fill' :
+                                          (notification.type.name() == 'WORK_PROJECT' ? 'bi bi-tools' :
+                                          (notification.type.name() == 'RESERVATION' ? 'bi bi-calendar-check-fill' :
+                                          (notification.type.name() == 'DOCUMENT' ? 'bi bi-file-earmark-fill' :
+                                          (notification.type.name() == 'GENERAL' ? 'bi bi-info-circle-fill' : 'bi bi-bell-fill')))))))}">
+                            </i>
                         </div>
                         <div class="notification-content">
                             <div class="notification-title" th:text="${notification.title}">Title</div>

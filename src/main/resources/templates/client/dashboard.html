@@ -2,189 +2,499 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
+
 <head th:replace="~{fragments/Header :: head}"></head>
-<link rel="stylesheet" th:href="@{/css/client/dashboard.css}">
 
 <body>
 
+<!-- Header -->
 <header th:replace="~{fragments/Header :: header(activePage='none')}"></header>
-<aside sec:authorize="hasRole('RESIDENT')" th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='dashboard')}"></aside>
 
-<div class="container-fluid">
-    <div class="row">
+<!-- Resident Sidebar -->
+<aside sec:authorize="hasRole('RESIDENT')"
+       th:replace="~{/fragments/ResidentSidebar :: resident-sidebar(activePage='dashboard')}"></aside>
 
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container-fluid px-4 py-4">
 
-            <!-- Error Message -->
-            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <span th:text="${errorMessage}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 
-            <!-- Content - Only if resident exists -->
-            <div th:if="${resident != null}">
-                <!-- Welcome Banner -->
-                <div class="welcome-banner">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h1>Welcome back, <span th:text="${resident.user != null ? resident.user.firstName : 'User'}">John</span>! 👋</h1>
-                            <p class="mb-0" style="font-size: 1.1rem;">
-                                Apartment <span th:text="${resident.apartmentNumber}">101</span> -
-                                <span th:text="${resident.building != null ? resident.building.name : 'Building'}">Building A</span>
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div style="font-size: 3rem; opacity: 0.3;">
-                                <i class="bi bi-house-heart-fill"></i>
-                            </div>
-                        </div>
+        <!-- ===== NO RESIDENT STATE ===== -->
+        <div th:if="${resident == null}" class="no-resident-card">
+            <i class="bi bi-person-x-fill"></i>
+            <h3 style="color: var(--dark);">No Resident Profile Found</h3>
+            <p class="text-muted mb-4">
+                Your account exists but hasn't been linked to a residence yet.<br>
+                Please contact your building administrator to complete your registration.
+            </p>
+            <a href="/client/my-information" class="btn btn-primary" style="background: var(--primary); border: none; border-radius: 10px; padding: 0.75rem 2rem;">
+                <i class="bi bi-person-gear me-2"></i>View My Profile
+            </a>
+        </div>
+
+        <!-- ===== RESIDENT DASHBOARD ===== -->
+        <div th:if="${resident != null}">
+
+            <!-- Welcome banner -->
+            <div class="welcome-banner mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1>
+                            Welcome back,
+                            <span th:text="${resident.user != null ? resident.user.firstName : 'Resident'}">John</span>! 👋
+                        </h1>
+                        <p class="apartment-info">
+                            <i class="bi bi-door-open me-1"></i>
+                            Apartment <strong th:text="${resident.apartmentNumber ?: 'N/A'}">101</strong>
+                            &nbsp;·&nbsp;
+                            <i class="bi bi-building me-1"></i>
+                            <span th:text="${resident.building != null ? resident.building.name : 'N/A'}">Building A</span>
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end d-none d-md-block">
+                        <i class="bi bi-house-heart-fill big-icon"></i>
                     </div>
                 </div>
+            </div>
 
-            <!-- Stats Cards -->
-            <div class="row">
-                <div class="col-md-3">
+            <!-- ===== STATS CARDS ===== -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
                     <div class="stat-card pending">
                         <div class="stat-icon">
                             <i class="bi bi-hourglass-split"></i>
                         </div>
-                        <div class="stat-value" th:text="${pendingChargesCount}">0</div>
-                        <div class="stat-label">Pending Charges</div>
+                        <div class="stat-content">
+                            <div class="stat-value" th:text="${pendingChargesCount != null ? pendingChargesCount : 0}">0</div>
+                            <div class="stat-label">Pending Charges</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-card paid">
                         <div class="stat-icon">
                             <i class="bi bi-check-circle-fill"></i>
                         </div>
-                        <div class="stat-value" th:text="${paymentsThisYearCount}">0</div>
-                        <div class="stat-label">Paid This Year</div>
+                        <div class="stat-content">
+                            <div class="stat-value" th:text="${paymentsThisYearCount != null ? paymentsThisYearCount : 0}">0</div>
+                            <div class="stat-label">Paid This Year</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-card complaints">
                         <div class="stat-icon">
                             <i class="bi bi-exclamation-triangle-fill"></i>
                         </div>
-                        <div class="stat-value" th:text="${activeComplaintsCount}">0</div>
-                        <div class="stat-label">Active Complaints</div>
+                        <div class="stat-content">
+                            <div class="stat-value" th:text="${activeComplaintsCount != null ? activeComplaintsCount : 0}">0</div>
+                            <div class="stat-label">Active Complaints</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="stat-card reservations">
                         <div class="stat-icon">
                             <i class="bi bi-calendar-check-fill"></i>
                         </div>
-                        <div class="stat-value" th:text="${upcomingReservationsCount}">0</div>
-                        <div class="stat-label">Upcoming Reservations</div>
+                        <div class="stat-content">
+                            <div class="stat-value" th:text="${upcomingReservationsCount != null ? upcomingReservationsCount : 0}">0</div>
+                            <div class="stat-label">Upcoming Reservations</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-4">
+            <div class="row g-4">
+
                 <!-- Quick Actions -->
-                <div class="col-md-4">
-                    <div class="quick-actions">
-                        <h4 class="mb-4" style="color: var(--dark);">
-                            <i class="bi bi-lightning-charge-fill"></i> Quick Actions
-                        </h4>
-                        <a href="/client/charges" class="action-btn">
+                <div class="col-md-4 col-lg-3">
+                    <div class="section-card">
+                        <h5><i class="bi bi-lightning-charge-fill me-2" style="color: var(--primary);"></i>Quick Actions</h5>
+
+                        <a th:href="@{/client/my-charges}" class="action-btn">
                             <i class="bi bi-credit-card"></i>
                             <div>
                                 <strong>Pay Charges</strong>
-                                <small class="d-block text-muted">View pending payments</small>
+                                <small class="d-block">View pending payments</small>
                             </div>
                         </a>
-                        <a href="/client/complaints/new" class="action-btn">
+
+                        <a th:href="@{/client/new-complaint}" class="action-btn">
                             <i class="bi bi-megaphone"></i>
                             <div>
                                 <strong>New Complaint</strong>
-                                <small class="d-block text-muted">Report an issue</small>
+                                <small class="d-block">Report an issue</small>
                             </div>
                         </a>
-                        <a href="/client/book-space" class="action-btn">
+
+                        <a th:href="@{/client/book-space}" class="action-btn">
                             <i class="bi bi-calendar-plus"></i>
                             <div>
                                 <strong>Book a Space</strong>
-                                <small class="d-block text-muted">Reserve gym, parking...</small>
+                                <small class="d-block">Reserve gym, parking...</small>
                             </div>
                         </a>
-                        <a href="/client/documents" class="action-btn">
+
+                        <a th:href="@{/client/documents}" class="action-btn">
                             <i class="bi bi-file-earmark-text"></i>
                             <div>
                                 <strong>Documents</strong>
-                                <small class="d-block text-muted">View shared files</small>
+                                <small class="d-block">View shared files</small>
+                            </div>
+                        </a>
+
+                        <a th:href="@{/client/notifications}" class="action-btn">
+                            <i class="bi bi-bell"></i>
+                            <div>
+                                <strong>Notifications</strong>
+                                <small class="d-block">View all alerts</small>
                             </div>
                         </a>
                     </div>
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="col-md-5">
-                    <div class="recent-activity">
-                        <h4 class="mb-4" style="color: var(--dark);">
-                            <i class="bi bi-clock-history"></i> Recent Activity
-                        </h4>
+                <div class="col-md-5 col-lg-6">
+                    <div class="section-card">
+                        <h5><i class="bi bi-clock-history me-2" style="color: var(--tertiary);"></i>Recent Activity</h5>
 
-                        <!-- Recent Payments -->
-                        <div th:if="${!#lists.isEmpty(recentPayments)}" th:each="payment : ${recentPayments}" class="activity-item">
-                            <div class="activity-icon">
-                                <i class="bi bi-check-circle"></i>
+                        <!-- Has payments -->
+                        <th:block th:if="${recentPayments != null and !#lists.isEmpty(recentPayments)}">
+                            <div th:each="payment : ${recentPayments}" class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div>
+                                    <strong>Payment Confirmed</strong>
+                                    <p class="mb-0 text-muted small">
+                                        <span th:text="${payment.charge != null ? payment.charge.type : 'Charge'}">Charge</span>
+                                        &mdash;
+                                        MAD <span th:text="${payment.amount != null ? #numbers.formatDecimal(payment.amount, 0, 'COMMA', 2, 'POINT') : '0.00'}">0.00</span>
+                                    </p>
+                                    <small class="text-muted"
+                                           th:text="${payment.paymentDate != null ? #temporals.format(payment.paymentDate, 'dd MMM yyyy') : 'N/A'}">
+                                        Date
+                                    </small>
+                                </div>
                             </div>
-                            <div>
-                                <strong>Payment Confirmed</strong>
-                                <p class="mb-0 text-muted small">
-                                    <span th:text="${payment.charge.type}">Charge</span> -
-                                    MAD <span th:text="${#numbers.formatDecimal(payment.amount, 0, 2)}">0.00</span>
-                                </p>
-                                <small class="text-muted" th:text="${#temporals.format(payment.paymentDate, 'dd MMM yyyy')}">Date</small>
-                            </div>
-                        </div>
+                        </th:block>
 
-                        <!-- No activity message -->
-                        <div th:if="${#lists.isEmpty(recentPayments)}" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
-                            <p class="mt-2 mb-0">No recent activity</p>
+                        <!-- No payments -->
+                        <div th:if="${recentPayments == null or #lists.isEmpty(recentPayments)}" class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p class="mb-0">No recent activity</p>
+                            <small>Your payment history will appear here</small>
                         </div>
                     </div>
                 </div>
 
                 <!-- Upcoming Events -->
-                <div class="col-md-3">
-                    <div class="upcoming-events">
-                        <h4 class="mb-4">
-                            <i class="bi bi-calendar-event"></i> Upcoming Events
-                        </h4>
+                <div class="col-md-3 col-lg-3">
+                    <div class="events-card">
+                        <h5><i class="bi bi-calendar-event me-2"></i>Upcoming Events</h5>
 
-                        <!-- Upcoming Meetings -->
-                        <th:block th:if="${!#lists.isEmpty(upcomingMeetings)}">
-                            <div th:each="meeting, iterStat : ${upcomingMeetings}" th:if="${iterStat.index < 3}" class="mb-3">
+                        <!-- Has meetings -->
+                        <th:block th:if="${upcomingMeetings != null and !#lists.isEmpty(upcomingMeetings)}">
+                            <div th:each="meeting, iterStat : ${upcomingMeetings}"
+                                 th:if="${iterStat.index < 3}"
+                                 class="event-item">
                                 <div class="event-badge">
-                                    <i class="bi bi-people"></i> General Assembly
+                                    <i class="bi bi-people me-1"></i>General Assembly
                                 </div>
-                                <p class="mb-1"><strong th:text="${meeting.title}">Meeting Title</strong></p>
-                                <small th:text="${#temporals.format(meeting.scheduledDate, 'dd MMMM, yyyy - HH:mm')}">Date</small>
+                                <p class="mb-1 fw-bold" th:text="${meeting.title ?: 'Meeting'}">Meeting Title</p>
+                                <small th:if="${meeting.scheduledDate != null}"
+                                       th:text="${#temporals.format(meeting.scheduledDate, 'dd MMM yyyy - HH:mm')}">
+                                    Date
+                                </small>
+                                <small th:if="${meeting.scheduledDate == null}" class="opacity-75">Date TBD</small>
                             </div>
                         </th:block>
 
-                        <!-- No events message -->
-                        <div th:if="${#lists.isEmpty(upcomingMeetings)}" class="text-center text-muted py-3">
-                            <i class="bi bi-calendar-x" style="font-size: 2rem;"></i>
-                            <p class="mt-2 mb-0 small">No upcoming events</p>
+                        <!-- No events -->
+                        <div th:if="${upcomingMeetings == null or #lists.isEmpty(upcomingMeetings)}"
+                             class="empty-state" style="color: rgba(255,255,255,0.7);">
+                            <i class="bi bi-calendar-x"></i>
+                            <p class="mb-0">No upcoming events</p>
+                            <small>Check back soon</small>
                         </div>
                     </div>
                 </div>
+
             </div>
-            </div> <!-- End th:if="${resident != null}" -->
-        </main>
+        </div>
+
     </div>
-</div>
+</main>
 
+<!-- Footer -->
 <footer sec:authorize="hasRole('RESIDENT')" th:replace="~{/fragments/ResidentSidebar :: mini-footer-resident}"></footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    :root {
+        --primary: #FFA69E;
+        --secondary: #F5EBE0;
+        --tertiary: #B08968;
+        --accent: #DDB892;
+        --dark: #3C3734;
+    }
+
+    body {
+        background: linear-gradient(135deg, #F5EBE0 0%, #ffffff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* ===== WELCOME BANNER ===== */
+    .welcome-banner {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        right: 10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .welcome-banner h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-banner .apartment-info {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .welcome-banner .big-icon {
+        font-size: 4rem;
+        opacity: 0.2;
+    }
+
+    /* ===== STAT CARDS ===== */
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .stat-card.pending   { border-color: #ffc107; }
+    .stat-card.paid      { border-color: #28a745; }
+    .stat-card.complaints { border-color: #dc3545; }
+    .stat-card.reservations { border-color: #17a2b8; }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+
+    .stat-card.pending .stat-icon     { background: rgba(255,193,7,0.12);   color: #ffc107; }
+    .stat-card.paid .stat-icon        { background: rgba(40,167,69,0.12);   color: #28a745; }
+    .stat-card.complaints .stat-icon  { background: rgba(220,53,69,0.12);   color: #dc3545; }
+    .stat-card.reservations .stat-icon{ background: rgba(23,162,184,0.12);  color: #17a2b8; }
+
+    .stat-content { flex: 1; }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        line-height: 1;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+        color: #888;
+        font-size: 0.85rem;
+    }
+
+    /* ===== SECTION CARDS ===== */
+    .section-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.8rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+
+    .section-card h5 {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--secondary);
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.9rem 1rem;
+        background: var(--secondary);
+        border-radius: 12px;
+        margin-bottom: 0.8rem;
+        text-decoration: none;
+        color: var(--dark);
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        transform: translateX(5px);
+        color: white;
+        box-shadow: 0 5px 15px rgba(255,166,158,0.4);
+    }
+
+    .action-btn i {
+        font-size: 1.3rem;
+        width: 24px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .action-btn small { color: inherit; opacity: 0.7; }
+
+    /* ===== RECENT ACTIVITY ===== */
+    .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 0.9rem;
+        border-left: 3px solid var(--tertiary);
+        margin-bottom: 0.8rem;
+        background: var(--secondary);
+        border-radius: 0 8px 8px 0;
+        transition: transform 0.2s;
+    }
+
+    .activity-item:hover { transform: translateX(3px); }
+
+    .activity-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    /* ===== UPCOMING EVENTS ===== */
+    .events-card {
+        background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 1.8rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        height: 100%;
+    }
+
+    .events-card h5 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .event-item {
+        background: rgba(255,255,255,0.15);
+        border-radius: 10px;
+        padding: 0.9rem;
+        margin-bottom: 0.8rem;
+        backdrop-filter: blur(5px);
+    }
+
+    .event-badge {
+        background: rgba(255,255,255,0.25);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #aaa;
+    }
+
+    .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ===== NO RESIDENT CARD ===== */
+    .no-resident-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        border: 2px dashed var(--accent);
+    }
+
+    .no-resident-card i {
+        font-size: 4rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
+</style>
 
 </body>
 </html>
+
