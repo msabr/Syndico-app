@@ -59,9 +59,6 @@ public class ResidentWorkProjectController {
             Model model,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            Resident resident = residentService.getResidentByUserId(userDetails.getId());
-
-            // Get work projects
             List<WorkProject> workProjects;
             if (status != null) {
                 workProjects = workProjectService.getWorkProjectsByStatus(status);
@@ -69,12 +66,10 @@ public class ResidentWorkProjectController {
                 workProjects = workProjectService.getAllWorkProjects();
             }
 
-            // Get statistics
             long inProgressCount = workProjectService.getWorkProjectsByStatus(WorkStatus.EN_COURS).size();
-            long planningCount = workProjectService.getWorkProjectsByStatus(WorkStatus.PLANIFIE).size();
-            long completedCount = workProjectService.getWorkProjectsByStatus(WorkStatus.TERMINE).size();
+            long planningCount   = workProjectService.getWorkProjectsByStatus(WorkStatus.PLANIFIE).size();
+            long completedCount  = workProjectService.getWorkProjectsByStatus(WorkStatus.TERMINE).size();
 
-            model.addAttribute("resident", resident);
             model.addAttribute("workProjects", workProjects);
             model.addAttribute("inProgressCount", inProgressCount);
             model.addAttribute("planningCount", planningCount);
@@ -82,6 +77,7 @@ public class ResidentWorkProjectController {
             model.addAttribute("selectedStatus", status);
 
             return "client/community/ongoing-works";
+
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Error loading work projects: " + e.getMessage());

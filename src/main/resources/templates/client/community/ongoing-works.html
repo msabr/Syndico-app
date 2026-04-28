@@ -65,8 +65,8 @@
 
             <div th:each="project : ${workProjects}"
                  class="work-card"
-                 th:classappend="${project.status.name().toLowerCase()}"
-                 th:data-status="${project.status.name().toLowerCase()}">
+                 th:classappend="${project.status != null ? project.status.name().toLowerCase() : 'unknown'}"
+                 th:data-status="${project.status != null ? project.status.name().toLowerCase() : 'unknown'}">
                 <div class="work-header">
                     <div class="d-flex align-items-center">
                         <div class="work-icon">

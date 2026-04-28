@@ -1,499 +1,295 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head th:replace="~{fragments/Header :: head}"></head>
-
-<style>
-    :root {
-        --primary: #FFA69E;
-        --secondary: #F5EBE0;
-        --tertiary: #B08968;
-        --accent: #DDB892;
-        --dark: #3C3734;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* Header */
-    .navbar {
-        background: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 1rem 0;
-    }
-
-    .navbar-brand {
-        font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--tertiary) !important;
-    }
-
-    .nav-link {
-        color: var(--dark) !important;
-        font-weight: 600;
-        margin: 0 0.5rem;
-        transition: color 0.3s ease;
-    }
-
-    .nav-link:hover {
-        color: var(--primary) !important;
-    }
-
-    .btn-login {
-        background: var(--tertiary);
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 25px;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-login:hover {
-        background: var(--dark);
-        transform: translateY(-2px);
-    }
-
-    /* Hero Section */
-    .hero-section {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-        color: white;
-        padding: 5rem 0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .hero-section::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -20%;
-        width: 500px;
-        height: 500px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 50%;
-    }
-
-    .hero-section h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-section p {
-        font-size: 1.2rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    /* Services Grid */
-    .services-section {
-        padding: 5rem 0;
-        background: linear-gradient(to bottom, #ffffff 0%, var(--secondary) 100%);
-    }
-
-    .section-title {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .section-title h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 1rem;
-    }
-
-    .section-title p {
-        color: #666;
-        font-size: 1.1rem;
-    }
-
-    .services-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 3rem;
-    }
-
-    .service-card {
-        background: white;
-        border-radius: 20px;
-        padding: 2.5rem;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .service-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-    }
-
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    }
-
-    .service-card:hover::before {
-        transform: scaleX(1);
-    }
-
-    .service-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 2.5rem;
-        color: white;
-    }
-
-    .service-card h4 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 1rem;
-    }
-
-    .service-card p {
-        color: #666;
-        line-height: 1.6;
-    }
-
-    .service-features {
-        list-style: none;
-        padding: 0;
-        margin: 1.5rem 0;
-        text-align: left;
-    }
-
-    .service-features li {
-        padding: 0.5rem 0;
-        color: #666;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .service-features li i {
-        color: #28a745;
-        font-size: 1.2rem;
-    }
-
-    /* CTA Section */
-    .cta-section {
-        background: linear-gradient(135deg, var(--tertiary) 0%, var(--accent) 100%);
-        color: white;
-        padding: 5rem 0;
-        text-align: center;
-    }
-
-    .cta-section h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .cta-section p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-    }
-
-    .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-cta {
-        padding: 1rem 2.5rem;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-cta.primary {
-        background: white;
-        color: var(--tertiary);
-    }
-
-    .btn-cta.primary:hover {
-        background: var(--secondary);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-
-    .btn-cta.secondary {
-        background: transparent;
-        color: white;
-        border: 2px solid white;
-    }
-
-    .btn-cta.secondary:hover {
-        background: white;
-        color: var(--tertiary);
-    }
-
-    /* Footer */
-    .footer {
-        background: var(--dark);
-        color: white;
-        padding: 3rem 0 1.5rem;
-    }
-
-    .footer a {
-        color: white;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .footer a:hover {
-        color: var(--primary);
-    }
-
-    .footer-bottom {
-        border-top: 1px solid rgba(255,255,255,0.1);
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        text-align: center;
-    }
-
-    /* Process Section */
-    .process-section {
-        padding: 5rem 0;
-        background: white;
-    }
-
-    .process-steps {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        margin-top: 3rem;
-    }
-
-    .process-step {
-        text-align: center;
-        position: relative;
-    }
-
-    .step-number {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 0 auto 1rem;
-    }
-
-    .process-step h5 {
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 0.5rem;
-    }
-
-    .process-step p {
-        color: #666;
-    }
-</style>
+<link rel="stylesheet" th:href="@{/css/services.css}">
 
 <body>
 
 <header th:replace="~{fragments/Header :: header(activePage='services')}"></header>
 
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <h1>Our Services</h1>
-        <p>Comprehensive property management solutions for modern living</p>
+<!-- ===== HERO ===== -->
+<section class="hero-services">
+
+    <!-- Floating accent cards -->
+    <div class="floating-card card-1">
+        <i class="bi bi-shield-check"></i>
+        <span>Secure & Reliable</span>
+    </div>
+    <div class="floating-card card-2">
+        <i class="bi bi-people-fill"></i>
+        <span>500+ Residents</span>
+    </div>
+    <div class="floating-card card-3">
+        <i class="bi bi-star-fill" style="color: #ffc107;"></i>
+        <span>Top Rated Service</span>
+    </div>
+
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row align-items-center">
+            <div class="col-lg-7" data-aos="fade-right">
+                <span class="badge-pill">
+                    <i class="bi bi-grid-3x3-gap-fill me-1"></i> What We Offer
+                </span>
+                <h1 class="display-3 fw-bold mt-2 mb-3">
+                    Our <span class="gradient-text">Services</span>
+                </h1>
+                <p class="lead mb-4" style="color: rgba(255,255,255,0.8); max-width: 500px;">
+                    Comprehensive property management solutions designed to make
+                    your residential experience seamless and enjoyable.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="/register" class="btn btn-lg" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color:white; border:none; border-radius:50px; padding: 1rem 2rem; font-weight:600; box-shadow: 0 10px 30px rgba(255,166,158,0.4); transition: all 0.3s ease;">
+                        <i class="bi bi-person-plus me-2"></i>Get Started
+                    </a>
+                    <a href="/contact" class="btn btn-lg" style="background: transparent; border: 2px solid white; color:white; border-radius:50px; padding: 1rem 2rem; font-weight:600; transition: all 0.3s ease;">
+                        <i class="bi bi-envelope me-2"></i>Contact Us
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block" data-aos="fade-left">
+                <div style="font-size: 12rem; opacity: 0.12; line-height:1;">
+                    <i class="bi bi-buildings"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wave -->
+    <div class="hero-wave">
+        <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#ffffff"/>
+        </svg>
     </div>
 </section>
 
-<!-- Services Grid -->
+<!-- ===== SERVICES GRID ===== -->
 <section class="services-section">
     <div class="container">
-        <div class="section-title">
-            <h2>What We Offer</h2>
-            <p>Professional services designed to make your life easier</p>
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="feature-label"><i class="bi bi-stars me-1"></i>Everything You Need</span>
+            <h2 class="section-title d-block mt-2">What We Offer</h2>
+            <p class="section-subtitle">Professional services designed to make your life easier</p>
         </div>
 
-        <div class="services-grid">
-            <!-- Service 1 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-cash-stack"></i>
+        <div class="row g-4 mt-2">
+
+            <!-- Financial Management -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+                <div class="service-card">
+                    <span class="service-number">01</span>
+                    <div class="service-icon"><i class="bi bi-cash-stack"></i></div>
+                    <h4>Financial Management</h4>
+                    <p>Transparent and efficient handling of all financial matters with real-time reporting.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Monthly charge collection</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Budget planning & tracking</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Financial reporting</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Online payment system</li>
+                    </ul>
                 </div>
-                <h4>Financial Management</h4>
-                <p>Transparent and efficient handling of all financial matters</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> Monthly charge collection</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Budget planning</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Financial reporting</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Online payment system</li>
-                </ul>
             </div>
 
-            <!-- Service 2 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-tools"></i>
+            <!-- Maintenance -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card">
+                    <span class="service-number">02</span>
+                    <div class="service-icon"><i class="bi bi-tools"></i></div>
+                    <h4>Maintenance & Repairs</h4>
+                    <p>24/7 maintenance services to keep your property in perfect condition year-round.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Emergency repairs</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Preventive maintenance</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Qualified contractors</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Quality guarantee</li>
+                    </ul>
                 </div>
-                <h4>Maintenance & Repairs</h4>
-                <p>24/7 maintenance services to keep your property in perfect condition</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> Emergency repairs</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Preventive maintenance</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Qualified contractors</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Quality guarantee</li>
-                </ul>
             </div>
 
-            <!-- Service 3 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-shield-check"></i>
+            <!-- Security -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card">
+                    <span class="service-number">03</span>
+                    <div class="service-icon"><i class="bi bi-shield-check"></i></div>
+                    <h4>Security Services</h4>
+                    <p>Advanced security systems and professional personnel for your peace of mind.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> 24/7 surveillance</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Access control systems</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Security personnel</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Emergency response</li>
+                    </ul>
                 </div>
-                <h4>Security Services</h4>
-                <p>Advanced security systems for your peace of mind</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> 24/7 surveillance</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Access control</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Security personnel</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Emergency response</li>
-                </ul>
             </div>
 
-            <!-- Service 4 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-people-fill"></i>
+            <!-- Community -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card">
+                    <span class="service-number">04</span>
+                    <div class="service-icon"><i class="bi bi-people-fill"></i></div>
+                    <h4>Community Management</h4>
+                    <p>Building a vibrant and engaged community through transparent governance.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> General assemblies</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Resident portal</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Communication platform</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Event organization</li>
+                    </ul>
                 </div>
-                <h4>Community Management</h4>
-                <p>Building a vibrant and engaged community</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> General assemblies</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Resident portal</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Communication platform</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Event organization</li>
-                </ul>
             </div>
 
-            <!-- Service 5 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-calendar-check"></i>
+            <!-- Facility Booking -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card">
+                    <span class="service-number">05</span>
+                    <div class="service-icon"><i class="bi bi-calendar-check"></i></div>
+                    <h4>Facility Booking</h4>
+                    <p>Easy and instant reservation of shared amenities whenever you need them.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Gym & fitness center</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Meeting rooms</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Parking spaces</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Rooftop terrace</li>
+                    </ul>
                 </div>
-                <h4>Facility Booking</h4>
-                <p>Easy reservation of shared amenities</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> Gym & fitness center</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Meeting rooms</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Parking spaces</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Rooftop terrace</li>
-                </ul>
             </div>
 
-            <!-- Service 6 -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="bi bi-file-text"></i>
+            <!-- Document Management -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="service-card">
+                    <span class="service-number">06</span>
+                    <div class="service-icon"><i class="bi bi-file-earmark-text"></i></div>
+                    <h4>Document Management</h4>
+                    <p>Secure digital storage and instant access to all important building documents.</p>
+                    <ul class="service-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Digital archive</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Meeting minutes</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Financial reports</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Building regulations</li>
+                    </ul>
                 </div>
-                <h4>Document Management</h4>
-                <p>Secure storage and easy access to important documents</p>
-                <ul class="service-features">
-                    <li><i class="bi bi-check-circle-fill"></i> Digital archive</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Meeting minutes</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Financial reports</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Building regulations</li>
-                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="section-stats">
+    <div class="container position-relative" style="z-index:2;">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge-pill"><i class="bi bi-bar-chart-fill me-1"></i>Our Numbers</span>
+            <h2 class="display-5 fw-bold text-white mt-2">Trusted by Many</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="0">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                    <h2>500+</h2>
+                    <p class="stat-label">Happy Residents</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="100">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-building"></i></div>
+                    <h2>20+</h2>
+                    <p class="stat-label">Buildings Managed</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="200">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-star-fill"></i></div>
+                    <h2>4.9</h2>
+                    <p class="stat-label">Average Rating</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="zoom-in" data-aos-delay="300">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-headset"></i></div>
+                    <h2>24/7</h2>
+                    <p class="stat-label">Support Available</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Process Section -->
+<!-- ===== PROCESS ===== -->
 <section class="process-section">
     <div class="container">
-        <div class="section-title">
-            <h2>How It Works</h2>
-            <p>Simple and straightforward process</p>
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="feature-label"><i class="bi bi-signpost-2 me-1"></i>Simple Steps</span>
+            <h2 class="section-title d-block mt-2">How It Works</h2>
+            <p class="section-subtitle">Get started in just four easy steps</p>
         </div>
 
-        <div class="process-steps">
-            <div class="process-step">
-                <div class="step-number">1</div>
-                <h5>Register</h5>
-                <p>Create your account and verify your identity</p>
+        <div class="row g-4 mt-2">
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h5>Register</h5>
+                    <p>Create your account and verify your identity securely</p>
+                </div>
             </div>
-            <div class="process-step">
-                <div class="step-number">2</div>
-                <h5>Access Portal</h5>
-                <p>Log in to your personalized dashboard</p>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h5>Access Portal</h5>
+                    <p>Log in to your personalized resident dashboard</p>
+                </div>
             </div>
-            <div class="process-step">
-                <div class="step-number">3</div>
-                <h5>Manage Services</h5>
-                <p>Use all available services at your convenience</p>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h5>Use Services</h5>
+                    <p>Manage payments, complaints, and reservations easily</p>
+                </div>
             </div>
-            <div class="process-step">
-                <div class="step-number">4</div>
-                <h5>Get Support</h5>
-                <p>24/7 assistance whenever you need it</p>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h5>Get Support</h5>
+                    <p>24/7 assistance from our dedicated team</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section">
+<!-- ===== CTA ===== -->
+<section class="section-cta">
     <div class="container">
-        <h2>Ready to Get Started?</h2>
-        <p>Join hundreds of satisfied residents enjoying hassle-free property management</p>
-        <div class="cta-buttons">
-            <a href="/register" class="btn-cta primary">
-                <i class="bi bi-person-plus"></i> Register Now
-            </a>
-            <a href="/contact" class="btn-cta secondary">
-                <i class="bi bi-envelope"></i> Contact Us
-            </a>
+        <div class="cta-content text-center" data-aos="fade-up">
+            <span class="badge-pill mb-3"><i class="bi bi-rocket-takeoff me-1"></i>Get Started Today</span>
+            <h2 class="display-5 fw-bold text-white mt-2 mb-3">Ready to Get Started?</h2>
+            <p class="lead mb-4" style="color: rgba(255,255,255,0.8); max-width: 550px; margin: 0 auto 2rem;">
+                Join hundreds of satisfied residents enjoying hassle-free property management.
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/register" class="btn-cta-light">
+                    <i class="bi bi-person-plus"></i> Register Now
+                </a>
+                <a href="/contact" class="btn-cta-outline">
+                    <i class="bi bi-envelope"></i> Contact Us
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
 <footer th:replace="~{fragments/Header :: footer}"></footer>
 
-<!-- Chatbot Widget (included in all pages) -->
+<!-- Chatbot Widget -->
 <div th:replace="~{fragments/LayoutChatbot :: chatbot}"></div>
 
+<!-- AOS Animation -->
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <div th:replace="~{fragments/Header :: scripts}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    AOS.init({ duration: 700, once: true, easing: 'ease-out-quad' });
+</script>
+
 </body>
 </html>
+
