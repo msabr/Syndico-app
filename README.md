@@ -162,7 +162,7 @@ mvn spring-boot:run
 | 👤 Name              | 🌐 GitHub                          | 💼 LinkedIn                                         | 📧 Email                                                         |
 |----------------------|------------------------------------|-----------------------------------------------------|------------------------------------------------------------------|
 | **Soufiane Zekaoui** | https://github.com/soufianezekaoui | https://linkedin.com/in/soufiane-zekaoui-445b1b352/ | [soufiane.zekaoui@gmail.com](mailto:soufiane.zekaoui@gmail.com)  |
-| **SABR Mohamed**     | https://github.com/msabr           | link                                                | email                                                            |
+| **SABR Mohamed**     | https://github.com/msabr           | https://www.linkedin.com/in/sabr-mohamed/           | email                                                            |
 | **AbdelkrimZidouh**  | https://github.com/AbdelkrimZidouh | link                                                | email                                                            |
 
 </p>
